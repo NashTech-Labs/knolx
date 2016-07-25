@@ -20,6 +20,9 @@ import scala.concurrent.Future
   * Created by deepti on 22/7/16.
   */
 
+
+
+
 class UserRepo @Inject()(protected val dbConfigProvider: DatabaseConfigProvider) extends UserTable
   with HasDatabaseConfigProvider[JdbcProfile] {
 
@@ -31,7 +34,20 @@ class UserRepo @Inject()(protected val dbConfigProvider: DatabaseConfigProvider)
 
   }
 
-}
+  def getByEmailId(emailId :String):Future[List[User]] = {
+    db.run(UserTableQuery.filter(_.emailId === emailId).to[List].result)
+  }
+
+  def delete(id:Int):Future[Int]={
+
+    db.run(UserTableQuery.filter(_.id === id).delete)
+  }
+
+  def getAll():Future[List[User]]={
+
+   db.run(UserTableQuery.to[List].result)
+  }
+  }
 
 trait UserTable {
   self: HasDatabaseConfigProvider[JdbcProfile] =>
@@ -71,4 +87,7 @@ trait UserTable {
 
 
 }
+
+
+
 
