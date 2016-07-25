@@ -2,37 +2,73 @@ package repo
 
 
 import com.google.inject.Inject
+
 import play.api.db.slick.{DatabaseConfigProvider, HasDatabaseConfigProvider}
+
 import slick.driver.JdbcProfile
-import models._
+import slick.lifted.Tag
+
+import models.{User}
+
+import java.util.Date
 
 import scala.concurrent.Future
+
+
 
 /**
   * Created by deepti on 22/7/16.
   */
-class UserRepo {
+
+class UserRepo @Inject()(protected val dbConfigProvider: DatabaseConfigProvider) extends UserTable
+  with HasDatabaseConfigProvider[JdbcProfile] {
+
+  import driver.api._
+
+  def insert(user: User): Future[Long] = {
+
+    db.run(UserTableQuery.returning(UserTableQuery.map(_.id)) += user)
+
+  }
 
 }
-trait UserTable  {
+
+trait UserTable {
   self: HasDatabaseConfigProvider[JdbcProfile] =>
 
   import driver.api._
 
-  class UserTable(tag:Tag) extends Table[SignUp](tag,"users"){
-    val id = column[Int]("id", O.PrimaryKey, O.AutoInc)
-    val name = column[String]("name", O.SqlType("VARCHAR(20)"))
-    val email = column[String]("email", O.SqlType("VARCHAR(20)"))
-    val password = column[String]("password", O.SqlType("VARCHAR(20)"))
-    val mobile = column[String]("mobile", O.SqlType("VARCHAR(10)"))
-    val designation = column[String]("designation", O.SqlType("VARCHAR(20)"))
-    val dateOfJoining = column[String]("dateOfJoining", O.SqlType("VARCHAR(20)"))
-    val expertise = column[String]("expertise", O.SqlType("VARCHAR(20)"))
-    val aboutMe = column[String]("aboutMe", O.SqlType("VARCHAR(20)"))
-    def * = (name,email,password,mobile,designation,dateOfJoining,expertise,aboutMe,id) <>(SignUp.tupled, SignUp.unapply)
+
+  lazy val UserTableQuery = TableQuery[UserInfo]
+
+  class UserInfo(tag: Tag) extends Table[User](tag, "users") {
+
+
+    implicit val dateMapper = MappedColumnType.base[java.util.Date, java.sql.Timestamp](
+      d => new java.sql.Timestamp(d.getTime),
+      d => new java.util.Date(d.getTime))
+
+    def * = (id.?, emailId, password, name, address, joiningDate.?, designation.?) <>((User.apply _).tupled, User.unapply)
+
+    def address: Rep[String] = column[String]("address", O.SqlType("VARCHAR(100"))
+
+    def id: Rep[Long] = column[Long]("id", O.AutoInc, O.PrimaryKey)
+
+    def password: Rep[String] = column[String]("password", O.SqlType("VARCHAR(100"))
+
+    def name: Rep[String] = column[String]("name", O.SqlType("VARCHAR(100"))
+
+    def joiningDate: Rep[Date] = column[Date]("joiningdate")(dateMapper)
+
+    def designation: Rep[String] = column[String]("designation", O.SqlType("VARCHAR(100"))
+
+    def emailUnique = index("email_unique_key", emailId, unique = true)
+
+    def emailId: Rep[String] = column[String]("email", O.SqlType("VARCHAR(100"))
+
 
   }
-  val userTable = TableQuery[UserTable]
-  
+
+
 }
 

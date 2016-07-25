@@ -1,4 +1,4 @@
-name := """knolxautomation"""
+name := """knolex"""
 
 version := "1.0-SNAPSHOT"
 
@@ -11,7 +11,7 @@ libraryDependencies ++= Seq(
   ws,
   specs2 % Test,
   "org.webjars" %% "webjars-play" % "2.5.0-1",
-  "org.webjars" % "bootstrap" % "3.1.1-2",
+  "org.webjars" % "bootstrap" % "3.3.6",
   "com.adrianhurt" %% "play-bootstrap" % "1.0-P25-B3",
   "com.typesafe.play"   %%   "play-slick"              %   "1.1.1",
   "com.h2database"    % 	   "h2"                    %   "1.4.187" ,
@@ -26,7 +26,6 @@ libraryDependencies ++= Seq(
   "org.scalatest" %% "scalatest" % "2.2.1" % "test",
   "org.scalatestplus" %% "play" % "1.4.0-M3" % "test",
   "org.seleniumhq.selenium" % "selenium-htmlunit-driver" % "2.52.0"
-
 )
 javaOptions in Test += "-Dconfig.file=conf/test.conf"
 
