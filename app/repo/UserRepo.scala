@@ -34,8 +34,8 @@ class UserRepo @Inject()(protected val dbConfigProvider: DatabaseConfigProvider)
 
   }
 
-  def getByEmailId(emailId :String):Future[List[User]] = {
-    db.run(UserTableQuery.filter(_.emailId === emailId).to[List].result)
+  def getByEmailId(email :String , password:String):Future[List[User]] = {
+    db.run(UserTableQuery.filter(_.email === email).filter(_.password === password).to[List].result)
   }
 
   def delete(id:Long):Future[Int]={
@@ -60,7 +60,7 @@ trait UserTable {
       d => new java.sql.Timestamp(d.getTime),
       d => new java.util.Date(d.getTime))
 
-    def * = (id.?, emailId, password, name, address, joiningDate.?, designation.?) <>((User.apply _).tupled, User.unapply)
+    def * = (id.?, email, password, name, address, designation.?) <>((User.apply _).tupled, User.unapply)
 
     def address: Rep[String] = column[String]("address", O.SqlType("VARCHAR(100"))
 
@@ -70,13 +70,13 @@ trait UserTable {
 
     def name: Rep[String] = column[String]("name", O.SqlType("VARCHAR(100"))
 
-    def joiningDate: Rep[Date] = column[Date]("joiningdate")(dateMapper)
+   // def joiningDate: Rep[String] = column[String]("joiningDate", O.SqlType("VARCHAR(100"))
 
     def designation: Rep[String] = column[String]("designation", O.SqlType("VARCHAR(100"))
 
-    def emailUnique = index("email_unique_key", emailId, unique = true)
+    def emailUnique = index("email_unique_key", email, unique = true)
 
-    def emailId: Rep[String] = column[String]("email", O.SqlType("VARCHAR(100"))
+    def email: Rep[String] = column[String]("email", O.SqlType("VARCHAR(100"))
   }
 
 
