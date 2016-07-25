@@ -52,6 +52,7 @@ class HomeController @Inject()(webJarAssets: WebJarAssets) extends Controller {
   def homePage = Action.async {
     implicit request =>
       Future(Ok(views.html.home(webJarAssets, loginForm)))
+
   }
 
 

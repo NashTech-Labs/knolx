@@ -38,7 +38,7 @@ class UserRepo @Inject()(protected val dbConfigProvider: DatabaseConfigProvider)
     db.run(UserTableQuery.filter(_.emailId === emailId).to[List].result)
   }
 
-  def delete(id:Int):Future[Int]={
+  def delete(id:Long):Future[Int]={
 
     db.run(UserTableQuery.filter(_.id === id).delete)
   }
