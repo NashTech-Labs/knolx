@@ -1,7 +1,7 @@
 package controllers
 
 import javax.inject._
-
+import utils.Constants
 import models.{Login, User}
 import play.api.data.Form
 import play.api.data.Forms._
@@ -36,7 +36,7 @@ class HomeController @Inject()(webJarAssets: WebJarAssets, userService: UserServ
     mapping(
 
       "emailId" -> email,
-      "password" -> nonEmptyText
+      "password" -> nonEmptyText(MIN_LENGTH_OF_PASSWORD)
     )(Login.apply)(Login.unapply))
 
   /**
@@ -57,7 +57,7 @@ class HomeController @Inject()(webJarAssets: WebJarAssets, userService: UserServ
     implicit request =>
       loginForm.bindFromRequest.fold(
         formwithErrors => {
-          Future(BadRequest)
+          Future(BadRequest(views.html.home(webJarAssets,formwithErrors)))
         },
       userData => {
         val res = userService.validateUser(userData.emailId, userData.password)
@@ -65,7 +65,7 @@ class HomeController @Inject()(webJarAssets: WebJarAssets, userService: UserServ
           Ok("success")
 
         else
-          Ok("failure")
+          Redirect(routes.HomeController.homePage).flashing("ERROR"-> WRONG_LOGIN_DETAILS)
 
         }
       }
