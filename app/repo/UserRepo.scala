@@ -37,13 +37,9 @@ trait UserTable {
   self: HasDatabaseConfigProvider[JdbcProfile] =>
 
   import driver.api._
-
-
   lazy val UserTableQuery = TableQuery[UserInfo]
 
   class UserInfo(tag: Tag) extends Table[User](tag, "users") {
-
-
     implicit val dateMapper = MappedColumnType.base[java.util.Date, java.sql.Timestamp](
       d => new java.sql.Timestamp(d.getTime),
       d => new java.util.Date(d.getTime))
@@ -65,8 +61,6 @@ trait UserTable {
     def emailUnique = index("email_unique_key", emailId, unique = true)
 
     def emailId: Rep[String] = column[String]("email", O.SqlType("VARCHAR(100"))
-
-
   }
 
 
