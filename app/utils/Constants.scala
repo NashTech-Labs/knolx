@@ -14,4 +14,6 @@ object Constants {
   val DASHBOARD_TITLE = "Welcome to dashboard"
   val ENTERED_EMAIL_EXISTS = "Entered email id already exist in database"
   val DEFAULT_PROFILE_IMAGE = "profile.jpeg"
+  val LOGOUT_SUCCESSFUL = "You have successfully logged out!!"
+  val INVALID = "Please sign in to continue"
 }

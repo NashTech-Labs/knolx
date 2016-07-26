@@ -1,6 +1,7 @@
 package controllers
 
 import javax.inject._
+
 import utils.Constants
 import models.{Login, User}
 import play.api.data.Form
@@ -53,7 +54,7 @@ class HomeController @Inject()(webJarAssets: WebJarAssets, userService: UserServ
 
   }
 
- def signin = Action.async{
+ def signIn = Action.async{
 
     implicit request =>
       Logger.debug("signingIn in progress. ")
@@ -64,10 +65,9 @@ class HomeController @Inject()(webJarAssets: WebJarAssets, userService: UserServ
         },
       userData => {
         val res = userService.validateUser(userData.emailId, userData.password)
-        res.map { x => if (x == true) {
-          Logger.info("SignIn Succesfull.")
-          Ok("success")
-        }
+        res.map { x => if (x == true)
+          Redirect(routes.DashboardController.dashboard).withSession("id" -> userData.emailId)
+
         else {
           Logger.error("User Not Found")
           Redirect(routes.HomeController.homePage).flashing("ERROR" -> WRONG_LOGIN_DETAILS)
@@ -79,4 +79,11 @@ class HomeController @Inject()(webJarAssets: WebJarAssets, userService: UserServ
   }
 
 
+
+
+  def signOut = Action {
+    Redirect(routes.HomeController.homePage).withNewSession.flashing("SUCCESS" -> LOGOUT_SUCCESSFUL)
+  }
+
 }
+
