@@ -11,7 +11,7 @@ import play.api.i18n.Messages.Implicits._
 import play.api.inject.Injector
 import services.UserService
 import utils.Constants._
-
+import play.api.Logger
 import scala.concurrent.Future
 import scala.concurrent.ExecutionContext.Implicits.global
 
@@ -48,6 +48,7 @@ class HomeController @Inject()(webJarAssets: WebJarAssets, userService: UserServ
 
   def homePage = Action.async {
     implicit request =>
+      Logger.debug("Redirecting HomePage")
       Future(Ok(views.html.home(webJarAssets, loginForm)))
 
   }
@@ -55,19 +56,22 @@ class HomeController @Inject()(webJarAssets: WebJarAssets, userService: UserServ
  def signin = Action.async{
 
     implicit request =>
-      println("signincontroller \n\n")
+      Logger.debug("signingIn in progress. ")
       loginForm.bindFromRequest.fold(
         formwithErrors => {
+          Logger.error("Sign-In badRequest.")
           Future(BadRequest(views.html.home(webJarAssets,formwithErrors)))
         },
       userData => {
         val res = userService.validateUser(userData.emailId, userData.password)
-        res.map { x => if (x == true)
+        res.map { x => if (x == true) {
+          Logger.info("SignIn Succesfull.")
           Ok("success")
-
-        else
-          Redirect(routes.HomeController.homePage).flashing("ERROR"-> WRONG_LOGIN_DETAILS)
-
+        }
+        else {
+          Logger.error("User Not Found")
+          Redirect(routes.HomeController.homePage).flashing("ERROR" -> WRONG_LOGIN_DETAILS)
+        }
         }
       }
       )

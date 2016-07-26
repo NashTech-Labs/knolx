@@ -2,17 +2,16 @@ package repo
 
 
 import com.google.inject.Inject
-
 import play.api.db.slick.{DatabaseConfigProvider, HasDatabaseConfigProvider}
-
 import slick.driver.JdbcProfile
 import slick.lifted.Tag
-
-import models.{User}
-
+import play.api.Logger
+import models.User
 import java.util.Date
 
 import scala.concurrent.Future
+import scala.concurrent.ExecutionContext.Implicits.global
+import scala.util.control
 
 
 
@@ -29,24 +28,56 @@ class UserRepo @Inject()(protected val dbConfigProvider: DatabaseConfigProvider)
   import driver.api._
 
   def insert(user: User): Future[Long] = {
-
-    db.run(UserTableQuery.returning(UserTableQuery.map(_.id)) += user)
-
+   try {
+     Logger.info("Inserting user Record.")
+     db.run(UserTableQuery.returning(UserTableQuery.map(_.id)) += user)
+   }
+    catch {
+      case ex:Exception =>
+        Logger.error("Exception During insertion of user record . " + ex)
+        Future{
+          0
+        }
+    }
   }
 
   def getByEmailId(email :String , password:String):Future[List[User]] = {
-    db.run(UserTableQuery.filter(_.email === email).filter(_.password === password).to[List].result)
-
+    try{
+      Logger.info("Getting user Record by Email-Id and password . ")
+      db.run(UserTableQuery.filter(_.email === email).filter(_.password === password).to[List].result)
+  }
+  catch{
+    case ex: Exception => Logger.error("Exception occurred during getting record by emailId: " + ex)
+      Future{
+      List[User]()
+      }
+  }
   }
 
   def delete(id:Long):Future[Int]={
-
-    db.run(UserTableQuery.filter(_.id === id).delete)
+try {
+  Logger.info("Deleting user record")
+  db.run(UserTableQuery.filter(_.id === id).delete)
+}
+    catch {
+      case ex : Exception => Logger.error("Exception in Deleting user. "+ex)
+        Future{
+          0
+        }
+    }
   }
 
-  def getAll():Future[List[User]]={
-
-   db.run(UserTableQuery.to[List].result)
+  def getAll():Future[List[User]]= {
+    try {
+      Logger.info("Getting all user record.")
+      db.run(UserTableQuery.to[List].result)
+    }
+    catch {
+      case ex:Exception => Logger.error("Exception in getting all user record. "+ex)
+        Future{
+          List[User]()
+        }
+    }
   }
   }
 
@@ -79,8 +110,6 @@ trait UserTable {
 
     def email: Rep[String] = column[String]("email", O.SqlType("VARCHAR(100"))
   }
-
-
 }
 
 
