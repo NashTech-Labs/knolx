@@ -12,6 +12,7 @@ import scala.concurrent.ExecutionContext.Implicits.global
 
 
   def validateUser(emailId: String, password: String): Future[Boolean] = {
+    println("Inservidce  \n\n\n")
     val userList = userRepo.getByEmailId(emailId, password)
     userList.map(value => if (value.length == 1) true else false)
 

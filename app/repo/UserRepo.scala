@@ -36,6 +36,7 @@ class UserRepo @Inject()(protected val dbConfigProvider: DatabaseConfigProvider)
 
   def getByEmailId(email :String , password:String):Future[List[User]] = {
     db.run(UserTableQuery.filter(_.email === email).filter(_.password === password).to[List].result)
+
   }
 
   def delete(id:Long):Future[Int]={

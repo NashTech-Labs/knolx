@@ -55,6 +55,7 @@ class HomeController @Inject()(webJarAssets: WebJarAssets, userService: UserServ
  def signin = Action.async{
 
     implicit request =>
+      println("signincontroller \n\n")
       loginForm.bindFromRequest.fold(
         formwithErrors => {
           Future(BadRequest(views.html.home(webJarAssets,formwithErrors)))
