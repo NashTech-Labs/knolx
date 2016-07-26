@@ -26,12 +26,14 @@
 
                             <fieldset>
                                 <div class="form-group">
-                                @b3.form(routes.HomeController.signin) {
+                                @b3.form(routes.HomeController.signIn) {
                                     @b3.text(loginForm("emailId"), '_label -> "Enter Your Email", 'placeholder -> "abc@domain.com") <br/>
                                     @b3.password(loginForm("password"), '_label -> "Enter Your Password",
                                         'placeholder -> "enter password here")
                                     <p style="text-align:center;color:red!important;">@flash.get("ERROR")</p></br>
                                     @b3.submit('class -> "btn btn-primary btn-lg btn-block") {sign in}
+                                    <p style="text-align:center;color:BLACK!important;">@flash.get("SUCCESS")</p></br>
+                                    <p style="text-align:center;color:BLACK!important;">@flash.get("INVALID")</p></br>
                                 }
                                 </div>
                                 <div class="checkbox">

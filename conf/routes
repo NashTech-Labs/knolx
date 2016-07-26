@@ -10,4 +10,6 @@ GET     /webjars/*file                    controllers.WebJarAssets.at(file)
 #  home page
 
 GET     /                                                     controllers.HomeController.homePage
-POST    /signin                                              controllers.HomeController.signin
+POST    /signIn                                              controllers.HomeController.signIn
+GET     /dashboard                                             controllers.DashboardController.dashboard
+POST    /singOut                                                 controllers.HomeController.signOut
