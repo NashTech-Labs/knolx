@@ -7,7 +7,7 @@ import java.util.Date
   */
 
 
-case class User(id: Option[Long] = None, emailId: String, password: String, name: String, address: String, joiningDate: Option[Date], designation: Option[String])
+case class User(id: Option[Long] = None, emailId: String, password: String, name: String, address: String, designation: Option[String])
 
 case class Login(emailId: String, password: String)
 

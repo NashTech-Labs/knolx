@@ -9,4 +9,5 @@ GET     /webjars/*file                    controllers.WebJarAssets.at(file)
 
 #  home page
 
-GET     /knoldus/knolex/homePage                           controllers.HomeController.homePage
+GET     /                                                     controllers.HomeController.homePage
+POST    /signin                                              controllers.HomeController.signin
