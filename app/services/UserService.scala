@@ -13,7 +13,10 @@ import play.api.Logger
 
 
   def validateUser(emailId: String, password: String): Future[Boolean] = {
+
     Logger.debug("Validating User.")
+
+
     val userList = userRepo.getByEmailId(emailId, password)
     userList.map(value => if (value.length == 1) true else false)
 

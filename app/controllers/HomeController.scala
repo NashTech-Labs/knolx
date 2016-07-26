@@ -57,7 +57,11 @@ class HomeController @Inject()(webJarAssets: WebJarAssets, userService: UserServ
  def signIn = Action.async{
 
     implicit request =>
+
       Logger.debug("signingIn in progress. ")
+
+
+
       loginForm.bindFromRequest.fold(
         formwithErrors => {
           Logger.error("Sign-In badRequest.")
@@ -67,6 +71,7 @@ class HomeController @Inject()(webJarAssets: WebJarAssets, userService: UserServ
         val res = userService.validateUser(userData.emailId, userData.password)
         res.map { x => if (x == true)
           Redirect(routes.DashboardController.dashboard).withSession("id" -> userData.emailId)
+
 
         else {
           Logger.error("User Not Found")
