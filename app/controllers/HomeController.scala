@@ -25,12 +25,13 @@ class HomeController @Inject()(webJarAssets: WebJarAssets, userService: UserServ
 
   val signUpForm = Form(
     mapping(
-      "id" -> optional(longNumber),
+
       "emailId" -> email,
       "password" -> nonEmptyText(MIN_LENGTH_OF_PASSWORD),
       "name" -> nonEmptyText(MIN_LENGTH_OF_NAME),
-      "address" -> nonEmptyText,
-      "designation" -> optional(text))(User.apply)(User.unapply))
+
+      "designation" -> optional(text),
+      "id" -> optional(longNumber))(User.apply)(User.unapply))
 
   val loginForm = Form(
     mapping(
@@ -49,7 +50,7 @@ class HomeController @Inject()(webJarAssets: WebJarAssets, userService: UserServ
   def homePage = Action.async {
     implicit request =>
       Logger.debug("Redirecting HomePage")
-      Future(Ok(views.html.home(webJarAssets, loginForm)))
+      Future(Ok(views.html.home(webJarAssets, loginForm,signUpForm )))
 
   }
 
@@ -60,7 +61,7 @@ class HomeController @Inject()(webJarAssets: WebJarAssets, userService: UserServ
       loginForm.bindFromRequest.fold(
         formwithErrors => {
           Logger.error("Sign-In badRequest.")
-          Future(BadRequest(views.html.home(webJarAssets,formwithErrors)))
+          Future(BadRequest(views.html.home(webJarAssets,formwithErrors,signUpForm)))
         },
       userData => {
         val res = userService.validateUser(userData.emailId, userData.password)
@@ -75,8 +76,30 @@ class HomeController @Inject()(webJarAssets: WebJarAssets, userService: UserServ
         }
       }
       )
-
   }
 
+  def signUp = Action.async{
+
+    implicit request =>
+      Logger.debug("signingUp in progress. ")
+      signUpForm.bindFromRequest.fold(
+        formwithErrors => {
+          Logger.error("Sign-up badRequest.")
+          Future(Ok("BadRequest"))
+        },
+        userData => {
+          val res = userService.signUpUser(userData)
+          res.map { value => if (value == true) {
+            Logger.info("SignUp Succesfull.")
+            Ok("success")
+          }
+          else {
+            Logger.error("Something Went Wrong during signup")
+            Redirect(routes.HomeController.homePage).flashing("ERROR" -> "Something went wrong .")
+          }
+          }
+        }
+      )
+  }
 
 }
