@@ -32,7 +32,7 @@ class HomeController @Inject()(webJarAssets: WebJarAssets, userService: UserServ
   val signUpForm = Form(
     mapping(
 
-      "emailId" -> email,
+      "emailId" -> nonEmptyText,
       "password" -> nonEmptyText(MIN_LENGTH_OF_PASSWORD),
       "name" -> nonEmptyText(MIN_LENGTH_OF_NAME),
       "designation" -> optional(text),

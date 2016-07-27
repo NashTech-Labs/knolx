@@ -9,11 +9,11 @@ GET     /webjars/*file                    controllers.WebJarAssets.at(file)
 
 #  home page
 
-
-GET     /                                                     controllers.HomeController.homePage
+GET     /home                                                   controllers.HomeController.homePage
+GET     /                                                     controllers.DashboardController.dashboard
 POST    /signIn                                              controllers.HomeController.signIn
-GET     /dashboard                                             controllers.DashboardController.dashboard
+#GET     /dashboard                                             controllers.DashboardController.dashboard
 GET    /signOut                                                 controllers.HomeController.signOut
-GET     /signUp                                                 controllers.HomeController.signUp
+POST     /signUp                                                 controllers.HomeController.signUp
 
 
