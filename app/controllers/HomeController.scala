@@ -51,19 +51,20 @@ class HomeController @Inject()(webJarAssets: WebJarAssets, userService: UserServ
   def homePage = Action.async {
     implicit request =>
       Logger.debug("Redirecting HomePage")
-      Future(Ok(views.html.home(webJarAssets, loginForm)))
+      Future(Ok(views.html.home(webJarAssets, loginForm, signUpForm)))
 
   }
 
- def signIn = Action.async{
+  def signIn = Action.async {
 
     implicit request =>
       Logger.debug("signingIn in progress. ")
       loginForm.bindFromRequest.fold(
-        formWithErrors => {
-          Logger.error("Sign-In badRequest.")
-          Future(BadRequest(views.html.home(webJarAssets,formWithErrors)))
-        },
+
+  formWithErrors => {
+      Logger.error("Sign-In badRequest.")
+      Future(BadRequest(views.html.home(webJarAssets, formWithErrors, signUpForm)))
+    },
       userData => {
         val res = userService.validateUser(userData.emailId, userData.password)
         res.map { x => if (x == true)
@@ -73,13 +74,50 @@ class HomeController @Inject()(webJarAssets: WebJarAssets, userService: UserServ
           Logger.error("User Not Found")
           Redirect(routes.HomeController.homePage).flashing("ERROR" -> WRONG_LOGIN_DETAILS)
         }
+
+          }
         }
-      }
+
       )
   }
-  def signOut = Action {
-    Redirect(routes.HomeController.homePage).withNewSession.flashing("SUCCESS" -> LOGOUT_SUCCESSFUL)
+
+
+  def signUp = Action.async {
+
+    implicit request =>
+      Logger.debug("signingUp in progress. ")
+      signUpForm.bindFromRequest.fold(
+        formwithErrors => {
+          Logger.error("Sign-up badRequest.")
+          Future(Ok("BadRequest"))
+        },
+        userData => {
+
+          userService.validateEmail(userData.emailId).flatMap(value => if (value == true) {
+
+            val res = userService.signUpUser(userData)
+            res.map(value => if (value) {
+
+              Ok("userregisterd")
+            }
+            else {
+
+              Ok("user not registerd")
+            })
+          }
+          else {
+            Future(Ok("user alerady registerd"))
+          })
+
+        }
+      )
+  }
+
+  def signOut = Action.async {
+    Future{Redirect(routes.HomeController.homePage).withNewSession.flashing("SUCCESS" -> LOGOUT_SUCCESSFUL)}
+
   }
 
 }
+
 
