@@ -12,4 +12,4 @@ GET     /webjars/*file                    controllers.WebJarAssets.at(file)
 GET     /                                                     controllers.HomeController.homePage
 POST    /signIn                                              controllers.HomeController.signIn
 GET     /dashboard                                             controllers.DashboardController.dashboard
-POST    /singOut                                                 controllers.HomeController.signOut
+GET    /signOut                                                 controllers.HomeController.signOut

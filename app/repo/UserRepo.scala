@@ -92,9 +92,8 @@ trait UserTable {
       d => new java.sql.Timestamp(d.getTime),
       d => new java.util.Date(d.getTime))
 
-    def * = (id.?, email, password, name, address, designation.?) <>((User.apply _).tupled, User.unapply)
+    def * = ( email, password, name, designation.?,id.?) <>((User.apply _).tupled, User.unapply)
 
-    def address: Rep[String] = column[String]("address", O.SqlType("VARCHAR(100"))
 
     def id: Rep[Long] = column[Long]("id", O.AutoInc, O.PrimaryKey)
 
@@ -102,7 +101,6 @@ trait UserTable {
 
     def name: Rep[String] = column[String]("name", O.SqlType("VARCHAR(100"))
 
-   // def joiningDate: Rep[String] = column[String]("joiningDate", O.SqlType("VARCHAR(100"))
 
     def designation: Rep[String] = column[String]("designation", O.SqlType("VARCHAR(100"))
 

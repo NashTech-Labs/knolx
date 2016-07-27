@@ -26,12 +26,13 @@ class HomeController @Inject()(webJarAssets: WebJarAssets, userService: UserServ
 
   val signUpForm = Form(
     mapping(
-      "id" -> optional(longNumber),
+
       "emailId" -> email,
       "password" -> nonEmptyText(MIN_LENGTH_OF_PASSWORD),
       "name" -> nonEmptyText(MIN_LENGTH_OF_NAME),
-      "address" -> nonEmptyText,
-      "designation" -> optional(text))(User.apply)(User.unapply))
+      "designation" -> optional(text),
+      "id" -> optional(longNumber)
+    )(User.apply)(User.unapply))
 
   val loginForm = Form(
     mapping(
@@ -57,35 +58,25 @@ class HomeController @Inject()(webJarAssets: WebJarAssets, userService: UserServ
  def signIn = Action.async{
 
     implicit request =>
-
       Logger.debug("signingIn in progress. ")
-
-
-
       loginForm.bindFromRequest.fold(
-        formwithErrors => {
+        formWithErrors => {
           Logger.error("Sign-In badRequest.")
-          Future(BadRequest(views.html.home(webJarAssets,formwithErrors)))
+          Future(BadRequest(views.html.home(webJarAssets,formWithErrors)))
         },
       userData => {
         val res = userService.validateUser(userData.emailId, userData.password)
         res.map { x => if (x == true)
           Redirect(routes.DashboardController.dashboard).withSession("id" -> userData.emailId)
-
-
         else {
+
           Logger.error("User Not Found")
           Redirect(routes.HomeController.homePage).flashing("ERROR" -> WRONG_LOGIN_DETAILS)
         }
         }
       }
       )
-
   }
-
-
-
-
   def signOut = Action {
     Redirect(routes.HomeController.homePage).withNewSession.flashing("SUCCESS" -> LOGOUT_SUCCESSFUL)
   }
