@@ -11,8 +11,6 @@ import play.api.Logger
 import slick.driver.JdbcProfile
 import slick.lifted.Tag
 
-import models.User
-
 import scala.concurrent.Future
 import scala.concurrent.ExecutionContext.Implicits.global
 
@@ -31,7 +29,7 @@ class UserRepo @Inject()(protected val dbConfigProvider: DatabaseConfigProvider)
 
     try {
       Logger.info("Inserting user Record.")
-      db.run(UserTableQuery.returning(UserTableQuery.map(_.id)) += user)
+      db.run(userTableQuery.returning(userTableQuery.map(_.id)) += user)
     }
     catch {
       case ex: Exception =>
@@ -44,10 +42,10 @@ class UserRepo @Inject()(protected val dbConfigProvider: DatabaseConfigProvider)
   }
 
 
-  def getByEmailId(email: String, password: String): Future[List[User]] = {
+  def getByEmailAndPassword(email: String, password: String): Future[List[User]] = {
     try {
       Logger.info("Getting user Record by Email-Id and password . ")
-      db.run(UserTableQuery.filter(_.email === email).filter(_.password === password).to[List].result)
+      db.run(userTableQuery.filter( user => (user.email === email) && (user.password === password)).to[List].result)
     }
     catch {
       case ex: Exception => Logger.error("Exception occurred during getting record by emailId and password : " + ex)
@@ -60,7 +58,7 @@ class UserRepo @Inject()(protected val dbConfigProvider: DatabaseConfigProvider)
   def checkEmail(email: String): Future[List[User]] = {
     try {
       Logger.info("Getting user Record by Email-Id . ")
-      db.run(UserTableQuery.filter(_.email === email).to[List].result)
+      db.run(userTableQuery.filter(_.email === email).to[List].result)
     }
     catch {
       case ex: Exception => Logger.error("Exception occurred during getting record by emailId: " + ex)
@@ -71,10 +69,10 @@ class UserRepo @Inject()(protected val dbConfigProvider: DatabaseConfigProvider)
   }
 
 
-  def getAll(): Future[List[User]] = {
+  def getAll: Future[List[User]] = {
     try {
       Logger.info("Getting all user record.")
-      db.run(UserTableQuery.to[List].result)
+      db.run(userTableQuery.to[List].result)
     }
     catch {
       case ex: Exception => Logger.error("Exception in getting all user record. " + ex)
@@ -90,13 +88,9 @@ trait UserTable {
 
   import driver.api._
 
-  lazy val UserTableQuery = TableQuery[UserInfo]
+  lazy val userTableQuery = TableQuery[UserInfo]
 
   class UserInfo(tag: Tag) extends Table[User](tag, "users") {
-    implicit val dateMapper = MappedColumnType.base[java.util.Date, java.sql.Timestamp](
-      d => new java.sql.Timestamp(d.getTime),
-      d => new java.util.Date(d.getTime))
-
 
     def * = (email, password, name, designation.?, id.?) <>((User.apply _).tupled, User.unapply)
 

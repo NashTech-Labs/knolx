@@ -2,7 +2,7 @@ package controllers
 
 import javax.inject.Inject
 
-import play.api.mvc.{AnyContent, Action, Controller}
+import play.api.mvc.{Action, Controller}
 import play.api.Play.current
 import play.api.i18n.Messages.Implicits._
 
@@ -17,7 +17,7 @@ import scala.util.Try
   */
 class DashboardController @Inject()(webJarAssets: WebJarAssets) extends Controller {
 
-  def dashboard:Action[AnyContent] = Action.async {
+  def dashboard = Action.async {
     implicit request =>
 
       Try(request2session.apply("id").toString).toOption match {

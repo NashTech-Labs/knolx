@@ -11,7 +11,7 @@ import scala.concurrent.ExecutionContext.Implicits.global
 
 import play.api.Logger
 
-import java.util.Base64
+import utils.Helpers
 
 /**
   * Created by deepti on 25/7/16.
@@ -19,15 +19,14 @@ import java.util.Base64
 class UserService @Inject()(userRepo: UserRepo) {
 
 
-  def validateUser(emailId: String, password: String): Future[Boolean] = {
+  def addUser(emailId: String, password: String): Future[Boolean] = {
     Logger.debug("Validating User.")
-    val userList = userRepo.getByEmailId(emailId, password)
+    val userList = userRepo.getByEmailAndPassword(emailId, password)
     userList.map(value => if (value.length == 1) true else false)
   }
 
-  def
-  signUpUser(user: User): Future[Boolean] = {
-    Logger.debug("signup User")
+  def signUpUser(user: User): Future[Boolean] = {
+    Logger.debug("signUp User")
     val recordInserted = userRepo.insert(user)
     recordInserted.map(value => if (value > 0) true else false)
 
@@ -39,8 +38,10 @@ class UserService @Inject()(userRepo: UserRepo) {
   }
 
   def encodePassword(userData: User, password: String): User = {
-    val encodedUserdata = userData.copy(emailId = userData.emailId, password = Base64.getEncoder().withoutPadding().encodeToString(password.toString.getBytes), name = userData.name, designation = userData.designation, id = userData.id)
+    val encodedUserdata = userData.copy(emailId = userData.emailId, password = Helpers.passwordEncoder(password), name = userData.name, designation = userData.designation, id = userData.id)
     encodedUserdata
 
   }
+
+
 }

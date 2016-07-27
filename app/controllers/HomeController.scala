@@ -53,14 +53,14 @@ class HomeController @Inject()(webJarAssets: WebJarAssets, userService: UserServ
     * a path of `/`.
     */
 
-  def homePage:Action[AnyContent] = Action.async {
+  def homePage: Action[AnyContent] = Action.async {
     implicit request =>
       Logger.debug("Redirecting HomePage")
       Future(Ok(views.html.home(webJarAssets, loginForm, signUpForm)))
 
   }
 
-  def signIn:Action[AnyContent] = Action.async {
+  def signIn: Action[AnyContent] = Action.async {
 
     implicit request =>
       Logger.debug("signingIn in progress. ")
@@ -71,7 +71,7 @@ class HomeController @Inject()(webJarAssets: WebJarAssets, userService: UserServ
           Future(BadRequest(views.html.home(webJarAssets, formWithErrors, signUpForm)))
         },
         validData => {
-          val isValid = userService.validateUser(validData.emailId,validData.password)
+          val isValid = userService.addUser(validData.emailId, validData.password)
           isValid.map { validatedEmail => if (validatedEmail)
             Redirect(routes.DashboardController.dashboard).withSession("id" -> validData.emailId)
           else {
@@ -87,7 +87,7 @@ class HomeController @Inject()(webJarAssets: WebJarAssets, userService: UserServ
   }
 
 
-  def signUp:Action[AnyContent] = Action.async {
+  def signUp: Action[AnyContent] = Action.async {
 
     implicit request =>
       Logger.debug("signingUp in progress. ")
@@ -97,14 +97,14 @@ class HomeController @Inject()(webJarAssets: WebJarAssets, userService: UserServ
           Future(BadRequest(views.html.home(webJarAssets, loginForm, formWithErrors)))
         },
         validData => {
-          val encodedUserdata = userService.encodePassword(validData,validData.password)
+          val encodedUserdata = userService.encodePassword(validData, validData.password)
 
           userService.validateEmail(encodedUserdata.emailId).flatMap(value => if (value == true) {
 
             val isInserted = userService.signUpUser(encodedUserdata)
             isInserted.map(value => if (value) {
 
-              Redirect(routes.DashboardController.dashboard).withSession("id" ->encodedUserdata.emailId)
+              Redirect(routes.DashboardController.dashboard).withSession("id" -> encodedUserdata.emailId)
             }
             else {
 
@@ -119,7 +119,7 @@ class HomeController @Inject()(webJarAssets: WebJarAssets, userService: UserServ
       )
   }
 
-  def signOut:Action[AnyContent] = Action.async {
+  def signOut: Action[AnyContent] = Action.async {
     Future {
       Redirect(routes.HomeController.homePage).withNewSession.flashing("SUCCESS" -> LOGOUT_SUCCESSFUL)
     }
