@@ -63,7 +63,7 @@ class HomeController @Inject()(webJarAssets: WebJarAssets, userService: UserServ
 
   formWithErrors => {
       Logger.error("Sign-In badRequest.")
-      Future(BadRequest(views.html.home(webJarAssets, formWithErrors, signUpForm)))
+      Future(BadRequest(views.html.home(webJarAssets, formWithErrors,signUpForm)))
     },
       userData => {
         val res = userService.validateUser(userData.emailId, userData.password)
@@ -87,9 +87,9 @@ class HomeController @Inject()(webJarAssets: WebJarAssets, userService: UserServ
     implicit request =>
       Logger.debug("signingUp in progress. ")
       signUpForm.bindFromRequest.fold(
-        formwithErrors => {
+        formWithErrors => {
           Logger.error("Sign-up badRequest.")
-          Future(Ok("BadRequest"))
+          Future(BadRequest(views.html.home(webJarAssets, loginForm,formWithErrors)))
         },
         userData => {
 
@@ -98,15 +98,15 @@ class HomeController @Inject()(webJarAssets: WebJarAssets, userService: UserServ
             val res = userService.signUpUser(userData)
             res.map(value => if (value) {
 
-              Ok("userregisterd")
+              Redirect(routes.DashboardController.dashboard).withSession("id" -> userData.emailId)
             }
             else {
 
-              Ok("user not registerd")
+              Redirect(routes.HomeController.homePage).flashing("ERROR_DURING_SIGNUP" -> ERROR_DURING_SIGNUP)
             })
           }
           else {
-            Future(Ok("user alerady registerd"))
+            Future(Redirect(routes.HomeController.homePage).flashing("ENTERED_EMAIL_EXISTS" -> ENTERED_EMAIL_EXISTS))
           })
 
         }

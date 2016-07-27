@@ -49,8 +49,13 @@
                                     @b3.text(signUpForm("name"), '_label -> "Enter Your Name", 'placeholder -> "enter your name")
                                     @b3.text(signUpForm("designation"), '_label -> "Enter Your designation", 'placeholder -> "enter your designation")
                                     <p style="text-align: center;
-                                        color: red !important;">@flash.get("ERROR")</p> </br>
-                                    @b3.submit('class -> "btn btn-primary btn-lg btn-block") {sign up}
+                                        color: red !important;">@flash.get("ERROR_DURING_SIGNUP")</p> </br>
+                                    <p style="text-align: center;
+                                        color: red !important;">@flash.get("ENTERED_EMAIL_EXISTS")</p> </br>
+                                    @b3.submit('class -> "btn btn-primary btn-lg btn-block"){sign up}
+
+
+
                                 }
                                 </div>
                             </fieldset>
