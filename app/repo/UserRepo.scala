@@ -43,12 +43,26 @@ class UserRepo @Inject()(protected val dbConfigProvider: DatabaseConfigProvider)
       db.run(UserTableQuery.filter(_.email === email).filter(_.password === password).to[List].result)
     }
     catch {
+      case ex: Exception => Logger.error("Exception occurred during getting record by emailId and password : " + ex)
+        Future {
+          List[User]()
+        }
+    }
+  }
+
+  def checkEmail(email: String): Future[List[User]] = {
+    try {
+      Logger.info("Getting user Record by Email-Id . ")
+      db.run(UserTableQuery.filter(_.email === email).to[List].result)
+    }
+    catch {
       case ex: Exception => Logger.error("Exception occurred during getting record by emailId: " + ex)
         Future {
           List[User]()
         }
     }
   }
+
 
   def delete(id: Long): Future[Int] = {
     try {

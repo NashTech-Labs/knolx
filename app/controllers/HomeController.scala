@@ -78,28 +78,40 @@ class HomeController @Inject()(webJarAssets: WebJarAssets, userService: UserServ
       )
   }
 
+
+
+
+
+
   def signUp = Action.async{
 
     implicit request =>
       Logger.debug("signingUp in progress. ")
       signUpForm.bindFromRequest.fold(
-        formwithErrors => {
-          Logger.error("Sign-up badRequest.")
-          Future(Ok("BadRequest"))
+            formwithErrors => {
+            Logger.error("Sign-up badRequest.")
+            Future(Ok("BadRequest"))
         },
         userData => {
-          val res = userService.signUpUser(userData)
-          res.map { value => if (value == true) {
-            Logger.info("SignUp Succesfull.")
-            Ok("success")
+
+            userService.validateEmail(userData.emailId).flatMap(value=>if(value == true){
+
+            val res = userService.signUpUser(userData)
+            res.map(value => if(value){
+
+            Ok("userregisterd")
+            }
+            else{
+
+            Ok("user not registerd")
+            })
           }
-          else {
-            Logger.error("Something Went Wrong during signup")
-            Redirect(routes.HomeController.homePage).flashing("ERROR" -> "Something went wrong .")
-          }
-          }
+    else{
+            Future(Ok("user alerady registerd"))
+          })
         }
-      )
-  }
+)
+
+        }
 
 }

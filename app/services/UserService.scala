@@ -29,4 +29,9 @@ class UserService @Inject()(userRepo: UserRepo) {
       recordInserted.map ( value => if (value > 0)   true   else  false   )
 
   }
+
+  def validateEmail(email : String) : Future[Boolean]={
+    Logger.debug("Validating Email")
+    userRepo.checkEmail(email).map(user => if(user.isEmpty) true else false)
+  }
 }
