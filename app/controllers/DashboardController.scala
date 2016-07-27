@@ -19,7 +19,7 @@ class DashboardController @Inject()(webJarAssets: WebJarAssets)extends Controlle
     implicit request =>
 
       Try(request2session.apply("id").toString).toOption match {
-        case Some(name) => Future(Ok(views.html.dashboard(webJarAssets)))
+        case Some(name) => Future(Ok(views.html.dashboard(webJarAssets, Some(name).get)))
         case None => Future(Redirect(routes.HomeController.homePage).flashing("INVALID" -> INVALID))
       }
   }

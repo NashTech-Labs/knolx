@@ -14,6 +14,6 @@ GET     /                                                     controllers.HomeCo
 POST    /signIn                                              controllers.HomeController.signIn
 GET     /dashboard                                             controllers.DashboardController.dashboard
 GET    /signOut                                                 controllers.HomeController.signOut
-GET     /signUp                                                 controllers.HomeController.signUp
+POST     /signUp                                                 controllers.HomeController.signUp
 
 
