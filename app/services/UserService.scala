@@ -37,9 +37,9 @@ class UserService @Inject()(userRepo: UserRepo) {
     userRepo.checkEmail(email).map(user => if (user.isEmpty) true else false)
   }
 
-  def encodePassword(userData: User, password: String): User = {
-    val encodedUserdata = userData.copy(emailId = userData.emailId, password = Helpers.passwordEncoder(password), name = userData.name, designation = userData.designation, id = userData.id)
-    encodedUserdata
+  def encodePassword(password: String): String = {
+    val encodedPassword = Helpers.passwordEncoder(password)
+    encodedPassword
 
   }
 

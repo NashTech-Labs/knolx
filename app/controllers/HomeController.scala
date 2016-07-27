@@ -97,9 +97,10 @@ class HomeController @Inject()(webJarAssets: WebJarAssets, userService: UserServ
           Future(BadRequest(views.html.home(webJarAssets, loginForm, formWithErrors)))
         },
         validData => {
-          val encodedUserdata = userService.encodePassword(validData, validData.password)
 
-          userService.validateEmail(encodedUserdata.emailId).flatMap(value => if (value == true) {
+          val encodedUserdata = validData.copy(emailId = validData.emailId, password = userService.encodePassword(validData.password), name = validData.name, designation = validData.designation, id = validData.id)
+
+          userService.validateEmail(encodedUserdata.emailId).flatMap(value => if (value) {
 
             val isInserted = userService.signUpUser(encodedUserdata)
             isInserted.map(value => if (value) {
