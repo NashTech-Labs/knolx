@@ -2,17 +2,19 @@ package repo
 
 
 import com.google.inject.Inject
+
 import models.User
-import play.api.Logger
+
 import play.api.db.slick.{DatabaseConfigProvider, HasDatabaseConfigProvider}
+import play.api.Logger
+
 import slick.driver.JdbcProfile
 import slick.lifted.Tag
-import play.api.Logger
+
 import models.User
-import java.util.Date
+
 import scala.concurrent.Future
 import scala.concurrent.ExecutionContext.Implicits.global
-import scala.util.control
 
 
 /**
@@ -27,14 +29,14 @@ class UserRepo @Inject()(protected val dbConfigProvider: DatabaseConfigProvider)
 
   def insert(user: User): Future[Long] = {
 
-   try {
-     Logger.info("Inserting user Record.")
-     db.run(UserTableQuery.returning(UserTableQuery.map(_.id)) += user)
-   }
+    try {
+      Logger.info("Inserting user Record.")
+      db.run(UserTableQuery.returning(UserTableQuery.map(_.id)) += user)
+    }
     catch {
-      case ex:Exception =>
+      case ex: Exception =>
         Logger.error("Exception During insertion of user record . " + ex)
-        Future{
+        Future {
 
           0
         }
@@ -69,7 +71,6 @@ class UserRepo @Inject()(protected val dbConfigProvider: DatabaseConfigProvider)
   }
 
 
-
   def getAll(): Future[List[User]] = {
     try {
       Logger.info("Getting all user record.")
@@ -97,8 +98,7 @@ trait UserTable {
       d => new java.util.Date(d.getTime))
 
 
-    def * = ( email, password, name, designation.?,id.?) <>((User.apply _).tupled, User.unapply)
-
+    def * = (email, password, name, designation.?, id.?) <>((User.apply _).tupled, User.unapply)
 
 
     def id: Rep[Long] = column[Long]("id", O.AutoInc, O.PrimaryKey)
