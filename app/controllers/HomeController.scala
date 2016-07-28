@@ -73,7 +73,7 @@ class HomeController @Inject()(webJarAssets: WebJarAssets, userService: UserServ
         validData => {
           val isValid = userService.validateUser(validData.emailId, validData.password)
           isValid.map { validatedEmail => if (validatedEmail)
-            Redirect(routes.DashboardController.dashboard).withSession(Security.username-> validData.emailId)
+            Redirect(routes.DashboardController.dashboard).withSession("id"-> validData.emailId)
           else {
 
             Logger.error("User Not Found")
