@@ -7,7 +7,7 @@ import models.{Login, User}
 
 import play.api.data.Form
 import play.api.data.Forms._
-import play.api.mvc.{Action, AnyContent, Controller}
+import play.api.mvc.{Security, Action, AnyContent, Controller}
 import play.api.Play.current
 import play.api.i18n.Messages.Implicits._
 import play.api.inject.Injector
@@ -73,7 +73,7 @@ class HomeController @Inject()(webJarAssets: WebJarAssets, userService: UserServ
         validData => {
           val isValid = userService.addUser(validData.emailId, validData.password)
           isValid.map { validatedEmail => if (validatedEmail)
-            Redirect(routes.DashboardController.dashboard).withSession("id" -> validData.emailId)
+            Redirect(routes.DashboardController.dashboard).withSession(Security.username-> validData.emailId)
           else {
 
             Logger.error("User Not Found")
