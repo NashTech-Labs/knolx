@@ -3,11 +3,16 @@
 # ~~~~
 
 # Map static resources from the /public folder to the /assets URL path
-GET     /assets/*file               controllers.Assets.versioned(path="/public", file: Asset)
+GET     /assets/*file                     controllers.Assets.versioned(path="/public", file: Asset)
 
 GET     /webjars/*file                    controllers.WebJarAssets.at(file)
 
 #  home page
 
-GET     /                                                     controllers.HomeController.homePage
-POST    /signin                                              controllers.HomeController.signin
+GET     /home                                                   controllers.HomeController.homePage
+GET     /                                                     controllers.DashboardController.dashboard
+POST    /signIn                                              controllers.HomeController.signIn
+GET    /signOut                                                 controllers.HomeController.signOut
+POST     /signUp                                                 controllers.HomeController.signUp
+
+

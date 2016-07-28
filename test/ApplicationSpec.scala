@@ -1,3 +1,4 @@
+
 import org.scalatestplus.play._
 import play.api.test._
 import play.api.test.Helpers._
@@ -8,7 +9,7 @@ import play.api.test.Helpers._
  * For more information, consult the wiki.
  */
 class ApplicationSpec extends PlaySpec with OneAppPerTest {
-
+/*
   "Routes" should {
 
     "send 404 on a bad request" in  {
@@ -38,5 +39,6 @@ class ApplicationSpec extends PlaySpec with OneAppPerTest {
     }
 
   }
-
+*/
 }
+

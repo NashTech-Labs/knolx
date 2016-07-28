@@ -1,17 +1,16 @@
 package controllers
 
 import javax.inject._
-import utils.Constants
 import models.{Login, User}
 import play.api.data.Form
 import play.api.data.Forms._
-import play.api.mvc.{Action, Controller}
+import play.api.mvc.{Security, Action, AnyContent, Controller}
 import play.api.Play.current
 import play.api.i18n.Messages.Implicits._
 import play.api.inject.Injector
+import play.api.Logger
 import services.UserService
 import utils.Constants._
-import play.api.Logger
 import scala.concurrent.Future
 import scala.concurrent.ExecutionContext.Implicits.global
 
@@ -25,16 +24,14 @@ class HomeController @Inject()(webJarAssets: WebJarAssets, userService: UserServ
 
   val signUpForm = Form(
     mapping(
-      "id" -> optional(longNumber),
-      "emailId" -> email,
+      "emailId" -> nonEmptyText,
       "password" -> nonEmptyText(MIN_LENGTH_OF_PASSWORD),
       "name" -> nonEmptyText(MIN_LENGTH_OF_NAME),
-      "address" -> nonEmptyText,
-      "designation" -> optional(text))(User.apply)(User.unapply))
+      "designation" -> optional(text)
+    )(User.apply)(User.unapply))
 
   val loginForm = Form(
     mapping(
-
       "emailId" -> email,
       "password" -> nonEmptyText(MIN_LENGTH_OF_PASSWORD)
     )(Login.apply)(Login.unapply))
@@ -46,37 +43,67 @@ class HomeController @Inject()(webJarAssets: WebJarAssets, userService: UserServ
     * a path of `/`.
     */
 
-  def homePage = Action.async {
+  def homePage: Action[AnyContent] = Action.async {
     implicit request =>
       Logger.debug("Redirecting HomePage")
-      Future(Ok(views.html.home(webJarAssets, loginForm)))
+      Future(Ok(views.html.home(webJarAssets, loginForm, signUpForm)))
 
   }
 
- def signin = Action.async{
-
+  def signIn: Action[AnyContent] = Action.async {
     implicit request =>
       Logger.debug("signingIn in progress. ")
       loginForm.bindFromRequest.fold(
-        formwithErrors => {
+        formWithErrors => {
           Logger.error("Sign-In badRequest.")
-          Future(BadRequest(views.html.home(webJarAssets,formwithErrors)))
+          Future(BadRequest(views.html.home(webJarAssets, formWithErrors, signUpForm)))
         },
-      userData => {
-        val res = userService.validateUser(userData.emailId, userData.password)
-        res.map { x => if (x == true) {
-          Logger.info("SignIn Succesfull.")
-          Ok("success")
-        }
-        else {
-          Logger.error("User Not Found")
-          Redirect(routes.HomeController.homePage).flashing("ERROR" -> WRONG_LOGIN_DETAILS)
-        }
-        }
-      }
-      )
+        validData => {
+          val isValid = userService.validateUser(validData.email, validData.password)
+          isValid.map { validatedEmail => if (validatedEmail)
+            Redirect(routes.DashboardController.dashboard).withSession("id" -> validData.email)
+          else {
+            Logger.error("User Not Found")
+            Redirect(routes.HomeController.homePage).flashing("ERROR" -> WRONG_LOGIN_DETAILS)
+          }
 
+          }
+        }
+      )
   }
 
+  def signUp: Action[AnyContent] = Action.async {
+    implicit request =>
+      Logger.debug("signingUp in progress. ")
+      signUpForm.bindFromRequest.fold(
+        formWithErrors => {
+          Logger.error("Sign-up badRequest.")
+          Future(BadRequest(views.html.home(webJarAssets, loginForm, formWithErrors)))
+        },
+        validData => {
+          val encodedUserdata = validData.copy(email = validData.email.toLowerCase(), password = userService.encodePassword(validData.password), name = validData.name, designation = validData.designation)
+          userService.validateEmail(encodedUserdata.email).flatMap(value => if (value) {
+            val isInserted = userService.signUpUser(encodedUserdata)
+            isInserted.map(value => if (value) {
+              Redirect(routes.DashboardController.dashboard).withSession("id" -> encodedUserdata.email)
+            }
+            else {
+              Redirect(routes.HomeController.homePage).flashing("ERROR_DURING_SIGNUP" -> ERROR_DURING_SIGNUP)
+            })
+          }
+          else {
+            Future(Redirect(routes.HomeController.homePage).flashing("ENTERED_EMAIL_EXISTS" -> ENTERED_EMAIL_EXISTS))
+          })
+        }
+      )
+  }
+
+  def signOut: Action[AnyContent] = Action.async {
+    Future {
+      Redirect(routes.HomeController.homePage).withNewSession.flashing("SUCCESS" -> LOGOUT_SUCCESSFUL)
+    }
+  }
 
 }
+
+
