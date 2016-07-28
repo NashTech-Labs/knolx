@@ -3,6 +3,7 @@ package controllers
 import javax.inject.Inject
 
 import org.specs2.mutable.Specification
+import play.api.cache.CacheApi
 import play.api.test.{FakeRequest, WithApplication}
 import org.junit.runner._
 import org.specs2.mutable._
@@ -26,8 +27,9 @@ class HomeControllerSpec extends Specification with Mockito{
 
   val userService = mock[UserService]
   val webJarAssets = mock[WebJarAssets]
+  val cache = mock[CacheApi]
 
-  val homeController = new HomeController(webJarAssets,userService)
+  val homeController = new HomeController(cache,webJarAssets,userService)
 
   "home Controller" should{
 
@@ -41,12 +43,13 @@ class HomeControllerSpec extends Specification with Mockito{
 
   "should signIn with valid emailId and password" in new WithApplication() {
 
+    when(cache.get[String]("johndeo@gmail.com")).thenReturn(Some("abc"))
     when(userService.validateUser("johndeo@gmail.com", "qwerty")).thenReturn(Future(true))
     val result = call(homeController.signIn, FakeRequest(POST,"/signIn").withFormUrlEncodedBody("emailId"->"johndeo@gmail.com" ,"password"-> "qwerty").withSession("id" -> "johndeo@gmail.com"))
     status(result) must equalTo(303)
   }
   "should not signIn with bad form" in new WithApplication() {
-
+    when(cache.get[String]("johndeo@gmail.com")).thenReturn(Some("abc"))
     when(userService.validateUser("johndeo@gmail.com", "as")).thenReturn(Future(false))
     val result = call(homeController.signIn, FakeRequest(POST,"/signIn").withFormUrlEncodedBody("emailId"->"johndeo@gmail.com" ,"password"-> "as").withSession("id" -> "johndeo@gmail.com"))
     status(result) must equalTo(400)

@@ -12,6 +12,7 @@ import play.api.Play.current
 import play.api.i18n.Messages.Implicits._
 import play.api.inject.Injector
 import play.api.Logger
+import play.api.cache._
 
 import services.UserService
 
@@ -27,7 +28,7 @@ import scala.concurrent.ExecutionContext.Implicits.global
   * application's home page.
   */
 @Singleton
-class HomeController @Inject()(webJarAssets: WebJarAssets, userService: UserService) extends Controller {
+class HomeController @Inject()(cache: CacheApi, webJarAssets: WebJarAssets, userService: UserService) extends Controller {
 
   val signUpForm = Form(
     mapping(
@@ -56,8 +57,11 @@ class HomeController @Inject()(webJarAssets: WebJarAssets, userService: UserServ
   def homePage: Action[AnyContent] = Action.async {
     implicit request =>
       Logger.debug("Redirecting HomePage")
-      Future(Ok(views.html.home(webJarAssets, loginForm, signUpForm)))
+      cache.get[String]("id") match {
+        case Some(email) => Future(Ok(views.html.dashboard(webJarAssets, Some(email))))
+        case None => Future(Ok(views.html.home(webJarAssets, loginForm, signUpForm)))
 
+      }
   }
 
   def signIn: Action[AnyContent] = Action.async {
@@ -71,9 +75,12 @@ class HomeController @Inject()(webJarAssets: WebJarAssets, userService: UserServ
           Future(BadRequest(views.html.home(webJarAssets, formWithErrors, signUpForm)))
         },
         validData => {
+
           val isValid = userService.validateUser(validData.emailId, validData.password)
-          isValid.map { validatedEmail => if (validatedEmail)
-            Redirect(routes.DashboardController.dashboard).withSession("id"-> validData.emailId)
+          isValid.map { validatedEmail => if (validatedEmail) {
+            cache.set("id", validData.emailId)
+            Redirect(routes.DashboardController.dashboard)
+          }
           else {
 
             Logger.error("User Not Found")
@@ -88,7 +95,6 @@ class HomeController @Inject()(webJarAssets: WebJarAssets, userService: UserServ
 
 
   def signUp: Action[AnyContent] = Action.async {
-
     implicit request =>
       Logger.debug("signingUp in progress. ")
       signUpForm.bindFromRequest.fold(
@@ -97,32 +103,33 @@ class HomeController @Inject()(webJarAssets: WebJarAssets, userService: UserServ
           Future(BadRequest(views.html.home(webJarAssets, loginForm, formWithErrors)))
         },
         validData => {
-
-          val encodedUserdata = validData.copy(emailId = validData.emailId, password = userService.encodePassword(validData.password), name = validData.name, designation = validData.designation, id = validData.id)
-
+          val encodedUserdata = validData.copy(emailId = validData.emailId.toLowerCase(), password = userService.encodePassword(validData.password), name = validData.name, designation = validData.designation)
           userService.validateEmail(encodedUserdata.emailId).flatMap(value => if (value) {
 
             val isInserted = userService.signUpUser(encodedUserdata)
+            cache.set("id", validData.emailId)
+
             isInserted.map(value => if (value) {
 
-              Redirect(routes.DashboardController.dashboard).withSession("id" -> encodedUserdata.emailId)
+              Redirect(routes.DashboardController.dashboard)
             }
             else {
-
               Redirect(routes.HomeController.homePage).flashing("ERROR_DURING_SIGNUP" -> ERROR_DURING_SIGNUP)
             })
           }
           else {
             Future(Redirect(routes.HomeController.homePage).flashing("ENTERED_EMAIL_EXISTS" -> ENTERED_EMAIL_EXISTS))
           })
-
         }
       )
   }
 
+
   def signOut: Action[AnyContent] = Action.async {
     Future {
-      Redirect(routes.HomeController.homePage).withNewSession.flashing("SUCCESS" -> LOGOUT_SUCCESSFUL)
+      cache.remove("id")
+      Redirect(routes.HomeController.homePage).flashing("SUCCESS" -> LOGOUT_SUCCESSFUL)
+
     }
 
   }

@@ -2,6 +2,7 @@ package services
 
 import com.google.inject.Inject
 
+
 import models.User
 
 import repo.UserRepo
@@ -9,13 +10,13 @@ import repo.UserRepo
 import scala.concurrent.Future
 import scala.concurrent.ExecutionContext.Implicits.global
 
+
+import play.cache._
 import play.api.Logger
 
 import utils.Helpers
 
-/**
-  * Created by deepti on 25/7/16.
-  */
+
 class UserService @Inject()(userRepo: UserRepo) {
 
 

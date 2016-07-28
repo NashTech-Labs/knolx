@@ -3,6 +3,7 @@ package services
 import play.api.Application
 import org.specs2.mutable.Specification
 import play.api.test.{PlaySpecification, WithApplication}
+import play.cache.CacheApi
 import scala.concurrent.duration.Duration
 import scala.concurrent.Await
 import java.util.Date
@@ -22,6 +23,7 @@ import scala.concurrent.ExecutionContext.Implicits.global
 class UserServiceSpec extends PlaySpecification with Mockito{
 
   val userRepo = mock[UserRepo]
+
   val user  = List( User("rahul@gmail.com","qwerty","rahul",Some("consultant"),Some(2)))
   val userService = new UserService(userRepo)
 

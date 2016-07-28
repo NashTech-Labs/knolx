@@ -1,7 +1,7 @@
 @import b3.vertical.fieldConstructor
 @import models._
 @import controllers._
-@(webJarAssets: WebJarAssets,emailId : String)(implicit message:Messages,flash:Flash)
+@(webJarAssets: WebJarAssets,emailId : Option[String])(implicit message:Messages,flash:Flash)
 @main("success")(webJarAssets) {
 <nav class="navbar navbar-default" xmlns="http://www.w3.org/1999/html">
     <div class="container-fluid">
