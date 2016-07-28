@@ -6,10 +6,9 @@ package models
   */
 
 
-case class User( emailId: String, password: String, name: String,designation: Option[String],id: Option[Long])
+case class User( email: String, password: String, name: String,designation: Option[String])
 
-
-case class Login(emailId: String, password: String)
+case class Login(email: String, password: String)
 
 
 
