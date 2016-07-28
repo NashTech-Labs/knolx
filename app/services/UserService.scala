@@ -45,8 +45,8 @@ class UserService @Inject()(userRepo: UserRepo) {
 
   def getNameByEmail(email:String):Future[String]={
 
-    val result = userRepo.checkEmail(email)
-    result.map(value => value.headOption.map(value =>value.name).get)
+    val user = userRepo.checkEmail(email)
+    user.map(value => value.headOption.map(value =>value.name).get)
 
   }
 
