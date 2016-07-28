@@ -19,7 +19,7 @@ import utils.Helpers
 class UserService @Inject()(userRepo: UserRepo) {
 
 
-  def addUser(emailId: String, password: String): Future[Boolean] = {
+  def validateUser(emailId: String, password: String): Future[Boolean] = {
     Logger.debug("Validating User.")
     val userList = userRepo.getByEmailAndPassword(emailId, password)
     userList.map(value => if (value.length == 1) true else false)

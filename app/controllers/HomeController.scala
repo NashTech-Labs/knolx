@@ -71,7 +71,7 @@ class HomeController @Inject()(webJarAssets: WebJarAssets, userService: UserServ
           Future(BadRequest(views.html.home(webJarAssets, formWithErrors, signUpForm)))
         },
         validData => {
-          val isValid = userService.addUser(validData.emailId, validData.password)
+          val isValid = userService.validateUser(validData.emailId, validData.password)
           isValid.map { validatedEmail => if (validatedEmail)
             Redirect(routes.DashboardController.dashboard).withSession(Security.username-> validData.emailId)
           else {

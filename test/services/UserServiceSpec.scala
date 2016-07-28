@@ -34,7 +34,7 @@ class UserServiceSpec extends PlaySpecification with Mockito{
 
   "validate user" in new WithApplication()  {
     when(userRepo.getByEmailAndPassword("rahul@gmail.com","qwerty")).thenReturn(Future(user) )
-    val result = await(userService.addUser("rahul@gmail.com","qwerty"))
+    val result = await(userService.validateUser("rahul@gmail.com","qwerty"))
     result === true
   }
 

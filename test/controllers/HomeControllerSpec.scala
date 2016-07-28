@@ -33,7 +33,7 @@ class HomeControllerSpec extends Specification with Mockito{
 
     "show homePage" in new WithApplication() {
 
-      val result = route(FakeRequest(GET,"/")).get
+      val result = route(FakeRequest(GET,"/home")).get
 
       status(result) must equalTo(200)
     }
