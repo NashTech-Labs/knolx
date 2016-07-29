@@ -57,11 +57,8 @@ class HomeController @Inject()(cache: CacheApi, webJarAssets: WebJarAssets, user
   def homePage: Action[AnyContent] = Action.async {
     implicit request =>
       Logger.debug("Redirecting HomePage")
-      cache.get[String]("id") match {
-        case Some(email) => Future(Ok(views.html.dashboard(webJarAssets, Some(email))))
-        case None => Future(Ok(views.html.home(webJarAssets, loginForm, signUpForm)))
-
-      }
+      cache.get[String]("id").fold(Future(Ok(views.html.home(webJarAssets, loginForm, signUpForm)))
+      ){email =>Future(Ok(views.html.dashboard(webJarAssets, Some(email))))}
   }
 
   def signIn: Action[AnyContent] = Action.async {

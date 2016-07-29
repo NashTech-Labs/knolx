@@ -2,20 +2,19 @@ package controllers
 
 import javax.inject.Inject
 
+import play.api.cache.CacheApi
 import play.api.mvc.{Action, Controller}
 import play.api.Play.current
 import play.api.i18n.Messages.Implicits._
-import play.cache._
 
 import models._
 
 import services.UserService
 
-import utils.Constants._
-
 import scala.concurrent.Future
 import scala.concurrent.ExecutionContext.Implicits.global
 
+import utils.Constants
 
 
 
@@ -27,10 +26,8 @@ class DashboardController @Inject()(cache: CacheApi,webJarAssets: WebJarAssets,u
 
   def dashboard = Action.async {
     implicit request =>
-      Option.apply(cache.get[String]("id")) match {
-        case Some(email)=>Future(Ok(views.html.dashboard(webJarAssets,Some(email))))
-         case None => Future(Redirect(routes.HomeController.homePage).flashing("INVALID" -> INVALID))
-      }
+
+cache.get[String]("id").fold(Future(Redirect(routes.HomeController.homePage).flashing("INVALID" ->Constants.INVALID))){email =>Future(Ok(views.html.dashboard(webJarAssets,Some(email))))}
 
   }
 

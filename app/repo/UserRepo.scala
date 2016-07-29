@@ -45,7 +45,7 @@ class UserRepo @Inject()(protected val dbConfigProvider: DatabaseConfigProvider)
   def getByEmailAndPassword(email: String, password: String): Future[List[User]] = {
     try {
       Logger.info("Getting user Record by Email-Id and password . ")
-      db.run(userTableQuery.filter( user => (user.email === email) && (user.password === password)).to[List].result)
+      db.run(userTableQuery.filter(user => (user.email === email) && (user.password === password)).to[List].result)
     }
     catch {
       case ex: Exception => Logger.error("Exception occurred during getting record by emailId and password : " + ex)
@@ -94,22 +94,18 @@ trait UserTable {
 
     def * = (email, password, name, designation.?, id.?) <>((User.apply _).tupled, User.unapply)
 
-
     def id: Rep[Long] = column[Long]("id", O.AutoInc, O.PrimaryKey)
 
     def password: Rep[String] = column[String]("password", O.SqlType("VARCHAR(100"))
 
     def name: Rep[String] = column[String]("name", O.SqlType("VARCHAR(100"))
 
-
-    // def joiningDate: Rep[String] = column[String]("joiningDate", O.SqlType("VARCHAR(100"))
-
-
     def designation: Rep[String] = column[String]("designation", O.SqlType("VARCHAR(100"))
 
     def emailUnique = index("email_unique_key", email, unique = true)
 
     def email: Rep[String] = column[String]("email", O.SqlType("VARCHAR(100"))
+
   }
 
 }
