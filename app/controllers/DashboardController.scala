@@ -14,20 +14,16 @@ import scala.concurrent.Future
 import scala.concurrent.ExecutionContext.Implicits.global
 
 
-
-
-
 /**
   * Created by deepti on 26/7/16.
   */
 
-class DashboardController @Inject()(cache: CacheApi,webJarAssets: WebJarAssets,userService:UserService) extends Controller {
+class DashboardController @Inject()(cache: CacheApi, webJarAssets: WebJarAssets, userService: UserService) extends Controller {
 
   def dashboard = Action.async {
     implicit request =>
 
-    cache.get[String]("id").fold(Future(Redirect(routes.HomeController.homePage).flashing("INVALID" ->Constants.INVALID)))
-    {email =>userService.getNameByEmail(email).map(name => Ok(views.html.dashboard(webJarAssets,name.capitalize)))}
+      cache.get[String]("id").fold(Future(Redirect(routes.HomeController.homePage).flashing("INVALID" -> Constants.INVALID))) { email => userService.getNameByEmail(email).map(name => Ok(views.html.dashboard(webJarAssets, name.capitalize))) }
   }
 
 }

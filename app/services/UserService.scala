@@ -15,7 +15,7 @@ class UserService @Inject()(userRepo: UserRepo) {
     Logger.debug("Validating User.")
     val userList = userRepo.getByEmailAndPassword(emailId, password)
     userList.map(value =>
-      if (value.isDefined) true else false )
+      if (value.isDefined) true else false)
   }
 
   def signUpUser(user: User): Future[Boolean] = {
@@ -29,9 +29,9 @@ class UserService @Inject()(userRepo: UserRepo) {
     userRepo.getByEmail(email).map(user => if (user.isDefined) true else false)
   }
 
-  def getNameByEmail(email:String):Future[String]={
+  def getNameByEmail(email: String): Future[String] = {
     val user = userRepo.getByEmail(email)
-    user.map(value => value.headOption.map(value =>value.name).get)
+    user.map(value => value.headOption.map(value => value.name).get)
   }
 
 }

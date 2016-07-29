@@ -50,7 +50,7 @@ class HomeController @Inject()(cache: CacheApi, webJarAssets: WebJarAssets, user
     implicit request =>
       Logger.debug("Redirecting HomePage")
       cache.get[String]("id").fold(Future(Ok(views.html.home(webJarAssets, loginForm, signUpForm)))
-      ){email =>userService.getNameByEmail(email).map(name => Ok(views.html.dashboard(webJarAssets,name.capitalize)))}
+      ) { email => userService.getNameByEmail(email).map(name => Ok(views.html.dashboard(webJarAssets, name.capitalize))) }
   }
 
   def signIn: Action[AnyContent] = Action.async {
@@ -91,7 +91,6 @@ class HomeController @Inject()(cache: CacheApi, webJarAssets: WebJarAssets, user
             val isInserted = userService.signUpUser(encodedUserdata)
             cache.set("id", validData.email)
             isInserted.map(value => if (value) {
-              println("------"+value)
               Redirect(routes.DashboardController.dashboard).withSession("id" -> encodedUserdata.email)
             }
             else {

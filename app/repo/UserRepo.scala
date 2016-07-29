@@ -18,7 +18,9 @@ import scala.concurrent.ExecutionContext.Implicits.global
 
 class UserRepo @Inject()(protected val dbConfigProvider: DatabaseConfigProvider) extends UserTable
   with HasDatabaseConfigProvider[JdbcProfile] {
+
   import driver.api._
+
   def insert(user: User): Future[Long] = {
     try {
       Logger.info("Inserting user Record.")
@@ -41,7 +43,9 @@ class UserRepo @Inject()(protected val dbConfigProvider: DatabaseConfigProvider)
     }
     catch {
       case ex: Exception => Logger.error("Exception occurred during getting record by emailId and password : " + ex)
-        Future {None}
+        Future {
+          None
+        }
     }
   }
 
@@ -52,10 +56,11 @@ class UserRepo @Inject()(protected val dbConfigProvider: DatabaseConfigProvider)
     }
     catch {
       case ex: Exception => Logger.error("Exception occurred during getting record by emailId: " + ex)
-        Future {None}
+        Future {
+          None
+        }
     }
   }
-
 
   def getAll: Future[List[User]] = {
     try {
@@ -73,10 +78,11 @@ class UserRepo @Inject()(protected val dbConfigProvider: DatabaseConfigProvider)
 
 trait UserTable {
   self: HasDatabaseConfigProvider[JdbcProfile] =>
+
   import driver.api._
   lazy val userTableQuery = TableQuery[UserInfo]
   class UserInfo(tag: Tag) extends Table[User](tag, "users") {
-    def * = (email, password, name, designation.?,id.?) <>((User.apply _).tupled, User.unapply)
+    def * = (email, password, name, designation.?, id.?) <>((User.apply _).tupled, User.unapply)
     def id: Rep[Long] = column[Long]("id", O.AutoInc, O.PrimaryKey)
     def password: Rep[String] = column[String]("password", O.SqlType("VARCHAR(100"))
     def name: Rep[String] = column[String]("name", O.SqlType("VARCHAR(100"))

@@ -41,13 +41,7 @@ class HomeControllerSpec extends Specification with Mockito{
     }
   }
 
-  "should signIn with valid emailId and password" in new WithApplication() {
 
-    when(cache.get[String]("johndeo@gmail.com")).thenReturn(Some("abc"))
-    when(userService.validateUser("johndeo@gmail.com", "qwerty")).thenReturn(Future(true))
-    val result = call(homeController.signIn, FakeRequest(POST,"/signIn").withFormUrlEncodedBody("emailId"->"johndeo@gmail.com" ,"password"-> "qwerty").withSession("id" -> "johndeo@gmail.com"))
-    status(result) must equalTo(303)
-  }
   "should not signIn with bad form" in new WithApplication() {
     when(cache.get[String]("johndeo@gmail.com")).thenReturn(Some("abc"))
     when(userService.validateUser("johndeo@gmail.com", "as")).thenReturn(Future(false))
@@ -55,11 +49,7 @@ class HomeControllerSpec extends Specification with Mockito{
     status(result) must equalTo(400)
 
   }
-  "should not signIn with invalid emailId or password" in new WithApplication() {
-    when(userService.validateUser("johndeo@gmail.com", "johndeo")).thenReturn(Future(false))
-    val result = call(homeController.signIn, FakeRequest(POST, "/signIn").withFormUrlEncodedBody("emailId" -> "johndeo@gmail.com", "password" -> "johndeo"))
-    status(result) must equalTo(303)
-  }
+
 
    "should signOut" in new WithApplication() {
     val result = route(FakeRequest(GET,"/signOut")).get
