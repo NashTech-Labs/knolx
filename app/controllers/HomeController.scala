@@ -9,6 +9,8 @@ import play.api.Play.current
 import play.api.i18n.Messages.Implicits._
 import play.api.inject.Injector
 import play.api.Logger
+import play.api.cache._
+import utils._
 import services.UserService
 import utils.Constants._
 import scala.concurrent.Future
@@ -20,14 +22,15 @@ import scala.concurrent.ExecutionContext.Implicits.global
   * application's home page.
   */
 @Singleton
-class HomeController @Inject()(webJarAssets: WebJarAssets, userService: UserService) extends Controller {
+class HomeController @Inject()(cache: CacheApi, webJarAssets: WebJarAssets, userService: UserService) extends Controller {
 
   val signUpForm = Form(
     mapping(
       "emailId" -> nonEmptyText,
       "password" -> nonEmptyText(MIN_LENGTH_OF_PASSWORD),
       "name" -> nonEmptyText(MIN_LENGTH_OF_NAME),
-      "designation" -> optional(text)
+      "designation" -> optional(text),
+      "id" -> optional(longNumber)
     )(User.apply)(User.unapply))
 
   val loginForm = Form(
@@ -46,8 +49,8 @@ class HomeController @Inject()(webJarAssets: WebJarAssets, userService: UserServ
   def homePage: Action[AnyContent] = Action.async {
     implicit request =>
       Logger.debug("Redirecting HomePage")
-      Future(Ok(views.html.home(webJarAssets, loginForm, signUpForm)))
-
+      cache.get[String]("id").fold(Future(Ok(views.html.home(webJarAssets, loginForm, signUpForm)))
+      ){email =>userService.getNameByEmail(email).map(name => Ok(views.html.dashboard(webJarAssets,name.capitalize)))}
   }
 
   def signIn: Action[AnyContent] = Action.async {
@@ -59,14 +62,16 @@ class HomeController @Inject()(webJarAssets: WebJarAssets, userService: UserServ
           Future(BadRequest(views.html.home(webJarAssets, formWithErrors, signUpForm)))
         },
         validData => {
-          val isValid = userService.validateUser(validData.email, validData.password)
-          isValid.map { validatedEmail => if (validatedEmail)
-            Redirect(routes.DashboardController.dashboard).withSession("id" -> validData.email)
+          val encodedPassword = Helpers.passwordEncoder(validData.password)
+          val isValid = userService.validateUser(validData.email, encodedPassword)
+          isValid.map { validatedEmail => if (validatedEmail) {
+            cache.set("id", validData.email)
+            Redirect(routes.DashboardController.dashboard)
+          }
           else {
             Logger.error("User Not Found")
             Redirect(routes.HomeController.homePage).flashing("ERROR" -> WRONG_LOGIN_DETAILS)
           }
-
           }
         }
       )
@@ -81,10 +86,12 @@ class HomeController @Inject()(webJarAssets: WebJarAssets, userService: UserServ
           Future(BadRequest(views.html.home(webJarAssets, loginForm, formWithErrors)))
         },
         validData => {
-          val encodedUserdata = validData.copy(email = validData.email.toLowerCase(), password = userService.encodePassword(validData.password), name = validData.name, designation = validData.designation)
-          userService.validateEmail(encodedUserdata.email).flatMap(value => if (value) {
+          val encodedUserdata = validData.copy(email = validData.email.toLowerCase(), password = Helpers.passwordEncoder(validData.password), name = validData.name, designation = validData.designation)
+          userService.validateEmail(encodedUserdata.email).flatMap(value => if (!value) {
             val isInserted = userService.signUpUser(encodedUserdata)
+            cache.set("id", validData.email)
             isInserted.map(value => if (value) {
+              println("------"+value)
               Redirect(routes.DashboardController.dashboard).withSession("id" -> encodedUserdata.email)
             }
             else {
@@ -98,9 +105,12 @@ class HomeController @Inject()(webJarAssets: WebJarAssets, userService: UserServ
       )
   }
 
+
   def signOut: Action[AnyContent] = Action.async {
     Future {
-      Redirect(routes.HomeController.homePage).withNewSession.flashing("SUCCESS" -> LOGOUT_SUCCESSFUL)
+      cache.remove("id")
+      Redirect(routes.HomeController.homePage).flashing("SUCCESS" -> LOGOUT_SUCCESSFUL)
+
     }
   }
 

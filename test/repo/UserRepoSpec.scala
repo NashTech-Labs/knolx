@@ -23,9 +23,14 @@ class UserRepoSpec extends PlaySpecification{
   import models.User
   def userRepo(implicit app: Application) = Application.instanceCache[UserRepo].apply(app)
 
-  "get by email id" in new WithApplication()  {
+  "get user by email id and password" in new WithApplication()  {
     val result = await(userRepo.getByEmailAndPassword("deepti@gmail.com", "qwerty"))
-    result.head.emailId == "deepti@gmail.com"
+    result.get.email == "deepti@gmail.com"
+  }
+
+  "get user by email id " in new WithApplication()  {
+    val result = await(userRepo.getByEmail("deepti@gmail.com"))
+    result.get.email == "deepti@gmail.com"
   }
 
   "insert user " in new WithApplication()  {
