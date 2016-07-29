@@ -10,11 +10,11 @@ import play.api.i18n.Messages.Implicits._
 import models._
 
 import services.UserService
+import utils.Constants
 
 import scala.concurrent.Future
 import scala.concurrent.ExecutionContext.Implicits.global
 
-import utils.Constants
 
 
 
@@ -27,7 +27,7 @@ class DashboardController @Inject()(cache: CacheApi,webJarAssets: WebJarAssets,u
   def dashboard = Action.async {
     implicit request =>
 
-cache.get[String]("id").fold(Future(Redirect(routes.HomeController.homePage).flashing("INVALID" ->Constants.INVALID))){email =>Future(Ok(views.html.dashboard(webJarAssets,Some(email))))}
+      cache.get[String]("id").fold(Future(Redirect(routes.AuthenticationController.homePage).flashing("INVALID" ->Constants.INVALID))){email =>Future(Ok(views.html.dashboard(webJarAssets,Some(email))))}
 
   }
 

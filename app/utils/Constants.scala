@@ -17,4 +17,5 @@ object Constants {
   val LOGOUT_SUCCESSFUL = "You have successfully logged out!!"
   val INVALID = "Please sign in to continue"
   val ERROR_DURING_SIGNUP = "Something went wrong!!"
+
 }

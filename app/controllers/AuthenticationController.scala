@@ -16,6 +16,7 @@ import play.api.cache._
 
 import services.UserService
 
+
 import utils.Constants._
 
 
@@ -28,7 +29,7 @@ import scala.concurrent.ExecutionContext.Implicits.global
   * application's home page.
   */
 @Singleton
-class HomeController @Inject()(cache: CacheApi, webJarAssets: WebJarAssets, userService: UserService) extends Controller {
+class AuthenticationController @Inject()(cache: CacheApi, webJarAssets: WebJarAssets, userService: UserService) extends Controller {
 
   val signUpForm = Form(
     mapping(
@@ -57,8 +58,9 @@ class HomeController @Inject()(cache: CacheApi, webJarAssets: WebJarAssets, user
   def homePage: Action[AnyContent] = Action.async {
     implicit request =>
       Logger.debug("Redirecting HomePage")
-      cache.get[String]("id").fold(Future(Ok(views.html.home(webJarAssets, loginForm, signUpForm)))
-      ){email =>Future(Ok(views.html.dashboard(webJarAssets, Some(email))))}
+
+      cache.get[String]("id").fold(Future(Ok(views.html.home(webJarAssets, loginForm, signUpForm)))){email =>Future(Ok(views.html.dashboard(webJarAssets,Some(email))))}
+
   }
 
   def signIn: Action[AnyContent] = Action.async {
@@ -81,7 +83,7 @@ class HomeController @Inject()(cache: CacheApi, webJarAssets: WebJarAssets, user
           else {
 
             Logger.error("User Not Found")
-            Redirect(routes.HomeController.homePage).flashing("ERROR" -> WRONG_LOGIN_DETAILS)
+            Redirect(routes.AuthenticationController.homePage).flashing("ERROR" -> WRONG_LOGIN_DETAILS)
           }
 
           }
@@ -111,11 +113,11 @@ class HomeController @Inject()(cache: CacheApi, webJarAssets: WebJarAssets, user
               Redirect(routes.DashboardController.dashboard)
             }
             else {
-              Redirect(routes.HomeController.homePage).flashing("ERROR_DURING_SIGNUP" -> ERROR_DURING_SIGNUP)
+              Redirect(routes.AuthenticationController.homePage).flashing("ERROR_DURING_SIGNUP" -> ERROR_DURING_SIGNUP)
             })
           }
           else {
-            Future(Redirect(routes.HomeController.homePage).flashing("ENTERED_EMAIL_EXISTS" -> ENTERED_EMAIL_EXISTS))
+            Future(Redirect(routes.AuthenticationController.homePage).flashing("ENTERED_EMAIL_EXISTS" -> ENTERED_EMAIL_EXISTS))
           })
         }
       )
@@ -125,7 +127,7 @@ class HomeController @Inject()(cache: CacheApi, webJarAssets: WebJarAssets, user
   def signOut: Action[AnyContent] = Action.async {
     Future {
       cache.remove("id")
-      Redirect(routes.HomeController.homePage).flashing("SUCCESS" -> LOGOUT_SUCCESSFUL)
+      Redirect(routes.AuthenticationController.homePage).flashing("SUCCESS" -> LOGOUT_SUCCESSFUL)
 
     }
 

@@ -40,7 +40,7 @@
 
                             <fieldset>
                                 <div class="form-group">
-                                @b3.form(routes.HomeController.signUp) {
+                                @b3.form(routes.AuthenticationController.signUp) {
 
                                     @b3.email(signUpForm("emailId"), '_label -> "Email", 'placeholder -> "abc@domain.com") <br/>
                                     @b3.password(signUpForm("password"), '_label -> "Password",
@@ -80,7 +80,7 @@
 
                         <fieldset>
                             <div class="form-group">
-                            @b3.form(routes.HomeController.signIn) {
+                            @b3.form(routes.AuthenticationController.signIn) {
                                 @b3.email(loginForm("emailId"), '_label -> "Email", 'placeholder -> "abc@domain.com") <br/>
                                 @b3.password(loginForm("password"), '_label -> "Password",
                                     'placeholder -> "enter password here")
