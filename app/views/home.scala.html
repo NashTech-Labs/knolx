@@ -45,11 +45,9 @@
                             'placeholder -> "enter password here")
                             @b3.text(signUpForm("name"), '_label -> "Name", 'placeholder -> "enter your name")
                             @b3.text(signUpForm("designation"), '_label -> "Designation", 'placeholder -> "enter your designation")
-<<<<<<< HEAD
-                            @b3.submit('class -> "btn btn-default btn-success") {sign up}
-=======
+
                             @b3.submit('class -> "btn btn-default btn-success ") {sign up}
->>>>>>> 7c4cfd252da0939a24181921dd887a119c53e497
+
                             }
                 </div>
                 <div class="modal-footer">
@@ -90,16 +88,15 @@
                             @b3.email(loginForm("emailId"), '_label -> "Email", 'placeholder -> "abc@domain.com")
                             @b3.password(loginForm("password"), '_label -> "Password",
                             'placeholder -> "enter password here")
-                            <p style="text-align: center;
-
-                             <center>@b3.submit('class -> "btn btn-primary btn-lg") {sign in}</center>
-
+                             <center>@b3.submit('class -> "btn btn-primary btn-lg ") {sign in}</center>
+                                    <p style="text-align: center;
+                                    color: BLACK !important;">@flash.get("ERROR")</p>
                             <p style="text-align: center;
                                     color: BLACK !important;">@flash.get("SUCCESS")</p>
                             <p style="text-align: center;
                                         color: red !important;">@flash.get("EMAIL.EXISTS")</p>
                             <p style="text-align: center;
-                                        color: red !important;">@flash.get("ERROR_DURING_SIGNUP")</p>
+                                        color: red !important;">@flash.get("SIGNUP.ERROR")</p>
 
                             }
                         </div>

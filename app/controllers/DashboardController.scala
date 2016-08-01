@@ -2,16 +2,13 @@
 package controllers
 
 import javax.inject.Inject
-
-import play.api.cache.CacheApi
-import play.api.mvc.{Action, AnyContent, Controller}
-import play.api.Play.current
 import play.api.i18n.Messages
+import play.api.Play.current
 import play.api.i18n.Messages.Implicits._
-import play.api.i18n.Messages.Message
+import play.api.mvc.{Action, AnyContent, Controller}
 import services.{CacheService, UserService}
-import scala.concurrent.Future
 import scala.concurrent.ExecutionContext.Implicits.global
+import scala.concurrent.Future
 
 
 /**
@@ -22,9 +19,10 @@ class DashboardController @Inject()(cacheService: CacheService, webJarAssets: We
 
    def renderDashBoard:Action[AnyContent] = Action.async {
     implicit request =>
-      cacheService.isUserLogOut.fold(Future(Redirect(routes.AuthenticationController.renderHomePage())
+      cacheService.getCache.fold(Future.successful(Redirect(routes.AuthenticationController.renderHomePage())
         .flashing("INVALID" -> Messages("please.signin")))) { email => userService.getNameByEmail(email)
         .map(name => Ok(views.html.dashboard(webJarAssets, Some(name)))) }
 
   }
+
 }

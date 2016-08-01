@@ -2,7 +2,7 @@ package controllers
 
 import javax.inject._
 
-import models.{Login, User}
+import models.User
 import play.api.data.Form
 import play.api.data.Forms._
 import play.api.mvc.{Security, Action, AnyContent, Controller}
@@ -11,9 +11,9 @@ import play.api.i18n.Messages.Implicits._
 import play.api.inject.Injector
 import play.api.Logger
 import play.api.cache._
-import utils._
 import services.{CacheService, UserService}
 import utils.Constants._
+import utils.Helpers
 import scala.concurrent.Future
 import scala.concurrent.ExecutionContext.Implicits.global
 import play.api.i18n.Messages
@@ -24,7 +24,7 @@ import play.api.i18n.Messages
   * application's home page.
   */
 
-case class UserData(emailId:String,password:String)
+
 
 @Singleton
 class AuthenticationController @Inject()(cacheService: CacheService, webJarAssets: WebJarAssets, userService: UserService) extends Controller {
@@ -45,7 +45,7 @@ class AuthenticationController @Inject()(cacheService: CacheService, webJarAsset
     ))
 
   /**
-    * Create an Action to render an HTML page with a welcome message.
+    * Create an Action to render an Home page with a welcome message.
     * The configuration in the `routes` file means that this method
     * will be called when the application receives a `GET` request with
     * a path of `/`.
@@ -54,7 +54,7 @@ class AuthenticationController @Inject()(cacheService: CacheService, webJarAsset
   def renderHomePage: Action[AnyContent] = Action.async {
     implicit request =>
       Logger.debug("Redirecting renderHomePage")
-      cacheService.isUserLogOut.fold(Future(Ok(views.html.home(webJarAssets, loginForm, signUpForm)))
+      cacheService.getCache.fold(Future.successful(Ok(views.html.home(webJarAssets, loginForm, signUpForm)))
       ) { email => userService.getNameByEmail(email).map(name => Ok(views.html.dashboard(webJarAssets, Some(name)))) }
 
   }
@@ -65,11 +65,13 @@ class AuthenticationController @Inject()(cacheService: CacheService, webJarAsset
       loginForm.bindFromRequest.fold(
         formWithErrors => {
           Logger.error("Sign-In badRequest.")
-          Future(BadRequest(views.html.home(webJarAssets, formWithErrors, signUpForm)))
+          Future.successful(BadRequest(views.html.home(webJarAssets, formWithErrors, signUpForm)))
         },
         validData => {
-          val encodedPassword:String =Helpers.passwordEncoder(validData._2)
-          val isValid:Future[Boolean] = userService.validateUser(validData._1, encodedPassword)
+
+          val encodedPassword: String = Helpers.passwordEncoder(validData._2)
+          val isValid: Future[Boolean] = userService.validateUser(validData._1, encodedPassword)
+
           isValid.map { validatedEmail => if (validatedEmail) {
             cacheService.setCache("id", validData._1)
             Redirect(routes.DashboardController.renderDashBoard)
@@ -92,20 +94,22 @@ class AuthenticationController @Inject()(cacheService: CacheService, webJarAsset
           Future(BadRequest(views.html.home(webJarAssets, loginForm, formWithErrors)))
         },
         validData => {
-          val encodedUserdata:User = validData.copy(email = validData.email.toLowerCase(),
+          val encodedUserdata: User = validData.copy(email = validData.email.toLowerCase(),
             password = Helpers.passwordEncoder(validData.password), name = validData.name, designation = validData.designation)
           userService.validateEmail(encodedUserdata.email).flatMap(value => if (!value) {
-            val isInserted:Future[Boolean] = userService.signUpUser(encodedUserdata)
+            val isInserted: Future[Boolean] = userService.signUpUser(encodedUserdata)
             isInserted.map(value => if (value) {
               cacheService.setCache("id", validData.email)
               Redirect(routes.DashboardController.renderDashBoard)
             }
             else {
-              Redirect(routes.AuthenticationController.renderHomePage).flashing("ERROR_DURING_SIGNUP" -> Messages("signup.error"))
+              Redirect(routes.AuthenticationController.renderHomePage).flashing("SIGNUP.ERROR" -> Messages("signup.error"))
             })
           }
           else {
-            Future(Redirect(routes.AuthenticationController.renderHomePage).flashing("ENTERED_EMAIL_EXISTS" -> Messages("email.exists")))
+
+            Future(Redirect(routes.AuthenticationController.renderHomePage).flashing("EMAIL.EXISTS" -> Messages("email.exists")))
+
           })
         }
       )
@@ -113,13 +117,15 @@ class AuthenticationController @Inject()(cacheService: CacheService, webJarAsset
 
 
   def signOut: Action[AnyContent] = Action.async {
-    Future {
-      cacheService.remove("id")
+
+    cacheService.remove("id")
+    Future.successful{
       Redirect(routes.AuthenticationController.renderHomePage).flashing("SUCCESS" -> Messages("logout.success"))
 
-    }
-  }
 
+    }
+
+  }
 }
 
 
