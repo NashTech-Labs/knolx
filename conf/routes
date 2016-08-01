@@ -8,11 +8,15 @@ GET     /webjars/*file                    controllers.WebJarAssets.at(file)
 
 #  home page
 
-GET     /home                                                   controllers.AuthenticationController.renderHomePage
-POST    /signIn                                              controllers.AuthenticationController.signIn
-POST    /signOut                                                 controllers.AuthenticationController.signOut
-POST     /signUp                                                 controllers.AuthenticationController.signUp
-GET     /                                                     controllers.DashboardController.renderDashBoard
+GET     /home                             controllers.AuthenticationController.renderHomePage
+#  login page
+POST    /signin                           controllers.AuthenticationController.signIn
+#  logout page
+POST    /signout                          controllers.AuthenticationController.signOut
+#  signup page
+POST     /signup                          controllers.AuthenticationController.signUp
+#  dashboard page
+GET     /                                 controllers.DashboardController.renderDashBoard
 
 
 

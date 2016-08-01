@@ -26,26 +26,21 @@ class DashboardControllerSpec extends Specification with Mockito {
   val webJarAssets = mock[WebJarAssets]
   val cacheService = mock[CacheService]
 
-  val dashBoardController = new DashboardController(cacheService,webJarAssets,userService)
+  val dashBoardController = new DashboardController(cacheService, webJarAssets, userService)
   "should render the dashbaord in case renderDashBoard url is hit and user doesNot logout" in new WithApplication() {
-    when(cacheService.isUserLogOut).thenReturn(Some("johndeo@gmail.com"))
-    when(userService.getNameByEmail("johndeo@gmail.com"))thenReturn(Future.successful("john"))
+    when(cacheService.getCache).thenReturn(Some("johndeo@gmail.com"))
+    when(userService.getNameByEmail("johndeo@gmail.com")) thenReturn (Future.successful("john"))
     val results = call(dashBoardController.renderDashBoard, FakeRequest(GET, "/"))
-    status(results) must equalTo(200)
+    status(results) must equalTo(OK)
     contentAsString(results).contains("knolx | DashBoard")
   }
   "should not render the dashbaord in case renderDashBoard url is hit and user doesNot logout" in new WithApplication() {
-    when(cacheService.isUserLogOut).thenReturn(None)
+    when(cacheService.getCache).thenReturn(None)
     when(userService.getNameByEmail("johndeo@gmail.com")).thenReturn(null)
     val results = call(dashBoardController.renderDashBoard, FakeRequest(GET, "/"))
-    status(results) must equalTo(303)
+    status(results) must equalTo(SEE_OTHER)
     contentAsString(results).contains("knolx")
   }
-/*
-  "should not render the dashbaord in case renderDashBoard url is hit and user logout" in new WithApplication() {
-    when(cache.get[String]("id")).thenReturn(None)
-    val results = call(authenticationController.homePage, FakeRequest(GET, "/"))
-    status(results) must equalTo(200)
-    redirectLocation(results) must beSome("/")
-  }*/
+
+
 }
