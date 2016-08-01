@@ -1,0 +1,5 @@
+wrong.login = The email or password you entered is incorrect!!
+signup.error = Something went wrong from messages!!
+email.exists = Entered email id already exist in database!
+logout.success = You have successfully logged out!!
+please.signin = Please sign in to continue!!

@@ -1,15 +1,12 @@
 package models
 
-import java.util.Date
 
 /**
   * Created by deepti on 22/7/16.
   */
 
 
-case class User(id: Option[Long] = None, emailId: String, password: String, name: String, address: String, designation: Option[String])
+case class User( email: String, password: String, name: String,designation: Option[String],id : Option[Long])
 
-case class Login(emailId: String, password: String)
-
-
+case class Login(email: String, password: String)
 

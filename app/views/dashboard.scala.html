@@ -1,0 +1,49 @@
+@import b3.vertical.fieldConstructor
+@import models._
+@import controllers._
+
+@(webJarAssets: WebJarAssets, name:Option[String])(implicit message: Messages, flash: Flash)
+
+    @main("knolx | DashBoard")(webJarAssets) {
+        <nav class="navbar navbar-default">
+            <script type="text/javascript">
+            $(document).ready(function() {
+        function disableBack() { window.history.forward() }
+
+        window.onload = disableBack();
+        window.onpageshow = function(evt) { if (evt.persisted) disableBack() }
+    });
+            </script>
+            <div class="container-fluid">
+
+                <div class="navbar-header">
+                    <img style=" text-align: center;
+                        color: black !important;
+                        border: 2px solid white
+                    "
+                    src="@routes.Assets.versioned("images/knolxlogo.png")" class="img-rounded" width="300" height="100">
+
+                </div>
+                <h4 style="text-align: right;
+                    color: BLUE !important;">WELCOME @name</h4>
+                <div align="right">
+                @b3.form(routes.AuthenticationController.signOut) {
+                    @b3.submit('class -> "btn btn-primary btn-lg btn-block") {sign out}
+                }
+                </div>
+            </div>
+        </nav>
+        <div class="container">
+            <div class="row vertical-offset-100">
+                <div class="col-md-16  ">
+
+
+                    <iframe src="https://calendar.google.com/calendar/embed?title=knoldus%20%7C%20knolx&amp;height=600&amp;wkst=2&amp;bgcolor=%23FFFFFF&amp;
+                src=knoldus.in_c8t4fea56phlq2vgo8g8jnbbqc%40group.calendar.google.com&amp;color=%23B1365F&amp;ctz=Asia%2FCalcutta" style="border: solid 1px #777"
+                    width="800" height="600" frameborder="0" scrolling="no"></iframe>
+                </div>
+            </div>
+        </div>
+    }
+
+
