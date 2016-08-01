@@ -25,8 +25,9 @@ libraryDependencies ++= Seq(
   "org.seleniumhq.selenium" % "selenium-firefox-driver" % "2.52.0",
   "org.scalatest" %% "scalatest" % "2.2.1" % "test",
   "org.scalatestplus" %% "play" % "1.4.0-M3" % "test",
-  "org.seleniumhq.selenium" % "selenium-htmlunit-driver" % "2.52.0",
-  "com.restfb" % "restfb" % "1.6.9"
+  "org.seleniumhq.selenium" % "selenium-htmlunit-driver" % "2.52.0"
+
+
 )
 javaOptions in Test += "-Dconfig.file=conf/test.conf"
 
@@ -34,7 +35,7 @@ javaOptions in Test += "-Dconfig.file=conf/test.conf"
 libraryDependencies += "org.scribe" % "scribe" % "1.3.7"
 
 
-resolvers += "scalaz-bintray" at "http://dl.bintray.com/scalaz/releases"
+
 
 // Play provides two styles of routers, one expects its actions to be injected, the
 // other, legacy style, accesses its actions statically.
