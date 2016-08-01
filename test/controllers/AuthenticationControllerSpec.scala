@@ -1,19 +1,19 @@
 package controllers
 
-import javax.inject.Inject
-
+import models.User
 import org.specs2.mutable.Specification
 
-import play.api.cache.CacheApi
 import play.api.test.{FakeRequest, WithApplication}
 
 import org.junit.runner._
 import org.specs2.runner._
 
 import play.api.test.Helpers._
+import play.api.cache.CacheApi
+import repo.UserRepo
 
 
-import services.UserService
+import services.{CacheService,UserService}
 
 import org.mockito.Mockito._
 import org.specs2.mock.Mockito
@@ -32,65 +32,68 @@ class AuthenticationControllerSpec extends Specification with Mockito {
 
   val userService = mock[UserService]
   val webJarAssets = mock[WebJarAssets]
-  val cache = mock[CacheApi]
+  val cacheService = mock[CacheService]
 
-  val authenticationController = new AuthenticationController(cache, webJarAssets, userService)
+  val authenticationController = new AuthenticationController(cacheService, webJarAssets, userService)
 
   "home Controller" should {
 
-    "show homePage" in new WithApplication() {
-
-      val result = route(FakeRequest(GET, "/home")).get
-
-      status(result) must equalTo(200)
-    }
-
 
     "signIn with valid emailId and password" in new WithApplication() {
-
-
-      when(userService.validateUser("johndeo@gmail.com", "qwerty")).thenReturn(Future(true))
-      //cache.set("id", "johndeo@gmail.com")
-      val result = call(authenticationController.signIn, FakeRequest(POST, "/signIn").withFormUrlEncodedBody("emailId" -> "johndeo@gmail.com", "password" -> "qwerty"))
+      when(userService.validateUser("deepti@gmail.com", "cXdlcnR5")).thenReturn(Future(true))
+      val result = call(authenticationController.signIn, FakeRequest(POST, "/signIn").withFormUrlEncodedBody("emailId" -> "deepti@gmail.com", "password" -> "qwerty"))
       status(result) must equalTo(303)
+      contentAsString(result).contains("knolx | dashboard")
     }
 
     "not signIn with bad form" in new WithApplication() {
 
-      when(userService.validateUser("johndeo@gmail.com", "as")).thenReturn(Future(false))
-      val result = call(authenticationController.signIn, FakeRequest(POST, "/signIn").withFormUrlEncodedBody("emailId" -> "johndeo@gmail.com", "password" -> "as"))
+      when(userService.validateUser("deepti@gmail.com", "as")).thenReturn(Future(false))
+      val result = call(authenticationController.signIn, FakeRequest(POST, "/signIn").withFormUrlEncodedBody("emailId" -> "deepti@gmail.com", "password" -> "as"))
       status(result) must equalTo(400)
 
     }
     "should not signIn with invalid emailId or password" in new WithApplication() {
 
-      when(userService.validateUser("johndeo@gmail.com", "johndeo")).thenReturn(Future(false))
-      val result = call(authenticationController.signIn, FakeRequest(POST, "/signIn").withFormUrlEncodedBody("emailId" -> "johndeo@gmail.com", "password" -> "johndeo"))
+      when(userService.validateUser("deepti@gmail.com", "cXdlcnR5")).thenReturn(Future(false))
+      val result = call(authenticationController.signIn, FakeRequest(POST, "/signIn").withFormUrlEncodedBody("emailId" -> "deepti@gmail.com", "password" -> "qwerty"))
       status(result) must equalTo(303)
+      contentAsString(result).contains("knolx")
     }
 
-
-    /* "render the homepage when cache is not set" in new WithApplication() {
-       when(cache.get[String]("id")).thenReturn(None)
-       val results = call(authenticationController.homePage, FakeRequest(GET, "/home"))
-       status(results) must equalTo(200)
-       redirectLocation(results) must beSome("/home")
-
-     }
-     "render the dashboard when cache is set" in new WithApplication() {
-       cache.set("id", "johndeo@gmail.com")
-       when(cache.get[String]("id")).thenReturn(Some("johndeo@gmail.com"))
-       val results = call(authenticationController.homePage, FakeRequest(GET, "/home"))
-       status(results) must equalTo(200)
-       redirectLocation(results) must beSome("/")
-
-     }
-    "should got dashboard if signup is successfull"  in new WithApplication() {
-      when(cache.get[String]("id")).thenReturn(Some("johndeo@gmail.com"))
-      val results = call(authenticationController.signUp,FakeRequest(POST,"/signup").withFormUrlEncodedBody("emailId" -> "johndeo@gmail.com", "password" -> "johndeo","name"->"anubhav","designation"->"sw"))
+    "should render the dashbaord in case home url is hit and user doesNot logout" in new WithApplication() {
+      when(cacheService.isUserLogOut).thenReturn(Some("deepti@gmail.com"))
+      when(userService.getNameByEmail("deepti@gmail.com"))thenReturn(Future("deepti"))
+      val results = call(authenticationController.renderHomePage, FakeRequest(GET, "/home"))
       status(results) must equalTo(200)
-    }*/
+      contentAsString(results).contains("knolx | DashBoard")
+    }
 
+    "should render the homepage in case home url is hit and user logout" in new WithApplication() {
+      when(cacheService.isUserLogOut).thenReturn(None)
+      when(userService.getNameByEmail("deepti@gmail.com"))thenReturn(Future("deepti"))
+      val results = call(authenticationController.renderHomePage, FakeRequest(GET, "/home"))
+      status(results) must equalTo(200)
+      contentAsString(results).contains("knolx")
+    }
+
+    "should render DashBoard if signup is successfull"  in new WithApplication() {
+
+      val results = call(authenticationController.signUp,FakeRequest(POST,"/signup").withFormUrlEncodedBody("emailId" -> "deep@gmail.com",
+        "password" -> "qwerty","name"->"deep","designation"->"sw"))
+      when(userService.validateEmail("deep@gmail.com")).thenReturn(Future(false))
+      when(userService.signUpUser(new User("deep@gmail.com","cXdlcnR5","deep",Some("sw"),Some(3)))).thenReturn(Future(true))
+      status(results) must equalTo(303)
+      contentAsString(results).contains("knolx | dashboard")
+    }
+    "should not renderDashBoard if signup is unsuccessfull"  in new WithApplication() {
+
+      val results = call(authenticationController.signUp,FakeRequest(POST,"/signup").withFormUrlEncodedBody("emailId" -> "deep@gmail.com",
+        "password" -> "qwerty","name"->"deep","designation"->"sw"))
+      when(userService.validateEmail("deep@gmail.com")).thenReturn(Future(true))
+      status(results) must equalTo(303)
+      contentAsString(results).contains("knolx")
+    }
   }
 
 }

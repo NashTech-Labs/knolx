@@ -1,4 +1,3 @@
-# Routes
 # This file defines all application routes (Higher priority routes first)
 # ~~~~
 
@@ -9,10 +8,13 @@ GET     /webjars/*file                    controllers.WebJarAssets.at(file)
 
 #  home page
 
-GET     /home                                                   controllers.HomeController.homePage
-GET     /                                                     controllers.DashboardController.dashboard
-POST    /signIn                                              controllers.HomeController.signIn
-GET    /signOut                                                 controllers.HomeController.signOut
-POST     /signUp                                                 controllers.HomeController.signUp
+GET     /home                                                   controllers.AuthenticationController.renderHomePage
+POST    /signIn                                              controllers.AuthenticationController.signIn
+POST    /signOut                                                 controllers.AuthenticationController.signOut
+POST     /signUp                                                 controllers.AuthenticationController.signUp
+GET     /                                                     controllers.DashboardController.renderDashBoard
+
+
+
 
 

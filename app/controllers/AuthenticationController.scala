@@ -2,9 +2,7 @@ package controllers
 
 import javax.inject._
 
-
 import models.{Login, User}
-
 import play.api.data.Form
 import play.api.data.Forms._
 import play.api.mvc.{Security, Action, AnyContent, Controller}
@@ -13,13 +11,9 @@ import play.api.i18n.Messages.Implicits._
 import play.api.inject.Injector
 import play.api.Logger
 import play.api.cache._
-
-import services.UserService
-
-
+import utils._
+import services.{CacheService, UserService}
 import utils.Constants._
-
-
 import scala.concurrent.Future
 import scala.concurrent.ExecutionContext.Implicits.global
 
@@ -29,11 +23,10 @@ import scala.concurrent.ExecutionContext.Implicits.global
   * application's home page.
   */
 @Singleton
-class AuthenticationController @Inject()(cache: CacheApi, webJarAssets: WebJarAssets, userService: UserService) extends Controller {
+class AuthenticationController @Inject()(cacheService: CacheService, webJarAssets: WebJarAssets, userService: UserService) extends Controller {
 
   val signUpForm = Form(
     mapping(
-
       "emailId" -> nonEmptyText,
       "password" -> nonEmptyText(MIN_LENGTH_OF_PASSWORD),
       "name" -> nonEmptyText(MIN_LENGTH_OF_NAME),
@@ -43,7 +36,6 @@ class AuthenticationController @Inject()(cache: CacheApi, webJarAssets: WebJarAs
 
   val loginForm = Form(
     mapping(
-
       "emailId" -> email,
       "password" -> nonEmptyText(MIN_LENGTH_OF_PASSWORD)
     )(Login.apply)(Login.unapply))
@@ -55,43 +47,37 @@ class AuthenticationController @Inject()(cache: CacheApi, webJarAssets: WebJarAs
     * a path of `/`.
     */
 
-  def homePage: Action[AnyContent] = Action.async {
+  def renderHomePage: Action[AnyContent] = Action.async {
     implicit request =>
-      Logger.debug("Redirecting HomePage")
-
-      cache.get[String]("id").fold(Future(Ok(views.html.home(webJarAssets, loginForm, signUpForm)))){email =>Future(Ok(views.html.dashboard(webJarAssets,Some(email))))}
+      Logger.debug("Redirecting renderHomePage")
+      cacheService.isUserLogOut.fold(Future(Ok(views.html.home(webJarAssets, loginForm, signUpForm)))
+      ) { email => userService.getNameByEmail(email).map(name => Ok(views.html.dashboard(webJarAssets, Some(name)))) }
 
   }
 
   def signIn: Action[AnyContent] = Action.async {
-
     implicit request =>
       Logger.debug("signingIn in progress. ")
       loginForm.bindFromRequest.fold(
-
         formWithErrors => {
           Logger.error("Sign-In badRequest.")
           Future(BadRequest(views.html.home(webJarAssets, formWithErrors, signUpForm)))
         },
         validData => {
-
-          val isValid = userService.validateUser(validData.emailId, validData.password)
+          val encodedPassword:String =Helpers.passwordEncoder(validData.password)
+          val isValid:Future[Boolean] = userService.validateUser(validData.email, encodedPassword)
           isValid.map { validatedEmail => if (validatedEmail) {
-            cache.set("id", validData.emailId)
-            Redirect(routes.DashboardController.dashboard)
+            cacheService.setCache("id", validData.email)
+            Redirect(routes.DashboardController.renderDashBoard)
           }
           else {
-
             Logger.error("User Not Found")
-            Redirect(routes.AuthenticationController.homePage).flashing("ERROR" -> WRONG_LOGIN_DETAILS)
+            Redirect(routes.AuthenticationController.renderHomePage).flashing("ERROR" -> WRONG_LOGIN_DETAILS)
           }
-
           }
         }
-
       )
   }
-
 
   def signUp: Action[AnyContent] = Action.async {
     implicit request =>
@@ -102,22 +88,20 @@ class AuthenticationController @Inject()(cache: CacheApi, webJarAssets: WebJarAs
           Future(BadRequest(views.html.home(webJarAssets, loginForm, formWithErrors)))
         },
         validData => {
-          val encodedUserdata = validData.copy(emailId = validData.emailId.toLowerCase(), password = userService.encodePassword(validData.password), name = validData.name, designation = validData.designation)
-          userService.validateEmail(encodedUserdata.emailId).flatMap(value => if (value) {
-
-            val isInserted = userService.signUpUser(encodedUserdata)
-            cache.set("id", validData.emailId)
-
+          val encodedUserdata:User = validData.copy(email = validData.email.toLowerCase(),
+            password = Helpers.passwordEncoder(validData.password), name = validData.name, designation = validData.designation)
+          userService.validateEmail(encodedUserdata.email).flatMap(value => if (!value) {
+            val isInserted:Future[Boolean] = userService.signUpUser(encodedUserdata)
             isInserted.map(value => if (value) {
-
-              Redirect(routes.DashboardController.dashboard)
+              cacheService.setCache("id", validData.email)
+              Redirect(routes.DashboardController.renderDashBoard)
             }
             else {
-              Redirect(routes.AuthenticationController.homePage).flashing("ERROR_DURING_SIGNUP" -> ERROR_DURING_SIGNUP)
+              Redirect(routes.AuthenticationController.renderHomePage).flashing("ERROR_DURING_SIGNUP" -> ERROR_DURING_SIGNUP)
             })
           }
           else {
-            Future(Redirect(routes.AuthenticationController.homePage).flashing("ENTERED_EMAIL_EXISTS" -> ENTERED_EMAIL_EXISTS))
+            Future(Redirect(routes.AuthenticationController.renderHomePage).flashing("ENTERED_EMAIL_EXISTS" -> ENTERED_EMAIL_EXISTS))
           })
         }
       )
@@ -126,11 +110,10 @@ class AuthenticationController @Inject()(cache: CacheApi, webJarAssets: WebJarAs
 
   def signOut: Action[AnyContent] = Action.async {
     Future {
-      cache.remove("id")
-      Redirect(routes.AuthenticationController.homePage).flashing("SUCCESS" -> LOGOUT_SUCCESSFUL)
+      cacheService.remove("id")
+      Redirect(routes.AuthenticationController.renderHomePage).flashing("SUCCESS" -> LOGOUT_SUCCESSFUL)
 
     }
-
   }
 
 }

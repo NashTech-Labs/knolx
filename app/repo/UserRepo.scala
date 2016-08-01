@@ -2,15 +2,11 @@ package repo
 
 
 import com.google.inject.Inject
-
 import models.User
-
 import play.api.db.slick.{DatabaseConfigProvider, HasDatabaseConfigProvider}
 import play.api.Logger
-
 import slick.driver.JdbcProfile
 import slick.lifted.Tag
-
 import scala.concurrent.Future
 import scala.concurrent.ExecutionContext.Implicits.global
 
@@ -26,7 +22,6 @@ class UserRepo @Inject()(protected val dbConfigProvider: DatabaseConfigProvider)
   import driver.api._
 
   def insert(user: User): Future[Long] = {
-
     try {
       Logger.info("Inserting user Record.")
       db.run(userTableQuery.returning(userTableQuery.map(_.id)) += user)
@@ -35,39 +30,37 @@ class UserRepo @Inject()(protected val dbConfigProvider: DatabaseConfigProvider)
       case ex: Exception =>
         Logger.error("Exception During insertion of user record . " + ex)
         Future {
-
           0
         }
     }
   }
 
 
-  def getByEmailAndPassword(email: String, password: String): Future[List[User]] = {
+  def getByEmailAndPassword(email: String, password: String): Future[Option[User]] = {
     try {
       Logger.info("Getting user Record by Email-Id and password . ")
-      db.run(userTableQuery.filter(user => (user.email === email) && (user.password === password)).to[List].result)
+      db.run(userTableQuery.filter(user => (user.email === email) && (user.password === password)).result.headOption)
     }
     catch {
       case ex: Exception => Logger.error("Exception occurred during getting record by emailId and password : " + ex)
         Future {
-          List[User]()
+          None
         }
     }
   }
 
-  def checkEmail(email: String): Future[List[User]] = {
+  def getByEmail(email: String): Future[Option[User]] = {
     try {
       Logger.info("Getting user Record by Email-Id . ")
-      db.run(userTableQuery.filter(_.email === email).to[List].result)
+      db.run(userTableQuery.filter(_.email === email).result.headOption)
     }
     catch {
       case ex: Exception => Logger.error("Exception occurred during getting record by emailId: " + ex)
         Future {
-          List[User]()
+          None
         }
     }
   }
-
 
   def getAll: Future[List[User]] = {
     try {
@@ -91,7 +84,6 @@ trait UserTable {
   lazy val userTableQuery = TableQuery[UserInfo]
 
   class UserInfo(tag: Tag) extends Table[User](tag, "users") {
-
     def * = (email, password, name, designation.?, id.?) <>((User.apply _).tupled, User.unapply)
 
     def id: Rep[Long] = column[Long]("id", O.AutoInc, O.PrimaryKey)

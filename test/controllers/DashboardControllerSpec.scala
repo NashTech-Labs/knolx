@@ -11,7 +11,7 @@ import org.specs2.mutable._
 import org.specs2.runner._
 import play.api.test.Helpers._
 import play.api.test._
-import services.UserService
+import services.{CacheService, UserService}
 import org.mockito.Mockito._
 import org.specs2.mock.Mockito
 import scala.concurrent.Future
@@ -24,17 +24,25 @@ class DashboardControllerSpec extends Specification with Mockito {
 
   val userService = mock[UserService]
   val webJarAssets = mock[WebJarAssets]
-  val cache = mock[CacheApi]
+  val cacheService = mock[CacheService]
 
-  /*val authenticationController = new AuthenticationController(cache, webJarAssets, userService)
-  "should render the dashbaord in case dashboard url is hit and user doesNot logout" in new WithApplication() {
-    when(cache.get[String]("id")).thenReturn(Some("johndeo@gmail.com"))
-    val results = call(authenticationController.homePage, FakeRequest(GET, "/"))
+  val dashBoardController = new DashboardController(cacheService,webJarAssets,userService)
+  "should render the dashbaord in case renderDashBoard url is hit and user doesNot logout" in new WithApplication() {
+    when(cacheService.isUserLogOut).thenReturn(Some("johndeo@gmail.com"))
+    when(userService.getNameByEmail("johndeo@gmail.com"))thenReturn(Future.successful("john"))
+    val results = call(dashBoardController.renderDashBoard, FakeRequest(GET, "/"))
     status(results) must equalTo(200)
-    redirectLocation(results) must beSome("/")
+    contentAsString(results).contains("knolx | DashBoard")
   }
-
-  "should not render the dashbaord in case dashboard url is hit and user logout" in new WithApplication() {
+  "should not render the dashbaord in case renderDashBoard url is hit and user doesNot logout" in new WithApplication() {
+    when(cacheService.isUserLogOut).thenReturn(None)
+    when(userService.getNameByEmail("johndeo@gmail.com")).thenReturn(null)
+    val results = call(dashBoardController.renderDashBoard, FakeRequest(GET, "/"))
+    status(results) must equalTo(303)
+    contentAsString(results).contains("knolx")
+  }
+/*
+  "should not render the dashbaord in case renderDashBoard url is hit and user logout" in new WithApplication() {
     when(cache.get[String]("id")).thenReturn(None)
     val results = call(authenticationController.homePage, FakeRequest(GET, "/"))
     status(results) must equalTo(200)
