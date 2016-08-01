@@ -45,7 +45,7 @@
                             'placeholder -> "enter password here")
                             @b3.text(signUpForm("name"), '_label -> "Name", 'placeholder -> "enter your name")
                             @b3.text(signUpForm("designation"), '_label -> "Designation", 'placeholder -> "enter your designation")
-                            @b3.submit('class -> "btn btn-default btn-success btn-block") {sign up}
+                            @b3.submit('class -> "btn btn-default btn-success ") {sign up}
                             }
                 </div>
                 <div class="modal-footer">
@@ -69,9 +69,7 @@
 
 
                     <fieldset>
-                        <div class="container">
-                            <div class="row vertical-offset-100">
-                                <div class="col-md-4 col-md-offset-4">
+
                         <script type="text/javascript">
                         $.backstretch([
                         "@routes.Assets.versioned("images/4.jpg")"
@@ -82,17 +80,19 @@
                         "@routes.Assets.versioned("images/9.jpg")"
                         ], {duration: 1000, fade: 750});
                         </script>
-                            </div>
-                                </div>
-                            </div>
-                        <div class="form-group">
+
+
+
+
+                            <div class="row vertical-offset-100">
+                                <div class="col-md-12">
                             @b3.form(routes.AuthenticationController.signIn) {
                             @b3.email(loginForm("emailId"), '_label -> "Email", 'placeholder -> "abc@domain.com")
                             @b3.password(loginForm("password"), '_label -> "Password",
                             'placeholder -> "enter password here")
                             <p style="text-align: center;
                                     color: red !important;">@flash.get("ERROR")</p>
-                            @b3.submit('class -> "btn btn-primary btn-lg btn-block") {sign in}
+                            <center>@b3.submit('class -> "btn btn-primary btn-lg") {sign in}</center>
                             <p style="text-align: center;
                                     color: BLACK !important;">@flash.get("SUCCESS")</p>
                             <p style="text-align: center;
@@ -103,7 +103,11 @@
                                     color: BLACK !important;">@flash.get("INVALID")</p>
                             }
                         </div>
-                        <br/>
+                        </div>
+
+
+
+                                        <br/>
                         <div class="form-group">
                                 <span class="pull-center"> <button class="btn btn-link editButton" data-toggle="modal" data-target="#registrationModal" >
                                     Register</button>
