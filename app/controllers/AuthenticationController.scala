@@ -16,6 +16,7 @@ import services.{CacheService, UserService}
 import utils.Constants._
 import scala.concurrent.Future
 import scala.concurrent.ExecutionContext.Implicits.global
+import play.api.i18n.Messages
 
 
 /**
@@ -72,7 +73,7 @@ class AuthenticationController @Inject()(cacheService: CacheService, webJarAsset
           }
           else {
             Logger.error("User Not Found")
-            Redirect(routes.AuthenticationController.renderHomePage).flashing("ERROR" -> WRONG_LOGIN_DETAILS)
+            Redirect(routes.AuthenticationController.renderHomePage).flashing("ERROR" -> Messages("wrong.login"))
           }
           }
         }
@@ -97,11 +98,11 @@ class AuthenticationController @Inject()(cacheService: CacheService, webJarAsset
               Redirect(routes.DashboardController.renderDashBoard)
             }
             else {
-              Redirect(routes.AuthenticationController.renderHomePage).flashing("ERROR_DURING_SIGNUP" -> ERROR_DURING_SIGNUP)
+              Redirect(routes.AuthenticationController.renderHomePage).flashing("ERROR_DURING_SIGNUP" -> Messages("signup.error"))
             })
           }
           else {
-            Future(Redirect(routes.AuthenticationController.renderHomePage).flashing("ENTERED_EMAIL_EXISTS" -> ENTERED_EMAIL_EXISTS))
+            Future(Redirect(routes.AuthenticationController.renderHomePage).flashing("ENTERED_EMAIL_EXISTS" -> Messages("email.exists")))
           })
         }
       )
@@ -111,7 +112,7 @@ class AuthenticationController @Inject()(cacheService: CacheService, webJarAsset
   def signOut: Action[AnyContent] = Action.async {
     Future {
       cacheService.remove("id")
-      Redirect(routes.AuthenticationController.renderHomePage).flashing("SUCCESS" -> LOGOUT_SUCCESSFUL)
+      Redirect(routes.AuthenticationController.renderHomePage).flashing("SUCCESS" -> Messages("logout.success"))
 
     }
   }

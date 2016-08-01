@@ -10,6 +10,3 @@ case class User( email: String, password: String, name: String,designation: Opti
 
 case class Login(email: String, password: String)
 
-
-
-

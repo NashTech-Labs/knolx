@@ -5,15 +5,9 @@ package repo
   */
 
 import play.api.Application
-import org.specs2.mutable.Specification
 import play.api.test.{PlaySpecification, WithApplication}
-
 import scala.concurrent.duration.Duration
 import scala.concurrent.Await
-import java.util.Date
-
-import org.junit.runner.RunWith
-import repo.UserRepo
 import scala.concurrent.Future
 
 
