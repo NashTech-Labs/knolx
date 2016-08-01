@@ -23,6 +23,9 @@ import play.api.i18n.Messages
   * This controller creates an `Action` to handle HTTP requests to the
   * application's home page.
   */
+
+case class UserData(emailId:String,password:String)
+
 @Singleton
 class AuthenticationController @Inject()(cacheService: CacheService, webJarAssets: WebJarAssets, userService: UserService) extends Controller {
 
@@ -36,10 +39,10 @@ class AuthenticationController @Inject()(cacheService: CacheService, webJarAsset
     )(User.apply)(User.unapply))
 
   val loginForm = Form(
-    mapping(
+    tuple(
       "emailId" -> email,
       "password" -> nonEmptyText(MIN_LENGTH_OF_PASSWORD)
-    )(Login.apply)(Login.unapply))
+    ))
 
   /**
     * Create an Action to render an HTML page with a welcome message.
@@ -65,10 +68,10 @@ class AuthenticationController @Inject()(cacheService: CacheService, webJarAsset
           Future(BadRequest(views.html.home(webJarAssets, formWithErrors, signUpForm)))
         },
         validData => {
-          val encodedPassword:String =Helpers.passwordEncoder(validData.password)
-          val isValid:Future[Boolean] = userService.validateUser(validData.email, encodedPassword)
+          val encodedPassword:String =Helpers.passwordEncoder(validData._2)
+          val isValid:Future[Boolean] = userService.validateUser(validData._1, encodedPassword)
           isValid.map { validatedEmail => if (validatedEmail) {
-            cacheService.setCache("id", validData.email)
+            cacheService.setCache("id", validData._1)
             Redirect(routes.DashboardController.renderDashBoard)
           }
           else {
