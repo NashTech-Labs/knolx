@@ -25,7 +25,6 @@ import play.api.i18n.Messages
   */
 
 
-
 @Singleton
 class AuthenticationController @Inject()(cacheService: CacheService, webJarAssets: WebJarAssets, userService: UserService) extends Controller {
 
@@ -55,7 +54,7 @@ class AuthenticationController @Inject()(cacheService: CacheService, webJarAsset
     implicit request =>
       Logger.debug("Redirecting renderHomePage")
       cacheService.getCache.fold(Future.successful(Ok(views.html.home(webJarAssets, loginForm, signUpForm)))
-      ) { email => userService.getNameByEmail(email).map(name => Ok(views.html.dashboard(webJarAssets, Some(name)))) }
+      ) { email => userService.getNameByEmail(email).map(name => Ok(views.html.dashboard(webJarAssets, Some(name.get)))) }
 
   }
 
@@ -115,14 +114,10 @@ class AuthenticationController @Inject()(cacheService: CacheService, webJarAsset
       )
   }
 
-
   def signOut: Action[AnyContent] = Action.async {
-
     cacheService.remove("id")
-    Future.successful{
+    Future.successful {
       Redirect(routes.AuthenticationController.renderHomePage).flashing("SUCCESS" -> Messages("logout.success"))
-
-
     }
 
   }

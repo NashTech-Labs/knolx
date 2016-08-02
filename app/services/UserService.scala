@@ -32,9 +32,9 @@ class UserService @Inject()(userRepo: UserRepo) {
     userRepo.getByEmail(email).map(_.isDefined)
   }
 
-  def getNameByEmail(email: String): Future[String] = {
+  def getNameByEmail(email: String): Future[Option[String]] = {
     val user: Future[Option[User]] = userRepo.getByEmail(email)
-    user.map(value => value.map(_.name).get)
+    user.map(value => value.map(_.name))
   }
 
 }

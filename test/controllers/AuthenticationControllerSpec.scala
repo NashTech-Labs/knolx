@@ -67,7 +67,7 @@ class AuthenticationControllerSpec extends Specification with Mockito {
 
     "should render the dashbaord in case home url is hit and user doesNot logout" in new WithApplication() {
       when(cacheService.getCache).thenReturn(Some("deepti@gmail.com"))
-      when(userService.getNameByEmail("deepti@gmail.com")) thenReturn (Future("deepti"))
+      when(userService.getNameByEmail("deepti@gmail.com")) thenReturn Future.successful(Some("deepti"))
       val results = call(authenticationController.renderHomePage, FakeRequest(GET, "/home"))
       status(results) must equalTo(OK)
       contentAsString(results).contains("knolx | DashBoard")
@@ -75,7 +75,7 @@ class AuthenticationControllerSpec extends Specification with Mockito {
 
     "should render the homepage in case home url is hit and user logout" in new WithApplication() {
       when(cacheService.getCache).thenReturn(None)
-      when(userService.getNameByEmail("deepti@gmail.com")) thenReturn (Future("deepti"))
+      when(userService.getNameByEmail("deepti@gmail.com")) thenReturn Future.successful(Some("deepti"))
       val results = call(authenticationController.renderHomePage, FakeRequest(GET, "/home"))
       status(results) must equalTo(OK)
       contentAsString(results).contains("knolx")

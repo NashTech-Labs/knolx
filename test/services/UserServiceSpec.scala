@@ -45,7 +45,7 @@ class UserServiceSpec extends PlaySpecification with Mockito {
   "get name by email" in new WithApplication() {
     when(userRepo.getByEmail("rahul@gmail.com")).thenReturn(Future(Option(user)))
     val result = await(userService.getNameByEmail("rahul@gmail.com"))
-    result === "rahul"
+    result.get === "rahul"
   }
 
 }
