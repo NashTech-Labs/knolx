@@ -21,7 +21,7 @@ class DashboardController @Inject()(cacheService: CacheService, webJarAssets: We
     implicit request =>
       cacheService.getCache.fold(Future.successful(Redirect(routes.AuthenticationController.renderHomePage())
         .flashing("INVALID" -> Messages("please.signin")))) { email => userService.getNameByEmail(email)
-        .map(name => Ok(views.html.dashboard(webJarAssets, Some(name)))) }
+        .map(name => Ok(views.html.dashboard(webJarAssets, Some(name.get)))) }
 
   }
 
