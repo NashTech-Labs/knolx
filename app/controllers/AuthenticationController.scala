@@ -3,20 +3,24 @@ package controllers
 import javax.inject._
 
 import models.User
+
 import play.api.data.Form
 import play.api.data.Forms._
 import play.api.mvc.{Security, Action, AnyContent, Controller}
-import play.api.Play.current
 import play.api.i18n.Messages.Implicits._
 import play.api.inject.Injector
 import play.api.Logger
 import play.api.cache._
+import play.api.i18n.Messages
+import play.api.Play.current
+
 import services.{CacheService, UserService}
-import utils.Constants._
+
 import utils.Helpers
+import utils.Constants._
+
 import scala.concurrent.Future
 import scala.concurrent.ExecutionContext.Implicits.global
-import play.api.i18n.Messages
 
 
 /**
@@ -44,10 +48,7 @@ class AuthenticationController @Inject()(cacheService: CacheService, webJarAsset
     ))
 
   /**
-    * Create an Action to render an Home page with a welcome message.
-    * The configuration in the `routes` file means that this method
-    * will be called when the application receives a `GET` request with
-    * a path of `/`.
+    * Create an Action to render an Home page with login and signup option
     */
 
   def renderHomePage: Action[AnyContent] = Action.async {
@@ -58,6 +59,9 @@ class AuthenticationController @Inject()(cacheService: CacheService, webJarAsset
 
   }
 
+  /**
+    * Create an Action for signin option
+    */
   def signIn: Action[AnyContent] = Action.async {
     implicit request =>
       Logger.debug("signingIn in progress. ")
@@ -73,17 +77,20 @@ class AuthenticationController @Inject()(cacheService: CacheService, webJarAsset
 
           isValid.map { validatedEmail => if (validatedEmail) {
             cacheService.setCache("id", validData._1)
-            Redirect(routes.DashboardController.renderDashBoard)
+            Redirect(routes.DashboardController.renderDashBoard())
           }
           else {
             Logger.error("User Not Found")
-            Redirect(routes.AuthenticationController.renderHomePage).flashing("ERROR" -> Messages("wrong.login"))
+            Redirect(routes.AuthenticationController.renderHomePage()).flashing("ERROR" -> Messages("wrong.login"))
           }
           }
         }
       )
   }
 
+  /**
+    * Create an Action for signup option
+    */
   def signUp: Action[AnyContent] = Action.async {
     implicit request =>
       Logger.debug("signingUp in progress. ")
@@ -99,25 +106,29 @@ class AuthenticationController @Inject()(cacheService: CacheService, webJarAsset
             val isInserted: Future[Boolean] = userService.signUpUser(encodedUserdata)
             isInserted.map(value => if (value) {
               cacheService.setCache("id", validData.email)
-              Redirect(routes.DashboardController.renderDashBoard)
+              Redirect(routes.DashboardController.renderDashBoard())
             }
             else {
-              Redirect(routes.AuthenticationController.renderHomePage).flashing("SIGNUP.ERROR" -> Messages("signup.error"))
+              Redirect(routes.AuthenticationController.renderHomePage()).flashing("SIGNUP.ERROR" -> Messages("signup.error"))
             })
           }
           else {
 
-            Future(Redirect(routes.AuthenticationController.renderHomePage).flashing("EMAIL.EXISTS" -> Messages("email.exists")))
+            Future.successful(Redirect(routes.AuthenticationController.renderHomePage()).flashing("EMAIL.EXISTS" -> Messages("email.exists")))
 
           })
         }
       )
   }
 
+  /**
+    * Create an Action for signout option
+    */
   def signOut: Action[AnyContent] = Action.async {
     cacheService.remove("id")
     Future.successful {
-      Redirect(routes.AuthenticationController.renderHomePage).flashing("SUCCESS" -> Messages("logout.success"))
+      Redirect(routes.AuthenticationController.renderHomePage()).flashing("SUCCESS" -> Messages("logout.success"))
+
     }
 
   }

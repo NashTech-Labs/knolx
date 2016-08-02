@@ -14,9 +14,8 @@ import slick.lifted.Tag
 import scala.concurrent.Future
 
 
-
 /**
-  * Created by deepti on 22/7/16.
+  * Class UserRepo that include all methods for user
   */
 
 
@@ -25,29 +24,43 @@ class UserRepo @Inject()(protected val dbConfigProvider: DatabaseConfigProvider)
 
   import driver.api._
 
+  /**
+    * insert a new user
+    */
   def insert(user: User): Future[Long] = {
     Logger.info("Inserting user Record.")
     db.run(userTableQuery.returning(userTableQuery.map(_.id)) += user)
   }
 
 
+  /**
+    * get  user email and passowrd
+    */
   def getByEmailAndPassword(email: String, password: String): Future[Option[User]] = {
     Logger.info("Getting user Record by Email-Id and password . ")
     db.run(userTableQuery.filter(user => (user.email === email) && (user.password === password)).result.headOption)
   }
 
-
+  /**
+    * check whether user email exists in database or not
+    */
   def getByEmail(email: String): Future[Option[User]] = {
     Logger.info("Getting user Record by Email-Id . ")
     db.run(userTableQuery.filter(_.email === email).result.headOption)
   }
 
+  /**
+    * get all users from databse
+    */
   def getAll: Future[List[User]] = {
     Logger.info("Getting all user record.")
     db.run(userTableQuery.to[List].result)
   }
 }
 
+/**
+  * user trait which is used for mapping
+  */
 trait UserTable {
   self: HasDatabaseConfigProvider[JdbcProfile] =>
 

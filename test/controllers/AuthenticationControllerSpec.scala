@@ -38,7 +38,7 @@ class AuthenticationControllerSpec extends Specification with Mockito {
 
 
     "signIn with valid emailId and password" in new WithApplication() {
-      when(userService.validateUser("deepti@gmail.com", "cXdlcnR5")).thenReturn(Future(true))
+      when(userService.validateUser("deepti@gmail.com", "cXdlcnR5")).thenReturn(Future.successful(true))
       val result = call(authenticationController.signIn,
         FakeRequest(POST, "/signIn").
           withFormUrlEncodedBody("emailId" -> "deepti@gmail.com", "password" -> "qwerty"))
@@ -48,7 +48,7 @@ class AuthenticationControllerSpec extends Specification with Mockito {
 
     "not signIn with bad form" in new WithApplication() {
 
-      when(userService.validateUser("deepti@gmail.com", "as")).thenReturn(Future(false))
+      when(userService.validateUser("deepti@gmail.com", "as")).thenReturn(Future.successful(false))
       val result = call(authenticationController.signIn,
         FakeRequest(POST, "/signIn").
           withFormUrlEncodedBody("emailId" -> "deepti@gmail.com", "password" -> "as"))
@@ -57,7 +57,7 @@ class AuthenticationControllerSpec extends Specification with Mockito {
     }
     "should not signIn with invalid emailId or password" in new WithApplication() {
 
-      when(userService.validateUser("deepti@gmail.com", "cXdlcnR5")).thenReturn(Future(false))
+      when(userService.validateUser("deepti@gmail.com", "cXdlcnR5")).thenReturn(Future.successful(false))
       val result = call(authenticationController.signIn,
         FakeRequest(POST, "/signIn").
           withFormUrlEncodedBody("emailId" -> "deepti@gmail.com", "password" -> "qwerty"))
@@ -67,7 +67,10 @@ class AuthenticationControllerSpec extends Specification with Mockito {
 
     "should render the dashbaord in case home url is hit and user doesNot logout" in new WithApplication() {
       when(cacheService.getCache).thenReturn(Some("deepti@gmail.com"))
+
       when(userService.getNameByEmail("deepti@gmail.com")) thenReturn Future.successful(Some("deepti"))
+
+
       val results = call(authenticationController.renderHomePage, FakeRequest(GET, "/home"))
       status(results) must equalTo(OK)
       contentAsString(results).contains("knolx | DashBoard")
@@ -75,7 +78,9 @@ class AuthenticationControllerSpec extends Specification with Mockito {
 
     "should render the homepage in case home url is hit and user logout" in new WithApplication() {
       when(cacheService.getCache).thenReturn(None)
+
       when(userService.getNameByEmail("deepti@gmail.com")) thenReturn Future.successful(Some("deepti"))
+
       val results = call(authenticationController.renderHomePage, FakeRequest(GET, "/home"))
       status(results) must equalTo(OK)
       contentAsString(results).contains("knolx")
@@ -85,8 +90,8 @@ class AuthenticationControllerSpec extends Specification with Mockito {
 
       val results = call(authenticationController.signUp, FakeRequest(POST, "/signup").withFormUrlEncodedBody("emailId" -> "deep@gmail.com",
         "password" -> "q", "name" -> "deep", "designation" -> "sw"))
-      when(userService.validateEmail("deep@gmail.com")).thenReturn(Future(false))
-      when(userService.signUpUser(new User("deep@gmail.com", "c", "deep", Some("sw"), None))).thenReturn(Future(true))
+      when(userService.validateEmail("deep@gmail.com")).thenReturn(Future.successful(false))
+      when(userService.signUpUser(new User("deep@gmail.com", "c", "deep", Some("sw"), None))).thenReturn(Future.successful(true))
       status(results) must equalTo(BAD_REQUEST)
       contentAsString(results).contains("knolx")
     }
@@ -95,8 +100,8 @@ class AuthenticationControllerSpec extends Specification with Mockito {
 
       val results = call(authenticationController.signUp, FakeRequest(POST, "/signup").withFormUrlEncodedBody("emailId" -> "deep@gmail.com",
         "password" -> "qwerty", "name" -> "deep", "designation" -> "sw"))
-      when(userService.validateEmail("deep@gmail.com")).thenReturn(Future(false))
-      when(userService.signUpUser(new User("deep@gmail.com", "cXdlcnR5", "deep", Some("sw"), None))).thenReturn(Future(true))
+      when(userService.validateEmail("deep@gmail.com")).thenReturn(Future.successful(false))
+      when(userService.signUpUser(new User("deep@gmail.com", "cXdlcnR5", "deep", Some("sw"), None))).thenReturn(Future.successful(true))
       status(results) must equalTo(SEE_OTHER)
       contentAsString(results).contains("knolx | dashboard")
     }
@@ -104,7 +109,7 @@ class AuthenticationControllerSpec extends Specification with Mockito {
 
       val results = call(authenticationController.signUp, FakeRequest(POST, "/signup").withFormUrlEncodedBody("emailId" -> "deep@gmail.com",
         "password" -> "qwerty", "name" -> "deep", "designation" -> "sw"))
-      when(userService.validateEmail("deep@gmail.com")).thenReturn(Future(true))
+      when(userService.validateEmail("deep@gmail.com")).thenReturn(Future.successful(true))
       status(results) must equalTo(SEE_OTHER)
       contentAsString(results).contains("knolx")
     }
@@ -112,8 +117,8 @@ class AuthenticationControllerSpec extends Specification with Mockito {
 
       val results = call(authenticationController.signUp, FakeRequest(POST, "/signup").withFormUrlEncodedBody("emailId" -> "deep@gmail.com",
         "password" -> "qwerty", "name" -> "deep", "designation" -> "sw"))
-      when(userService.validateEmail("deep@gmail.com")).thenReturn(Future(true))
-      when(userService.signUpUser(new User("deep@gmail.com", "cXdlcnR5", "deep", Some("sw"), None))).thenReturn(Future(false))
+      when(userService.validateEmail("deep@gmail.com")).thenReturn(Future.successful(true))
+      when(userService.signUpUser(new User("deep@gmail.com", "cXdlcnR5", "deep", Some("sw"), None))).thenReturn(Future.successful(false))
       status(results) must equalTo(SEE_OTHER)
       contentAsString(results).contains("knolx")
     }

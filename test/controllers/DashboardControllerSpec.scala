@@ -28,16 +28,17 @@ class DashboardControllerSpec extends Specification with Mockito {
   val cacheService = mock[CacheService]
 
   val dashBoardController = new DashboardController(cacheService, webJarAssets, userService)
-  "should render the dashbaord in case renderDashBoard url is hit and user doesNot logout" in new WithApplication() {
+  "should render the dashboard in case renderDashBoard url is hit and user doesNot logout" in new WithApplication() {
     when(cacheService.getCache).thenReturn(Some("johndeo@gmail.com"))
+
     when(userService.getNameByEmail("johndeo@gmail.com")) thenReturn Future.successful(Some("john"))
     val results = call(dashBoardController.renderDashBoard, FakeRequest(GET, "/"))
     status(results) must equalTo(OK)
     contentAsString(results).contains("knolx | DashBoard")
   }
-  "should not render the dashbaord in case renderDashBoard url is hit and user doesNot logout" in new WithApplication() {
+  "should not render the dashboard in case renderDashBoard url is hit and user doesNot logout" in new WithApplication() {
     when(cacheService.getCache).thenReturn(None)
-    when(userService.getNameByEmail("johndeo@gmail.com")) thenReturn Future.successful(Some("johndeo"))
+    when(userService.getNameByEmail("johndeo@gmail.com")) thenReturn Future.successful(None)
     val results = call(dashBoardController.renderDashBoard, FakeRequest(GET, "/"))
     status(results) must equalTo(SEE_OTHER)
     contentAsString(results).contains("knolx")

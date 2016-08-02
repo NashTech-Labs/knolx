@@ -2,10 +2,8 @@ package models
 
 
 /**
-  * Created by deepti on 22/7/16.
+  * model case classes for user
   */
-
-
-case class User( email: String, password: String, name: String,designation: Option[String],id : Option[Long]=None)
+case class User(email: String, password: String, name: String, designation: Option[String], id: Option[Long] = None)
 
 
