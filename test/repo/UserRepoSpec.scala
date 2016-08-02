@@ -11,30 +11,30 @@ import scala.concurrent.Await
 import scala.concurrent.Future
 
 
-class UserRepoSpec extends PlaySpecification {
+class UserRepositorySpec extends PlaySpecification {
 
   import models.User
 
-  def userRepo(implicit app: Application): UserRepo = Application.instanceCache[UserRepo].apply(app)
+  def userRepository(implicit app: Application): UserRepository = Application.instanceCache[UserRepository].apply(app)
 
   "get user by email id and password" in new WithApplication() {
-    val result = await(userRepo.getByEmailAndPassword("deepti@gmail.com", "cXdlcnR5"))
+    val result = await(userRepository.getByEmailAndPassword("deepti@gmail.com", "cXdlcnR5"))
     result.get.email == "deepti@gmail.com"
   }
 
   "get user by email id " in new WithApplication() {
-    val result = await(userRepo.getByEmail("deepti@gmail.com"))
+    val result = await(userRepository.getByEmail("deepti@gmail.com"))
     result.get.email == "deepti@gmail.com"
   }
 
   "insert user " in new WithApplication() {
-    val result = await(userRepo.insert(User("rahul@gmail.com", "rahul1234", "rahul", Some("consultant"), Some(2))))
+    val result = await(userRepository.insert(User("rahul@gmail.com", "rahul1234", "rahul", Some("consultant"), Some(2))))
     result === 2
   }
 
   "get all users" in new WithApplication() {
 
-    val result = await(userRepo.getAll)
+    val result = await(userRepository.getAll)
     result.length === 2
   }
 }

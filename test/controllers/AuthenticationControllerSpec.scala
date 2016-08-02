@@ -11,9 +11,6 @@ import org.specs2.mock.Mockito
 import play.api.test.{FakeRequest, WithApplication}
 import play.api.test.Helpers._
 import play.api.cache.CacheApi
-
-import repo.UserRepo
-
 import services.{CacheService, UserService}
 
 import scala.concurrent.Future

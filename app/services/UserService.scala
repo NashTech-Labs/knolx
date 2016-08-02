@@ -4,7 +4,7 @@ import com.google.inject.Inject
 
 import models.User
 
-import repo.UserRepo
+import repo.UserRepository
 
 import scala.concurrent.Future
 import scala.concurrent.ExecutionContext.Implicits.global
@@ -12,7 +12,7 @@ import scala.concurrent.ExecutionContext.Implicits.global
 import play.api.Logger
 
 
-class UserService @Inject()(userRepo: UserRepo) {
+class UserService @Inject()(userRepository: UserRepository) {
 
   /**
     * validate user by
@@ -20,7 +20,7 @@ class UserService @Inject()(userRepo: UserRepo) {
     */
   def validateUser(emailId: String, password: String): Future[Boolean] = {
     Logger.debug("Validating User.")
-    val user: Future[Option[User]] = userRepo.getByEmailAndPassword(emailId, password)
+    val user: Future[Option[User]] = userRepository.getByEmailAndPassword(emailId, password)
     user.map(_.isDefined)
   }
   /**
@@ -28,7 +28,7 @@ class UserService @Inject()(userRepo: UserRepo) {
     */
   def signUpUser(user: User): Future[Boolean] = {
     Logger.debug("signUp User")
-    val recordInserted: Future[Long] = userRepo.insert(user)
+    val recordInserted: Future[Long] = userRepository.insert(user)
     recordInserted.map(_ > 0)
   }
 
@@ -38,7 +38,7 @@ class UserService @Inject()(userRepo: UserRepo) {
 
   def validateEmail(email: String): Future[Boolean] = {
     Logger.debug("Validating Email")
-    userRepo.getByEmail(email).map(_.isDefined)
+    userRepository.getByEmail(email).map(_.isDefined)
   }
 
   /**
@@ -46,7 +46,7 @@ class UserService @Inject()(userRepo: UserRepo) {
     */
 
   def getNameByEmail(email: String): Future[Option[String]] = {
-    val user: Future[Option[User]] = userRepo.getByEmail(email)
+    val user: Future[Option[User]] = userRepository.getByEmail(email)
     user.map(value => value.map(_.name))
   }
 

@@ -36,6 +36,7 @@ class DashboardControllerSpec extends Specification with Mockito {
     status(results) must equalTo(OK)
     contentAsString(results).contains("knolx | DashBoard")
   }
+
   "should not render the dashboard in case renderDashBoard url is hit and user doesNot logout" in new WithApplication() {
     when(cacheService.getCache).thenReturn(None)
     when(userService.getNameByEmail("johndeo@gmail.com")) thenReturn Future.successful(None)

@@ -19,7 +19,7 @@ import scala.concurrent.Future
   */
 
 
-class UserRepo @Inject()(protected val dbConfigProvider: DatabaseConfigProvider) extends UserTable
+class UserRepository @Inject()(protected val dbConfigProvider: DatabaseConfigProvider) extends UserTable
   with HasDatabaseConfigProvider[JdbcProfile] {
 
   import driver.api._
