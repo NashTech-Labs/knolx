@@ -97,7 +97,7 @@ class AuthenticationController @Inject()(cacheService: CacheService, webJarAsset
       signUpForm.bindFromRequest.fold(
         formWithErrors => {
           Logger.error("Sign-up badRequest.")
-          Future(BadRequest(views.html.home(webJarAssets, loginForm, formWithErrors)))
+          Future.successful(BadRequest(views.html.home(webJarAssets, loginForm, formWithErrors)))
         },
         validData => {
           val encodedUserdata: User = validData.copy(email = validData.email.toLowerCase(),

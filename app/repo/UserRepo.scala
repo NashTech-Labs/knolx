@@ -13,12 +13,6 @@ import slick.lifted.Tag
 
 import scala.concurrent.Future
 
-
-/**
-  * Class UserRepo that include all methods for user
-  */
-
-
 class UserRepo @Inject()(protected val dbConfigProvider: DatabaseConfigProvider) extends UserTable
   with HasDatabaseConfigProvider[JdbcProfile] {
 
