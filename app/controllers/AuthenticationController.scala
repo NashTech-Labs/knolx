@@ -23,12 +23,6 @@ import scala.concurrent.Future
 import scala.concurrent.ExecutionContext.Implicits.global
 
 
-/**
-  * This controller creates an `Action` to handle HTTP requests to the
-  * application's home page.
-  */
-
-
 @Singleton
 class AuthenticationController @Inject()(cacheService: CacheService, webJarAssets: WebJarAssets, userService: UserService) extends Controller {
 
@@ -60,7 +54,7 @@ class AuthenticationController @Inject()(cacheService: CacheService, webJarAsset
   }
 
   /**
-    * Create an Action for signin option
+    * Create an Action for sign in option
     */
   def signIn: Action[AnyContent] = Action.async {
     implicit request =>
