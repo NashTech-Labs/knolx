@@ -16,9 +16,7 @@ import services.{CacheService, UserService}
 import scala.concurrent.Future
 import scala.concurrent.ExecutionContext.Implicits.global
 
-/**
-  * Created by deepti on 26/7/16.
-  */
+
 
 @RunWith(classOf[JUnitRunner])
 class AuthenticationControllerSpec extends Specification with Mockito {

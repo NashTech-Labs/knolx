@@ -4,10 +4,6 @@ import com.google.inject.Inject
 
 import play.api.cache.CacheApi
 
-
-/**
-  * Created by knoldus on 30/7/16.
-  */
 class CacheService @Inject()(cache: CacheApi) {
 
   def setCache(key: String, value: Any):Unit = cache.set(key, value)

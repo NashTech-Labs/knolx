@@ -13,9 +13,7 @@ import repo.UserRepo
 import scala.concurrent.Future
 
 
-/**
-  * Created by knoldus on 1/8/16.
-  */
+
 class CacheServiceSpec extends PlaySpecification with Mockito {
 
   val cache = mock[CacheApi]

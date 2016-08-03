@@ -15,11 +15,11 @@ import scala.concurrent.Future
 
 
 
-/**
-  * Create an Action for rendering dashboard of user
-  * */
-
 class DashboardController @Inject()(cacheService: CacheService, webJarAssets: WebJarAssets, userService: UserService) extends Controller {
+
+  /**
+    *  Action for rendering dashboard of user
+    * */
 
    def renderDashBoard:Action[AnyContent] = Action.async {
     implicit request =>

@@ -13,9 +13,7 @@ import repo.UserRepository
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
-/**
-  * Created by rahul on 27/7/16.
-  */
+
 
 class UserServiceSpec extends PlaySpecification with Mockito {
 

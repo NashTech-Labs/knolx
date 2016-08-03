@@ -14,13 +14,10 @@ import play.api.test._
 import services.{CacheService, UserService}
 import org.mockito.Mockito._
 import org.specs2.mock.Mockito
-
 import scala.concurrent.Future
 import scala.concurrent.ExecutionContext.Implicits.global
 
-/**
-  * Created by deepti on 26/7/16.
-  */
+
 class DashboardControllerSpec extends Specification with Mockito {
 
   val userService = mock[UserService]

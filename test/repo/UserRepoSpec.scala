@@ -1,9 +1,5 @@
 package repo
 
-/**
-  * Created by deepti on 26/7/16.
-  */
-
 import play.api.Application
 import play.api.test.{PlaySpecification, WithApplication}
 import scala.concurrent.duration.Duration
