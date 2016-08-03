@@ -1,8 +1,6 @@
 #knoldus | knolx
 =================================
 
-Knoldus is a team of Passionate Technologists, focused on staying at the edge of the curve. We love to build Scalable, Performant, Concurrent systems with Functional Programming to meet the needs of the business. Our big data solutions have won accolades in domains like Social media analytics, Finance, Healthcare, Gaming, Shipping and Media. Our proactive thinking, led by the mission of Authority enables us to deliver Business Innovation & Acceleration to help you succeed.
-
 #Clone and run the app(default database is H2):
 =====================================================
        $ git clone git@github.com:knoldus/knolx.git
