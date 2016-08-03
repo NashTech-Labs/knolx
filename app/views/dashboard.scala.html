@@ -5,6 +5,8 @@
 @(webJarAssets: WebJarAssets, name:Option[String])(implicit message: Messages, flash: Flash)
 
     @main("knolx | DashBoard")(webJarAssets) {
+
+
         <nav class="navbar navbar-default">
             <script type="text/javascript">
             $(document).ready(function() {
@@ -27,10 +29,10 @@
                 <h4 style="text-align: right;
                     color: BLUE !important;">WELCOME @name</h4>
                 <div align="right">
-                @b3.form(routes.AuthenticationController.signOut) {
-                    @b3.submit('class -> "btn btn-primary btn-lg ") {sign out}
+<form>
+                    @b3.submit('class -> "btn btn-primary btn-lg ",'id -> "signout") {sign out}
+</form>
 
-                }
                 </div>
             </div>
         </nav>
@@ -39,7 +41,7 @@
     <div class="col-md-12">
         <div class="panel panel-default">
             <div class="panel-heading">
-                <h4 class="text-center">KNOLEX SESSION <span class="fa fa-edit pull-right bigicon"></span></h4>
+                <h4 class="text-center">KNOLX SESSION <span class="fa fa-edit pull-right bigicon"></span></h4>
             </div>
             <div class="panel-body text-center">
                 <div id="grid"></div>
@@ -153,6 +155,8 @@
     font-size: 20px;
     }
 </style>
+
+
 
 }
 

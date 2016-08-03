@@ -2,7 +2,6 @@ package repo
 
 
 import com.google.inject.Inject
-
 import models.User
 
 import play.api.db.slick.{DatabaseConfigProvider, HasDatabaseConfigProvider}

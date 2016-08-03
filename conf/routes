@@ -20,5 +20,11 @@ GET     /                                 controllers.DashboardController.render
 
 
 
+#javascript routes
+GET    /javascript/routes                 controllers.ApplicationController.jsRoutes
+
+
+
+
 
 
