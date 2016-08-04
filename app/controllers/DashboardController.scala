@@ -3,11 +3,10 @@ package controllers
 
 import javax.inject.Inject
 
-import play.api.i18n.Messages
 import play.api.Play.current
+import play.api.i18n.Messages
 import play.api.i18n.Messages.Implicits._
 import play.api.mvc.{Action, AnyContent, Controller}
-
 import services.{CacheService, UserService}
 
 import scala.concurrent.ExecutionContext.Implicits.global

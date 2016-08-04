@@ -8,7 +8,7 @@ import org.specs2.mock.Mockito
 import play.api.test.{PlaySpecification, WithApplication}
 import play.api.cache.CacheApi
 
-import repo.UserRepo
+import repo.UserRepository
 
 import scala.concurrent.Future
 

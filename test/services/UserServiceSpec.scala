@@ -19,7 +19,7 @@ class UserServiceSpec extends PlaySpecification with Mockito {
 
   val userRepository = mock[UserRepository]
 
-  val user = User("rahul@gmail.com", "qwerty", "rahul", Some("consultant"), Some(2))
+  val user = User("rahul@gmail.com", "qwerty", "rahul", "consultant", 0,Some(2))
   val userService = new UserService(userRepository)
 
   "validate Email" in new WithApplication() {
