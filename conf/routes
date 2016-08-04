@@ -12,7 +12,7 @@ GET     /home                             controllers.AuthenticationController.r
 #  login page
 POST    /signin                           controllers.AuthenticationController.signIn
 #  logout page
-POST    /signout                          controllers.AuthenticationController.signOut
+GET    /signout                          controllers.AuthenticationController.signOut
 #  signup page
 POST     /signup                          controllers.AuthenticationController.signUp
 #  dashboard page

@@ -6,6 +6,7 @@ import models.User
 
 import play.api.data.Form
 import play.api.data.Forms._
+import play.api.libs.json.JsValue
 import play.api.mvc.{Security, Action, AnyContent, Controller}
 import play.api.i18n.Messages.Implicits._
 import play.api.inject.Injector
@@ -13,6 +14,7 @@ import play.api.Logger
 import play.api.cache._
 import play.api.i18n.Messages
 import play.api.Play.current
+import play.libs.Json
 
 import services.{CacheService, UserService}
 
@@ -40,6 +42,17 @@ class AuthenticationController @Inject()(cacheService: CacheService, webJarAsset
       "emailId" -> email,
       "password" -> nonEmptyText(MIN_LENGTH_OF_PASSWORD)
     ))
+
+
+  /*def toJson: JsValue = Json.toJson(
+    Map(
+      "0" -> Json.toJson(emailId),
+      "1" -> Json.toJson(password),
+      "2" -> Json.toJson(name),
+      "3" -> Json.toJson(designation),
+      "4" -> Json.toJson(id)
+    )
+  )*/
 
   /**
     * Create an Action to render an Home page with login and signup option
