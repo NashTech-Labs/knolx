@@ -45,7 +45,7 @@ class AuthenticationController @Inject()(cacheService: CacheService, webJarAsset
     * Create an Action to render an Home page with login and signup option
     */
 
-  def renderHomePage: Action[AnyContent] = Action.async {
+  def loginPage: Action[AnyContent] = Action.async {
     implicit request =>
       Logger.debug("Redirecting renderHomePage")
       cacheService.getCache.fold(Future.successful(Ok(views.html.home(webJarAssets, loginForm, signUpForm)))
@@ -75,7 +75,7 @@ class AuthenticationController @Inject()(cacheService: CacheService, webJarAsset
           }
           else {
             Logger.error("User Not Found")
-            Redirect(routes.AuthenticationController.renderHomePage()).flashing("ERROR" -> Messages("wrong.login"))
+            Redirect(routes.AuthenticationController.loginPage).flashing("ERROR" -> Messages("wrong.login"))
           }
           }
         }
@@ -103,12 +103,12 @@ class AuthenticationController @Inject()(cacheService: CacheService, webJarAsset
               Redirect(routes.DashboardController.renderDashBoard())
             }
             else {
-              Redirect(routes.AuthenticationController.renderHomePage()).flashing("SIGNUP.ERROR" -> Messages("signup.error"))
+              Redirect(routes.AuthenticationController.loginPage()).flashing("SIGNUP.ERROR" -> Messages("signup.error"))
             })
           }
           else {
 
-            Future.successful(Redirect(routes.AuthenticationController.renderHomePage()).flashing("EMAIL.EXISTS" -> Messages("email.exists")))
+            Future.successful(Redirect(routes.AuthenticationController.loginPage).flashing("EMAIL.EXISTS" -> Messages("email.exists")))
 
           })
         }
@@ -121,7 +121,7 @@ class AuthenticationController @Inject()(cacheService: CacheService, webJarAsset
   def signOut: Action[AnyContent] = Action.async {
     cacheService.remove("id")
     Future.successful {
-      Redirect(routes.AuthenticationController.renderHomePage()).flashing("SUCCESS" -> Messages("logout.success"))
+      Redirect(routes.AuthenticationController.loginPage).flashing("SUCCESS" -> Messages("logout.success"))
 
     }
 

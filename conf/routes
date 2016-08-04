@@ -6,22 +6,27 @@ GET     /assets/*file                     controllers.Assets.versioned(path="/pu
 
 GET     /webjars/*file                    controllers.WebJarAssets.at(file)
 
-#  home page
 
-GET     /home                             controllers.AuthenticationController.renderHomePage
-#  login page
-POST    /signin                           controllers.AuthenticationController.signIn
-#  logout page
-POST    /signout                          controllers.AuthenticationController.signOut
-#  signup page
-POST     /signup                          controllers.AuthenticationController.signUp
+
+
 #  dashboard page
 GET     /                                 controllers.DashboardController.renderDashBoard
+#loginpage
+GET     /home                             controllers.AuthenticationController.loginPage
+#  sign in
+POST    /signin                           controllers.AuthenticationController.signIn
+#  logout
+POST    /signout                          controllers.AuthenticationController.signOut
+#  signup
+POST     /signup                          controllers.AuthenticationController.signUp
+#get all Users
+POST    /getAllUsers                      controllers.DashboardController.getAll
+
 
 
 
 #javascript routes
-GET    /javascript/routes                 controllers.ApplicationController.jsRoutes
+GET    /javascriptRoutes                controllers.Application.jsRoutes
 
 
 

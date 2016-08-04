@@ -5,13 +5,13 @@
 @(webJarAssets: WebJarAssets, name:Option[String])(implicit message: Messages, flash: Flash)
 
     @main("knolx | DashBoard")(webJarAssets) {
-
-
-        <nav class="navbar navbar-default">
+    <form>
+        <button id="load" >Load Data</button>
+    </form>
+            <nav class="navbar navbar-default">
             <script type="text/javascript">
             $(document).ready(function() {
         function disableBack() { window.history.forward() }
-
         window.onload = disableBack();
         window.onpageshow = function(evt) { if (evt.persisted) disableBack() }
     });
@@ -29,13 +29,16 @@
                 <h4 style="text-align: right;
                     color: BLUE !important;">WELCOME @name</h4>
                 <div align="right">
-<form>
-                    @b3.submit('class -> "btn btn-primary btn-lg ",'id -> "signout") {sign out}
-</form>
-
+                @* @b3.form(routes.AuthenticationController.signOut) { *@
+                <form>
+                    @b3.submit('class -> "btn btn-primary btn-lg " , 'id -> "signout") {sign out}
+                </form>
                 </div>
             </div>
         </nav>
+
+
+
 
 <div class="container">
     <div class="col-md-12">
@@ -48,8 +51,6 @@
             </div>
         </div>
     </div>
-
-
 </div>
 
 <!-- you need to include the shieldui css and js assets in order for the grids to work -->
@@ -156,7 +157,19 @@
     }
 </style>
 
+    <script type="text/javascript" charset="utf-8">
+            var doc = $ (document);
+            doc.ready (function() {
 
+                $('#load').click( function() {
+                    alert("inside html script")
+                    $.ajax(jsRoutes.controllers.DashboardController.getAll())
+                            .done(function(data){ alert("success" + data.email)})
+                            .fail(  $location.path('http://localhost:9000/home') );
+                });
+            });
+
+</script>
 
 }
 
