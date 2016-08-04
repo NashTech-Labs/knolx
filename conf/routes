@@ -2,31 +2,31 @@
 # ~~~~
 
 # Map static resources from the /public folder to the /assets URL path
-GET     /assets/*file                     controllers.Assets.versioned(path="/public", file: Asset)
+GET         /assets/*file            controllers.Assets.versioned(path="/public", file: Asset)
 
-GET     /webjars/*file                    controllers.WebJarAssets.at(file)
+GET         /webjars/*file           controllers.WebJarAssets.at(file)
 
 
 
 
 #  dashboard page
-GET     /                                 controllers.DashboardController.renderDashBoard
+GET         /                        controllers.DashboardController.renderDashBoard
 #loginpage
-GET     /home                             controllers.AuthenticationController.loginPage
+GET         /home                    controllers.AuthenticationController.loginPage
 #  sign in
-POST    /signin                           controllers.AuthenticationController.signIn
+POST        /signin                  controllers.AuthenticationController.signIn
 #  logout
-POST    /signout                          controllers.AuthenticationController.signOut
+POST        /signout                 controllers.AuthenticationController.signOut
 #  signup
-POST     /signup                          controllers.AuthenticationController.signUp
+POST        /signup                  controllers.AuthenticationController.signUp
 #get all Users
-POST    /getAllUsers                      controllers.DashboardController.getAll
+POST        /getAllUsers             controllers.DashboardController.getAll
 
 
 
 
 #javascript routes
-GET    /javascriptRoutes                controllers.Application.jsRoutes
+GET         /javascriptRoutes        controllers.Application.jsRoutes
 
 
 

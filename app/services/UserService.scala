@@ -23,6 +23,7 @@ class UserService @Inject()(userRepository: UserRepository) {
     val user: Future[Option[User]] = userRepository.getByEmailAndPassword(emailId, password)
     user.map(_.isDefined)
   }
+
   /**
     * service for sign up user
     */
@@ -50,8 +51,8 @@ class UserService @Inject()(userRepository: UserRepository) {
     user.map(value => value.map(_.name))
   }
 
-  def getAll() : Future[List[User]] ={
-    userRepository.getAll.map(users => users.map(values => println(values)))
+  def getAll(): Future[List[User]] = {
+    Logger.debug("Getiing All Users.")
     userRepository.getAll
   }
 

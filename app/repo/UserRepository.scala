@@ -49,12 +49,12 @@ class UserRepository @Inject()(protected val dbConfigProvider: DatabaseConfigPro
   }
 
   /**
-    *delete a user from databse
+    * delete a user from databse
     */
 
-  def delete(id:Long):Future[Int] = {
+  def delete(id: Long): Future[Int] = {
     Logger.info("Deleting user record.")
-    db.run(userTableQuery.filter(_.id=== id).delete)
+    db.run(userTableQuery.filter(_.id === id).delete)
   }
 
 

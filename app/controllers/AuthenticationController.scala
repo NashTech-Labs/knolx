@@ -26,7 +26,7 @@ class AuthenticationController @Inject()(cacheService: CacheService, webJarAsset
       "password" -> nonEmptyText(MIN_LENGTH_OF_PASSWORD),
       "name" -> nonEmptyText(MIN_LENGTH_OF_NAME),
       "designation" -> text,
-      "category"->ignored(0),
+      "category" -> ignored(0),
       "id" -> optional(longNumber)
     )(User.apply)(User.unapply))
 

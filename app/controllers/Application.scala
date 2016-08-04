@@ -10,7 +10,7 @@ class Application extends Controller {
 
     Ok(JavaScriptReverseRouter("jsRoutes")(
       routes.javascript.AuthenticationController.signOut,
-        routes.javascript.DashboardController.getAll
+      routes.javascript.DashboardController.getAll
     )
     )
       .as("text/javascript")
