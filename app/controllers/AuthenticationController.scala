@@ -3,24 +3,18 @@ package controllers
 import javax.inject._
 
 import models.User
-
+import play.api.Logger
+import play.api.Play.current
 import play.api.data.Form
 import play.api.data.Forms._
-import play.api.mvc.{Security, Action, AnyContent, Controller}
-import play.api.i18n.Messages.Implicits._
-import play.api.inject.Injector
-import play.api.Logger
-import play.api.cache._
 import play.api.i18n.Messages
-import play.api.Play.current
-
+import play.api.i18n.Messages.Implicits._
+import play.api.mvc.{Action, AnyContent, Controller}
 import services.{CacheService, UserService}
-
-import utils.Helpers
 import utils.Constants._
-
-import scala.concurrent.Future
+import utils.Helpers
 import scala.concurrent.ExecutionContext.Implicits.global
+import scala.concurrent.Future
 
 
 @Singleton
@@ -31,7 +25,8 @@ class AuthenticationController @Inject()(cacheService: CacheService, webJarAsset
       "emailId" -> nonEmptyText,
       "password" -> nonEmptyText(MIN_LENGTH_OF_PASSWORD),
       "name" -> nonEmptyText(MIN_LENGTH_OF_NAME),
-      "designation" -> optional(text),
+      "designation" -> text,
+      "category"->ignored(0),
       "id" -> optional(longNumber)
     )(User.apply)(User.unapply))
 

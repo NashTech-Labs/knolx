@@ -2,16 +2,14 @@ package services
 
 import com.fasterxml.jackson.databind.JsonNode
 import com.google.inject.Inject
-
 import models.User
-import play.libs.Json
+
+import play.api.Logger
 
 import repo.UserRepository
 
-import scala.concurrent.Future
 import scala.concurrent.ExecutionContext.Implicits.global
-
-import play.api.Logger
+import scala.concurrent.Future
 
 
 class UserService @Inject()(userRepository: UserRepository) {

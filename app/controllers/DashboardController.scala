@@ -4,8 +4,8 @@ package controllers
 import javax.inject.Inject
 
 import play.Routes
-import play.api.i18n.Messages
 import play.api.Play.current
+import play.api.i18n.Messages
 import play.api.i18n.Messages.Implicits._
 import play.api.libs.json.{Json, Writes}
 import play.api.mvc.{Result, Action, AnyContent, Controller}

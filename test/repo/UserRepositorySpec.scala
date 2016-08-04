@@ -24,13 +24,18 @@ class UserRepositorySpec extends PlaySpecification {
   }
 
   "insert user " in new WithApplication() {
-    val result = await(userRepository.insert(User("rahul@gmail.com", "rahul1234", "rahul", Some("consultant"), Some(2))))
+    val result = await(userRepository.insert(User("rahul@gmail.com", "rahul1234", "rahul", "consultant",0, Some(2))))
     result === 2
   }
 
   "get all users" in new WithApplication() {
-
     val result = await(userRepository.getAll)
     result.length === 2
+  }
+
+
+  "delete a user" in new WithApplication() {
+    val result = await(userRepository.delete(2))
+    result === 1
   }
 }

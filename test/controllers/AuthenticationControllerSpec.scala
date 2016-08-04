@@ -86,7 +86,7 @@ class AuthenticationControllerSpec extends Specification with Mockito {
       val results = call(authenticationController.signUp, FakeRequest(POST, "/signup").withFormUrlEncodedBody("emailId" -> "deep@gmail.com",
         "password" -> "q", "name" -> "deep", "designation" -> "sw"))
       when(userService.validateEmail("deep@gmail.com")).thenReturn(Future.successful(false))
-      when(userService.signUpUser(new User("deep@gmail.com", "c", "deep", Some("sw"), None))).thenReturn(Future.successful(true))
+      when(userService.signUpUser(new User("deep@gmail.com", "c", "deep", "sw", 0,None))).thenReturn(Future.successful(true))
       status(results) must equalTo(BAD_REQUEST)
       contentAsString(results).contains("knolx")
     }
@@ -96,7 +96,7 @@ class AuthenticationControllerSpec extends Specification with Mockito {
       val results = call(authenticationController.signUp, FakeRequest(POST, "/signup").withFormUrlEncodedBody("emailId" -> "deep@gmail.com",
         "password" -> "qwerty", "name" -> "deep", "designation" -> "sw"))
       when(userService.validateEmail("deep@gmail.com")).thenReturn(Future.successful(false))
-      when(userService.signUpUser(new User("deep@gmail.com", "cXdlcnR5", "deep", Some("sw"), None))).thenReturn(Future.successful(true))
+      when(userService.signUpUser(new User("deep@gmail.com", "cXdlcnR5", "deep", "sw",0, None))).thenReturn(Future.successful(true))
       status(results) must equalTo(SEE_OTHER)
       contentAsString(results).contains("knolx | dashboard")
     }
@@ -113,7 +113,7 @@ class AuthenticationControllerSpec extends Specification with Mockito {
       val results = call(authenticationController.signUp, FakeRequest(POST, "/signup").withFormUrlEncodedBody("emailId" -> "deep@gmail.com",
         "password" -> "qwerty", "name" -> "deep", "designation" -> "sw"))
       when(userService.validateEmail("deep@gmail.com")).thenReturn(Future.successful(true))
-      when(userService.signUpUser(new User("deep@gmail.com", "cXdlcnR5", "deep", Some("sw"), None))).thenReturn(Future.successful(false))
+      when(userService.signUpUser(new User("deep@gmail.com", "cXdlcnR5", "deep", "sw",0, None))).thenReturn(Future.successful(false))
       status(results) must equalTo(SEE_OTHER)
       contentAsString(results).contains("knolx")
     }
