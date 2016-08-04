@@ -1,15 +1,16 @@
 package services
 
+
 import com.google.inject.Inject
 
 import models.User
 
+import play.api.Logger
+
 import repo.UserRepository
 
-import scala.concurrent.Future
 import scala.concurrent.ExecutionContext.Implicits.global
-
-import play.api.Logger
+import scala.concurrent.Future
 
 
 class UserService @Inject()(userRepository: UserRepository) {
@@ -48,6 +49,11 @@ class UserService @Inject()(userRepository: UserRepository) {
   def getNameByEmail(email: String): Future[Option[String]] = {
     val user: Future[Option[User]] = userRepository.getByEmail(email)
     user.map(value => value.map(_.name))
+  }
+
+  def getAll() : Future[List[User]] ={
+    userRepository.getAll.map(users => users.map(values => println(values)))
+    userRepository.getAll
   }
 
 }

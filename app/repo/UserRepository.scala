@@ -2,15 +2,11 @@ package repo
 
 
 import com.google.inject.Inject
-
 import models.User
-
-import play.api.db.slick.{DatabaseConfigProvider, HasDatabaseConfigProvider}
 import play.api.Logger
-
+import play.api.db.slick.{DatabaseConfigProvider, HasDatabaseConfigProvider}
 import slick.driver.JdbcProfile
-import slick.lifted.Tag
-
+import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
 
@@ -52,6 +48,17 @@ class UserRepository @Inject()(protected val dbConfigProvider: DatabaseConfigPro
     Logger.info("Getting all user record.")
     db.run(userTableQuery.to[List].result)
   }
+
+  /**
+    *delete a user from databse
+    */
+
+  def delete(id:Long):Future[Int] = {
+    Logger.info("Deleting user record.")
+    db.run(userTableQuery.filter(_.id=== id).delete)
+  }
+
+
 }
 
 /**
@@ -65,7 +72,7 @@ trait UserTable {
   lazy val userTableQuery = TableQuery[UserInfo]
 
   class UserInfo(tag: Tag) extends Table[User](tag, "users") {
-    def * = (email, password, name, designation.?, id.?) <>((User.apply _).tupled, User.unapply)
+    def * = (email, password, name, designation, category, id.?) <>((User.apply _).tupled, User.unapply)
 
     def id: Rep[Long] = column[Long]("id", O.AutoInc, O.PrimaryKey)
 
@@ -74,6 +81,8 @@ trait UserTable {
     def name: Rep[String] = column[String]("name", O.SqlType("VARCHAR(100"))
 
     def designation: Rep[String] = column[String]("designation", O.SqlType("VARCHAR(100"))
+
+    def category: Rep[Int] = column[Int]("category", O.Default(0))
 
     def email: Rep[String] = column[String]("email", O.SqlType("VARCHAR(100"))
 

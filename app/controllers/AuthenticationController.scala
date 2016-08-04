@@ -4,25 +4,23 @@ import javax.inject._
 
 import models.User
 
+import play.api.Logger
+import play.api.Play.current
+import play.api.cache._
 import play.api.data.Form
 import play.api.data.Forms._
-import play.api.libs.json.JsValue
-import play.api.mvc.{Security, Action, AnyContent, Controller}
+import play.api.i18n.Messages
 import play.api.i18n.Messages.Implicits._
 import play.api.inject.Injector
-import play.api.Logger
-import play.api.cache._
-import play.api.i18n.Messages
-import play.api.Play.current
-import play.libs.Json
+import play.api.mvc.{Action, AnyContent, Controller}
 
 import services.{CacheService, UserService}
 
-import utils.Helpers
 import utils.Constants._
+import utils.Helpers
 
-import scala.concurrent.Future
 import scala.concurrent.ExecutionContext.Implicits.global
+import scala.concurrent.Future
 
 
 @Singleton
@@ -33,7 +31,8 @@ class AuthenticationController @Inject()(cacheService: CacheService, webJarAsset
       "emailId" -> nonEmptyText,
       "password" -> nonEmptyText(MIN_LENGTH_OF_PASSWORD),
       "name" -> nonEmptyText(MIN_LENGTH_OF_NAME),
-      "designation" -> optional(text),
+      "designation" -> text,
+      "category" -> ignored(0),
       "id" -> optional(longNumber)
     )(User.apply)(User.unapply))
 
@@ -44,21 +43,11 @@ class AuthenticationController @Inject()(cacheService: CacheService, webJarAsset
     ))
 
 
-  /*def toJson: JsValue = Json.toJson(
-    Map(
-      "0" -> Json.toJson(emailId),
-      "1" -> Json.toJson(password),
-      "2" -> Json.toJson(name),
-      "3" -> Json.toJson(designation),
-      "4" -> Json.toJson(id)
-    )
-  )*/
-
   /**
     * Create an Action to render an Home page with login and signup option
     */
 
-  def renderHomePage: Action[AnyContent] = Action.async {
+  def loginPage: Action[AnyContent] = Action.async {
     implicit request =>
       Logger.debug("Redirecting renderHomePage")
       cacheService.getCache.fold(Future.successful(Ok(views.html.home(webJarAssets, loginForm, signUpForm)))
@@ -88,7 +77,7 @@ class AuthenticationController @Inject()(cacheService: CacheService, webJarAsset
           }
           else {
             Logger.error("User Not Found")
-            Redirect(routes.AuthenticationController.renderHomePage()).flashing("ERROR" -> Messages("wrong.login"))
+            Redirect(routes.AuthenticationController.loginPage).flashing("ERROR" -> Messages("wrong.login"))
           }
           }
         }
@@ -116,12 +105,12 @@ class AuthenticationController @Inject()(cacheService: CacheService, webJarAsset
               Redirect(routes.DashboardController.renderDashBoard())
             }
             else {
-              Redirect(routes.AuthenticationController.renderHomePage()).flashing("SIGNUP.ERROR" -> Messages("signup.error"))
+              Redirect(routes.AuthenticationController.loginPage()).flashing("SIGNUP.ERROR" -> Messages("signup.error"))
             })
           }
           else {
 
-            Future.successful(Redirect(routes.AuthenticationController.renderHomePage()).flashing("EMAIL.EXISTS" -> Messages("email.exists")))
+            Future.successful(Redirect(routes.AuthenticationController.loginPage).flashing("EMAIL.EXISTS" -> Messages("email.exists")))
 
           })
         }
@@ -134,7 +123,7 @@ class AuthenticationController @Inject()(cacheService: CacheService, webJarAsset
   def signOut: Action[AnyContent] = Action.async {
     cacheService.remove("id")
     Future.successful {
-      Redirect(routes.AuthenticationController.renderHomePage()).flashing("SUCCESS" -> Messages("logout.success"))
+      Redirect(routes.AuthenticationController.loginPage).flashing("SUCCESS" -> Messages("logout.success"))
 
     }
 
