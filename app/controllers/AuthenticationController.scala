@@ -3,16 +3,22 @@ package controllers
 import javax.inject._
 
 import models.User
+
 import play.api.Logger
 import play.api.Play.current
+import play.api.cache._
 import play.api.data.Form
 import play.api.data.Forms._
 import play.api.i18n.Messages
 import play.api.i18n.Messages.Implicits._
+import play.api.inject.Injector
 import play.api.mvc.{Action, AnyContent, Controller}
+
 import services.{CacheService, UserService}
+
 import utils.Constants._
 import utils.Helpers
+
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
@@ -36,6 +42,7 @@ class AuthenticationController @Inject()(cacheService: CacheService, webJarAsset
       "password" -> nonEmptyText(MIN_LENGTH_OF_PASSWORD)
     ))
 
+
   /**
     * Create an Action to render an Home page with login and signup option
     */
@@ -49,7 +56,7 @@ class AuthenticationController @Inject()(cacheService: CacheService, webJarAsset
   }
 
   /**
-    * Create an Action for signin option
+    * Create an Action for sign in option
     */
   def signIn: Action[AnyContent] = Action.async {
     implicit request =>
@@ -86,7 +93,7 @@ class AuthenticationController @Inject()(cacheService: CacheService, webJarAsset
       signUpForm.bindFromRequest.fold(
         formWithErrors => {
           Logger.error("Sign-up badRequest.")
-          Future(BadRequest(views.html.home(webJarAssets, loginForm, formWithErrors)))
+          Future.successful(BadRequest(views.html.home(webJarAssets, loginForm, formWithErrors)))
         },
         validData => {
           val encodedUserdata: User = validData.copy(email = validData.email.toLowerCase(),

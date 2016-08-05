@@ -1,12 +1,12 @@
 package controllers
 
-import play.api.mvc.{Action, Controller}
+import play.api.mvc.{AnyContent, Action, Controller}
 import play.api.routing.JavaScriptReverseRouter
 
 
 class Application extends Controller {
 
-  def jsRoutes = Action { implicit request =>
+ def jsRoutes: Action[AnyContent] = Action { implicit request =>
 
     Ok(JavaScriptReverseRouter("jsRoutes")(
       routes.javascript.DashboardController.getAll
@@ -15,8 +15,8 @@ class Application extends Controller {
       .as("text/javascript")
   }
 
-  def index = Action { implicit request =>
-    Redirect(routes.AuthenticationController.loginPage)
+  def index: Action[AnyContent] = Action { implicit request =>
+    Redirect(routes.AuthenticationController.loginPage())
   }
 
 }

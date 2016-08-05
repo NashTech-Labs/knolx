@@ -11,6 +11,7 @@ import scala.concurrent.Future
 
 
 class UserRepository @Inject()(protected val dbConfigProvider: DatabaseConfigProvider) extends UserTable
+
   with HasDatabaseConfigProvider[JdbcProfile] {
 
   import driver.api._

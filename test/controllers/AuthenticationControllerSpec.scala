@@ -66,7 +66,7 @@ class AuthenticationControllerSpec extends Specification with Mockito {
       when(userService.getNameByEmail("deepti@gmail.com")) thenReturn Future.successful(Some("deepti"))
 
 
-      val results = call(authenticationController.renderHomePage, FakeRequest(GET, "/home"))
+      val results = call(authenticationController.loginPage, FakeRequest(GET, "/home"))
       status(results) must equalTo(OK)
       contentAsString(results).contains("knolx | DashBoard")
     }
@@ -76,7 +76,7 @@ class AuthenticationControllerSpec extends Specification with Mockito {
 
       when(userService.getNameByEmail("deepti@gmail.com")) thenReturn Future.successful(Some("deepti"))
 
-      val results = call(authenticationController.renderHomePage, FakeRequest(GET, "/home"))
+      val results = call(authenticationController.loginPage, FakeRequest(GET, "/home"))
       status(results) must equalTo(OK)
       contentAsString(results).contains("knolx")
     }
