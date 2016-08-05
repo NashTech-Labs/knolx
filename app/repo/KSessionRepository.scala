@@ -16,7 +16,7 @@ class KSessionRepository @Inject()(protected val dbConfigProvider: DatabaseConfi
   import driver.api._
 
   /**
-    * insert a new knolx session
+    * insert a new knolX session
     */
   def insert(kSession: KSession): Future[Long] = {
     Logger.info("Inserting KnolX session.")
@@ -24,14 +24,14 @@ class KSessionRepository @Inject()(protected val dbConfigProvider: DatabaseConfi
   }
 
   /**
-     get all KnolX sessions from databse
+     get all KnolX sessions from database
     */
   def getAll():Future[List[KSession]]={
     Logger.info("Getting all KnolX session record.")
     db.run(kSessionTableQuery.to[List].result)
   }
   /**
-    *delete a knolx session from databse
+    *delete a knolX session from database
     */
 
   def delete(id:Long):Future[Int]={
@@ -39,7 +39,7 @@ class KSessionRepository @Inject()(protected val dbConfigProvider: DatabaseConfi
     db.run(kSessionTableQuery.filter(_.id === id).delete)
   }
   /**
-    *update a knolx session in databse
+    *update a knolX session in database
     */
   def update(id:Long,ksession: KSession):Future[Int]={
     Logger.info("Updating KnolX session record.")
@@ -47,6 +47,11 @@ class KSessionRepository @Inject()(protected val dbConfigProvider: DatabaseConfi
   }
 
 }
+
+/**
+  * KSession trait which is used for mapping
+  */
+
   trait KSessionTable extends UserTable{
     self: HasDatabaseConfigProvider[JdbcProfile] =>
 

@@ -1,16 +1,15 @@
 package controllers
 
 import models.User
-
 import org.specs2.mutable.Specification
 import org.junit.runner._
 import org.specs2.runner._
 import org.mockito.Mockito._
 import org.specs2.mock.Mockito
-
 import play.api.test.{FakeRequest, WithApplication}
 import play.api.test.Helpers._
 import play.api.cache.CacheApi
+import play.api.i18n.MessagesApi
 import services.{CacheService, UserService}
 
 import scala.concurrent.Future
@@ -26,8 +25,9 @@ class AuthenticationControllerSpec extends Specification with Mockito {
   val userService = mock[UserService]
   val webJarAssets = mock[WebJarAssets]
   val cacheService = mock[CacheService]
+  val messagesApi  = mock[MessagesApi]
 
-  val authenticationController = new AuthenticationController(cacheService, webJarAssets, userService)
+  val authenticationController = new AuthenticationController(cacheService, webJarAssets, userService,messagesApi)
 
   "home Controller" should {
 

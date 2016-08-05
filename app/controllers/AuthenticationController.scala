@@ -7,12 +7,13 @@ import play.api.Logger
 import play.api.Play.current
 import play.api.data.Form
 import play.api.data.Forms._
-import play.api.i18n.Messages
+import play.api.i18n.{Messages, MessagesApi}
 import play.api.i18n.Messages.Implicits._
 import play.api.mvc.{Action, AnyContent, Controller}
 import services.{CacheService, UserService}
 import utils.Constants._
 import utils.Helpers
+
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
