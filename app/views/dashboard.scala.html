@@ -1,176 +1,171 @@
-@import b3.vertical.fieldConstructor
-@import models._
-@import controllers._
+@(webJarAssets: WebJarAssets, name:Option[String])(implicit message: Messages, flash: Flash)
+<html>
+    <head>
+        <title>Bootstrap Admin Theme v3</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+            <!-- Bootstrap -->
+        <link href="@routes.Assets.versioned("css/bootstrap.min.css")" rel="stylesheet">
+            <!-- styles -->
+        <link href="@routes.Assets.versioned("css/styles.css")" rel="stylesheet">
+        <link rel="stylesheet" media="screen" href="@routes.Assets.versioned("stylesheets/main.css")">
+        <link rel="shortcut icon" type="image/png" href="@routes.Assets.versioned("images/knolduslogo.png")">
+        <link rel='stylesheet' src='@routes.WebJarAssets.at(webJarAssets.locate("css/bootstrap.min.css"))'>
+        <script type="text/javascript" src='@routes.WebJarAssets.at(webJarAssets.locate("jquery.min.js"))'></script>
+        <script type="text/javascript" src='@routes.WebJarAssets.at(webJarAssets.locate("dataTable"))'></script>
+        <script type="text/javascript" src='@routes.WebJarAssets.at(webJarAssets.locate("js/bootstrap.min.js"))'></script>
+        <link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css">
+        <script type="text/javascript" src="@routes.Application.jsRoutes"></script>
 
-@(webJarAssets: WebJarAssets, name: Option[String])(implicit message: Messages, flash: Flash)
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
 
-@main("knolx | DashBoard")(webJarAssets) {
-    <form>
-        <button id="load" >Load Data</button>
-    </form>
-    <nav class="navbar navbar-default">
-        <script type="text/javascript">
-                $(document).ready(function() {
-                    function disableBack() { window.history.forward() }
-                    window.onload = disableBack();
-                    window.onpageshow = function(evt) { if (evt.persisted) disableBack() }
+    <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+    <script src="https://oss.maxcdn.com/libs/respond.js/1.3.0/respond.min.js"></script>
+    <![endif]-->
+    </head>
+    <body>
+        <div class="header">
+            <div class="container">
+                <div class="row">
+                    <div class="col-md-5">
+                            <!-- Logo -->
+                        <div class="logo">
+                            <h1><a href="index.html">KNOLX</a></h1>
+                        </div>
+                    </div>
+                    <div class="col-md-5">
+                        <div class="row">
+                            <div class="col-lg-12">
+                                <div class="input-group form">
+                                    <input type="text" class="form-control" placeholder="Search...">
+                                    <span class="input-group-btn">
+                                        <button class="btn btn-primary" type="button">Search</button>
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-2">
+                        <div class="navbar navbar-inverse" role="banner">
+                            <nav class="collapse navbar-collapse bs-navbar-collapse navbar-right" role="navigation">
+                                <ul class="nav navbar-nav">
+                                    <li class="dropdown">
+                                        <a href="#" class="dropdown-toggle" data-toggle="dropdown">@name<span class="glyphicon glyphicon-user pull-right"></span></a>
+                                        <ul class="dropdown-menu">
+                                            <li>
+                                                <a href="#acc">Account Settings <span class="glyphicon glyphicon-cog pull-right"></span></a>
+                                            </li>
+                                            <li class="divider"></li>
+                                            <li>
+                                                <a href="#fav">Favourites<span class="glyphicon glyphicon-heart pull-right"></span></a>
+                                            </li>
+                                            <li class="divider"></li>
+                                            <li>
+                                                <a href="#status">Status <span class="glyphicon glyphicon-stats pull-right"></span></a>
+                                            </li>
+                                            <li class="divider"></li>
+                                            <li>
+                                                <a href="@routes.AuthenticationController.signOut">Logout<span class="glyphicon glyphicon-log-out pull-right"></span></a>
+                                            </li>
+                                        </ul>
+                                    </li>
+                                </ul>
+                            </nav>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="page-content">
+            <div class="row">
+                <div class="col-md-2">
+                    <div class="sidebar content-box" style="display: block;">
+                        <ul class="nav">
+                                <!-- Main menu -->
+                            <li class="current" id="dashboard" ><a  href="#"><i class="glyphicon glyphicon-home"></i> Dashboard</a></li>
+                            <li><a href="#" ><i class="glyphicon glyphicon-calendar"></i> Calendar</a></li>
+                            <li><a href="#"><i class="glyphicon glyphicon-stats"></i> Statistics (Charts)</a></li>
+                            <li><a href="#"><i class="glyphicon glyphicon-list"></i> Tables</a></li>
+                            <li><a href="#"><i class="glyphicon glyphicon-pencil"></i> Editors</a></li>
+                            <li><a href="#"><i class="glyphicon glyphicon-tasks"></i> Forms</a></li>
+                            <li class="submenu">
+                                <a href="#">
+                                    <i class="glyphicon glyphicon-list"></i> Pages
+                                    <span class="caret pull-right"></span>
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="col-md-10">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="content-box-large">
+                                <div class="panel-heading">
+                                    <div class="panel-title"></div>
+                                    <div class="panel-options">
+                                    </div>
+                                </div>
+                                <div class="container-fluid">
+                                    <div class="row">
+                                        <table  class="display table table-striped table-bordered" id="userTable">
+                                            <thead>
+                                                <tr>
+                                                    <th>Id</th>
+                                                    <th>Name</th>
+                                                    <th>Email</th>
+                                                    <th>City</th>
+                                                    <th>State</th>
+                                                    <th>Zip</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                            </tbody>
+                                        </table>
+                                        <img src="@routes.Assets.versioned("images/4.jpg")" class="img-responsive">
+                                    </div>
+                                </div>
+                                <div class="panel-body">
+
+                                    <br /><br />
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <footer>
+                <div class="container">
+
+                    <div class="copy text-center">
+                        Copyright 2014 <a href='#'>Website</a>
+                    </div>
+
+                </div>
+            </footer>
+
+                <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
+            <script src="https://code.jquery.com/jquery.js"></script>
+                <!-- Include all compiled plugins (below), or include individual files as needed -->
+            <link href="@routes.Assets.versioned("javascripts/bootstrap.min.js")" rel="stylesheet">
+            <script src="@routes.Assets.versioned("javascripts/custom.js")"></script>
+  </div>
+        <script type="text/javascript" charset="utf-8">
+                var doc = $ (document);
+                doc.ready (function() {
+
+                    $('#userTable').dataTable({
+                        "bProcessing" : true,
+                        "bServerSide" : true,
+                        "ajax": {
+
+                            url:"jsRoutes.controllers.DashboardController.getAl"
+                        }
+
+
+                    })
                 });
         </script>
-        <div class="container-fluid">
-
-            <div class="navbar-header">
-                <img style=" text-align: center ;
-                color: black !important ;
-                border: 2px solid white
-                "
-                src="@routes.Assets.versioned("images/knolxlogo.png")" class="img-rounded" width="300" height="100">
-
-            </div>
-            <h4 style="text-align: right ;
-            color: BLUE !important ;
-            ">WELCOME @name</h4>
-            <div align="right">
-                @b3.form(routes.AuthenticationController.signOut) {
-                    @b3.submit('class -> "btn btn-primary btn-lg ", 'id -> "signout") {sign out}
-                }
-            </div>
-        </div>
-    </nav>
-
-
-    <table id="userDataTable" class="table table-striped table-bordered" cellspacing="0" width="100%">
-
-    </table>
-
-    <div class="container">
-        <div class="col-md-12">
-            <div class="panel panel-default">
-                <div class="panel-heading">
-                    <h4 class="text-center">KNOLX SESSION <span class="fa fa-edit pull-right bigicon"></span></h4>
-                </div>
-                <div class="panel-body text-center">
-                    <div id="grid"></div>
-                </div>
-            </div>
-        </div>
-    </div>
-
-        <!-- you need to include the shieldui css and js assets in order for the grids to work -->
-    <link rel="stylesheet" type="text/css" href="http://www.prepbootstrap.com/Content/shieldui-lite/dist/css/light/all.min.css" />
-    <script type="text/javascript" src="http://www.prepbootstrap.com/Content/shieldui-lite/dist/js/shieldui-lite-all.min.js"></script>
-
-    <script type="text/javascript" src="http://www.prepbootstrap.com/Content/data/shortGridData.js"></script>
-
-    <script type="text/javascript">
-            $(document).ready(function () {
-                $("#grid").shieldGrid({
-                    dataSource: {
-                        data: gridData,
-                        schema: {
-                            fields: {
-                                id: { path: "id", type: Number },
-                                age: { path: "age", type: Number },
-                                name: { path: "name", type: String },
-                                company: { path: "company", type: String },
-                                month: { path: "month", type: Date },
-                                isActive: { path: "isActive", type: Boolean },
-                                email: { path: "email", type: String },
-                                transport: { path: "transport", type: String }
-                            }
-                        }
-                    },
-                    sorting: {
-                        multiple: true
-                    },
-                    rowHover: false,
-                    columns: [
-                        { field: "name", title: "Person Name", width: "120px" },
-                        { field: "age", title: "Age", width: "80px" },
-                        { field: "company", title: "Company Name" },
-                        { field: "month", title: "Date of Birth", format: "{0:MM/dd/yyyy}", width: "120px" },
-                        { field: "isActive", title: "Active" },
-                        { field: "email", title: "Email Address", width: "250px" },
-                        { field: "transport", title: "Custom Editor", width: "120px", editor: myCustomEditor },
-                        {
-                            width: "104px",
-                            title: "Delete Column",
-                            buttons: [
-                                { cls: "deleteButton",
-                                    commandName: "delete",
-                                    caption: "<img src='http://www.prepbootstrap.com/Content/images/template/BootstrapEditableGrid/delete.png' /><span>Delete</span>" }
-                            ]
-                        }
-                    ],
-                    editing: {
-                        enabled: true,
-                        event: "click",
-                        type: "cell",
-                        confirmation: {
-                            "delete": {
-                                enabled: true,
-                                template: function (item) {
-                                    return "Delete row with ID = " + item.id
-                                }
-                            }
-                        }
-                    },
-                    events:
-                    {
-                        getCustomEditorValue: function (e) {
-                            e.value = $("#dropdown").swidget().value();
-                            $("#dropdown").swidget().destroy();
-                        }
-                    }
-                });
-
-                function myCustomEditor(cell, item) {
-                    $('<div id="dropdown"/>')
-                            .appendTo(cell)
-                            .shieldDropDown({
-                                dataSource: {
-                                    data: ["motorbike", "car", "truck"]
-                                },
-                                value: !item["transport"] ? null : item["transport"].toString()
-                            }).swidget().focus();
-                }
-            });
-    </script>
-
-    <style type="text/css">
-    .sui-button-cell {
-    text-align: center ;
-    }
-
-    .sui-checkbox {
-    font-size: 17px !important ;
-    padding-bottom: 4px !important ;
-    }
-
-    .deleteButton img {
-    margin-right: 3px ;
-    vertical-align: bottom ;
-    }
-
-    .bigicon {
-    color: #5CB85C ;
-    font-size: 20px ;
-    }
-    </style>
-
-    <script type="text/javascript" charset="utf-8">
-            var doc = $ (document);
-            doc.ready (function() {
-
-                $('#load').click( function() {
-                    alert("inside html script")
-                    $.ajax(jsRoutes.controllers.DashboardController.getAll())
-                            .done(function(data){ alert("success " + data.email)})
-                            .fail(  $location.path('http://localhost:9000/home') );
-                });
-            });
-
-    </script>
-
-}
-
-
+    </body>
+</html>

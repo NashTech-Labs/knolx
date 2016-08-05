@@ -18,7 +18,6 @@ import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
 
-
 class DashboardController @Inject()(cacheService: CacheService, webJarAssets: WebJarAssets, userService: UserService) extends Controller {
 
   /**
@@ -35,16 +34,13 @@ class DashboardController @Inject()(cacheService: CacheService, webJarAssets: We
   }
 
 
-  def getAll:Action[AnyContent] = Action.async {
+  def getAll: Action[AnyContent] = Action.async {
     implicit request =>
-      userService.getAll.map{
+      userService.getAll.map {
         users =>
-          implicit val userJson= new Writes[List[User]] {
-            def writes(user: List[User]) = {
-               Json.obj("email" -> user.head.email)
-              }
-          }
-          Ok(userJson.writes(users))
+          implicit val userFormat = Json.format[User]
+
+          Ok(Json.toJson(users))
       }
   }
 

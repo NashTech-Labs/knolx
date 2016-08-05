@@ -9,7 +9,6 @@ class Application extends Controller {
   def jsRoutes = Action { implicit request =>
 
     Ok(JavaScriptReverseRouter("jsRoutes")(
-      routes.javascript.AuthenticationController.signOut,
       routes.javascript.DashboardController.getAll
     )
     )

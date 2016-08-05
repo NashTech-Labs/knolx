@@ -53,6 +53,7 @@ class UserService @Inject()(userRepository: UserRepository) {
 
   def getAll(): Future[List[User]] = {
     Logger.debug("Getiing All Users.")
+    userRepository.getAll.map(values => values.map(user => println(user)))
     userRepository.getAll
   }
 

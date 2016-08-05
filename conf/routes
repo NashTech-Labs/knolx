@@ -16,7 +16,7 @@ GET         /home                    controllers.AuthenticationController.loginP
 #  sign in
 POST        /signin                  controllers.AuthenticationController.signIn
 #  logout
-POST        /signout                 controllers.AuthenticationController.signOut
+GET        /signout                 controllers.AuthenticationController.signOut
 #  signup
 POST        /signup                  controllers.AuthenticationController.signUp
 #get all Users
