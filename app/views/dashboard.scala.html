@@ -1,4 +1,4 @@
-@(webJarAssets: WebJarAssets, name:Option[String])(implicit message: Messages, flash: Flash)
+@(webJarAssets: WebJarAssets,category:Option[Int],name:Option[String])(implicit message: Messages, flash: Flash)
 <html>
 <head>
     <title>knolx |dashboard</title>
@@ -25,7 +25,7 @@
 <body>
 <script type="text/javascript">
                     $(document).ready(function() {
-                        function disableBack() { window.history.forward() }
+                    function disableBack() { window.history.forward() }
                         window.onload = disableBack();
                         window.onpageshow = function(evt) { if (evt.persisted) disableBack() }
                     });
@@ -48,9 +48,7 @@
                 <div class="row">
                     <div class="col-lg-12">
                         <div class="input-group form">
-                            <input type="text" class="form-control" placeholder="Search...">
 	                       <span class="input-group-btn">
-	                         <button class="btn btn-primary" type="button">Search</button>
 	                       </span>
                         </div>
                     </div>
@@ -66,14 +64,7 @@
                                     <li>
                                         <a href="#acc">Account Settings <span class="glyphicon glyphicon-cog pull-right"></span></a>
                                     </li>
-                                    <li class="divider"></li>
-                                    <li>
-                                        <a href="#fav">Favourites<span class="glyphicon glyphicon-heart pull-right"></span></a>
-                                    </li>
-                                    <li class="divider"></li>
-                                    <li>
-                                        <a href="#status">Status <span class="glyphicon glyphicon-stats pull-right"></span></a>
-                                    </li>
+
                                     <li class="divider"></li>
                                     <li>
                                         <a href="@routes.AuthenticationController.signOut">Logout<span class="glyphicon glyphicon-log-out pull-right"></span></a>
@@ -96,19 +87,23 @@
                     <!-- Main menu -->
                     <li class="current"><a href="index.html"><i class="glyphicon glyphicon-home"></i> Dashboard</a></li>
                     <li><a href="calendar.html"><i class="glyphicon glyphicon-calendar"></i> Calendar</a></li>
+                    <li><a href="@routes.Assets.versioned("html/tables.html")" ><i class="glyphicon glyphicon-list"></i>knols Sessions</a></li>
+
+                    @if(category.get==1){
                     <li><a href="stats.html"><i class="glyphicon glyphicon-stats"></i> Statistics (Charts)</a></li>
-                    <li><a href="tables.html"><i class="glyphicon glyphicon-list"></i> Tables</a></li>
-                    <li><a href="editors.html"><i class="glyphicon glyphicon-pencil"></i> Editors</a></li>
-                    <li><a href="forms.html"><i class="glyphicon glyphicon-tasks"></i> Forms</a></li>
+                    }
+                    @if(category.get==1){
+
+
+                    <li><a href="@routes.Assets.versioned("html/tables.html")" ><i class="glyphicon glyphicon-list"></i>knols Tables</a></li>
+                    }
+                    <li><a href="@routes.Assets.versioned("html/forms.html")"><i class="glyphicon glyphicon-tasks"></i>knolx Form</a></li>
                     <li class="submenu">
                         <a href="#">
-                            <i class="glyphicon glyphicon-list"></i> Pages
                             <span class="caret pull-right"></span>
                         </a>
                         <!-- Sub menu -->
                         <ul>
-                            <li><a href="login.html">Login</a></li>
-                            <li><a href="signup.html">Signup</a></li>
                         </ul>
                     </li>
                 </ul>
@@ -144,7 +139,7 @@
         <div class="container">
 
             <div class="copy text-center">
-                Copyright 2014 <a href='#'>Website</a>
+                Copyright 2016 <a href='#'>Website</a>
             </div>
 
         </div>

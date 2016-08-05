@@ -1,20 +1,17 @@
 package controllers
 
 import models.User
-
-import org.specs2.mutable.Specification
 import org.junit.runner._
-import org.specs2.runner._
 import org.mockito.Mockito._
 import org.specs2.mock.Mockito
-
-import play.api.test.{FakeRequest, WithApplication}
-import play.api.test.Helpers._
+import org.specs2.mutable.Specification
+import org.specs2.runner._
 import play.api.cache.CacheApi
+import play.api.test.Helpers._
+import play.api.test.{FakeRequest, WithApplication}
 import services.{CacheService, UserService}
 
 import scala.concurrent.Future
-import scala.concurrent.ExecutionContext.Implicits.global
 
 
 
@@ -63,8 +60,7 @@ class AuthenticationControllerSpec extends Specification with Mockito {
     "should render the dashbaord in case home url is hit and user doesNot logout" in new WithApplication() {
       when(cacheService.getCache).thenReturn(Some("deepti@gmail.com"))
 
-      when(userService.getNameByEmail("deepti@gmail.com")) thenReturn Future.successful(Some("deepti"))
-
+      when(userService.getNameAndCategoryByEmail("deepti@gmail.com")) thenReturn Future.successful(Some("deepti",0))
 
       val results = call(authenticationController.loginPage, FakeRequest(GET, "/home"))
       status(results) must equalTo(OK)
@@ -74,7 +70,7 @@ class AuthenticationControllerSpec extends Specification with Mockito {
     "should render the homepage in case home url is hit and user logout" in new WithApplication() {
       when(cacheService.getCache).thenReturn(None)
 
-      when(userService.getNameByEmail("deepti@gmail.com")) thenReturn Future.successful(Some("deepti"))
+      when(userService.getNameAndCategoryByEmail("deepti@gmail.com")) thenReturn Future.successful(Some("deepti",0))
 
       val results = call(authenticationController.loginPage, FakeRequest(GET, "/home"))
       status(results) must equalTo(OK)

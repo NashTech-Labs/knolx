@@ -5,6 +5,7 @@ import play.api.Logger
 import play.api.db.slick.{DatabaseConfigProvider, HasDatabaseConfigProvider}
 import slick.driver.JdbcProfile
 import models.KSession
+import slick.lifted.ProvenShape
 
 import scala.concurrent.Future
 
@@ -58,7 +59,7 @@ trait KSessionTable extends UserTable {
 
 
   class KSessionInfo(tag: Tag) extends Table[KSession](tag, "sessions") {
-    def * = (topic, date, uID, id.?) <>((KSession.apply _).tupled, KSession.unapply)
+    def * : ProvenShape[KSession] = (topic, date, uID, id.?) <>((KSession.apply _).tupled, KSession.unapply)
 
     def id: Rep[Long] = column[Long]("id", O.AutoInc, O.PrimaryKey)
 
