@@ -20,13 +20,12 @@ GET        /signout                 controllers.AuthenticationController.signOut
 #  signup
 POST        /signup                  controllers.AuthenticationController.signUp
 #get all Users
-POST        /getAllUsers             controllers.DashboardController.getAll
-
+GET        /getAllUsers             controllers.DashboardController.getAll
 
 
 
 #javascript routes
-GET         /javascriptRoutes        controllers.Application.jsRoutes
+GET         /javascriptRoutes        controllers.Application.javascriptRoutes
 
 
 

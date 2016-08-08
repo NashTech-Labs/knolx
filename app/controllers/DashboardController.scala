@@ -3,7 +3,7 @@ package controllers
 
 import javax.inject.Inject
 
-import play.Routes
+
 import play.api.Play.current
 import play.api.i18n.Messages
 import play.api.i18n.Messages.Implicits._
@@ -18,12 +18,12 @@ import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
 
-class DashboardController @Inject()(cacheService: CacheService, webJarAssets: WebJarAssets, userService: UserService) extends Controller {
+class DashboardController @Inject()(cacheService: CacheService, webJarAssets: WebJarAssets, userService: UserService)
+  extends Controller {
 
   /**
     * Action for rendering dashboard of user
     **/
-
 
   def renderDashBoard: Action[AnyContent] = Action.async {
     implicit request =>
@@ -33,13 +33,11 @@ class DashboardController @Inject()(cacheService: CacheService, webJarAssets: We
       }
   }
 
-
   def getAll: Action[AnyContent] = Action.async {
     implicit request =>
       userService.getAll.map {
         users =>
-          implicit val userFormat = Json.format[User]
-
+          implicit val jsonFormat = Json.format[User]
           Ok(Json.toJson(users))
       }
   }

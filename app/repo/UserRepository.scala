@@ -6,6 +6,7 @@ import models.User
 import play.api.Logger
 import play.api.db.slick.{DatabaseConfigProvider, HasDatabaseConfigProvider}
 import slick.driver.JdbcProfile
+import slick.lifted.ProvenShape
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
@@ -72,7 +73,8 @@ trait UserTable {
   lazy val userTableQuery = TableQuery[UserInfo]
 
   class UserInfo(tag: Tag) extends Table[User](tag, "users") {
-    def * = (email, password, name, designation, category, id.?) <>((User.apply _).tupled, User.unapply)
+
+    def * : ProvenShape[User] = (email, password, name, designation, category, id.?) <>((User.apply _).tupled, User.unapply)
 
     def id: Rep[Long] = column[Long]("id", O.AutoInc, O.PrimaryKey)
 

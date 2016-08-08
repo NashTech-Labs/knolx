@@ -18,7 +18,6 @@ libraryDependencies ++= Seq(
   "com.h2database" % "h2"%"1.4.187" ,
   "org.postgresql" % "postgresql" % "9.4-1206-jdbc4",
   "com.adrianhurt" %% "play-bootstrap" % "1.0-P25-B3",
-
   "com.typesafe.play" %% "play-slick-evolutions" % "1.1.1",
   "com.typesafe.slick" %% "slick-hikaricp" % "3.1.1",
   "com.typesafe.slick"%%"slick"%"3.1.1",
@@ -26,9 +25,8 @@ libraryDependencies ++= Seq(
   "org.seleniumhq.selenium" % "selenium-firefox-driver" % "2.52.0",
   "org.scalatest" %% "scalatest" % "2.2.1" % "test",
   "org.scalatestplus" %% "play" % "1.4.0-M3" % "test",
-  "org.seleniumhq.selenium" % "selenium-htmlunit-driver" % "2.52.0"
-
-
+  "org.seleniumhq.selenium" % "selenium-htmlunit-driver" % "2.52.0",
+  "com.typesafe.play" %% "play-mailer" % "5.0.0"
 )
 
 // https://mvnrepository.com/artifact/org.scribe/scribe
@@ -44,7 +42,6 @@ routesGenerator := InjectedRoutesGenerator
 // Play provides two styles of routers, one expects its actions to be injected, the
 // other, legacy style, accesses its actions statically.
 //routesGenerator := InjectedRoutesGenerator
-
 
 resolvers += "Sonatype OSS Snapshots" at "https://oss.sonatype.org/content/repositories/snapshots/"
 

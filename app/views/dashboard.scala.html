@@ -13,12 +13,15 @@
         <script type="text/javascript" src='@routes.WebJarAssets.at(webJarAssets.locate("jquery.min.js"))'></script>
         <script type="text/javascript" src='@routes.WebJarAssets.at(webJarAssets.locate("js/bootstrap.min.js"))'></script>
         <link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css">
-        <script type="text/javascript" src="@routes.Application.jsRoutes"></script>
-
+        <script type="text/javascript" src="@routes.Application.javascriptRoutes"></script>
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+        <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+        <script src="https://oss.maxcdn.com/libs/respond.js/1.3.0/respond.min.js"></script>
 
-    <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
-    <script src="https://oss.maxcdn.com/libs/respond.js/1.3.0/respond.min.js"></script>
+        <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.10.12/css/jquery.dataTables.min.css"></script>
+        <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.10.12/js/jquery.dataTables.min.js"></script>
+
+
     <![endif]-->
     </head>
     <body>
@@ -107,21 +110,20 @@
                                 </div>
                                 <div class="container-fluid">
                                     <div class="row">
-                                        <table  class="display table table-striped table-bordered" id="userTable">
+                                        <table id="allUsers" class="display" cellspacing="0" width="100%">
                                             <thead>
                                                 <tr>
-                                                    <th>Id</th>
-                                                    <th>Name</th>
                                                     <th>Email</th>
-                                                    <th>City</th>
-                                                    <th>State</th>
-                                                    <th>Zip</th>
+                                                    <th>Password</th>
+                                                    <th>Name</th>
+                                                    <th>Designation</th>
+                                                    <th>Category</th>
+                                                    <th>Id</th>
                                                 </tr>
                                             </thead>
-                                            <tbody>
-                                            </tbody>
+
                                         </table>
-                                        <img src="@routes.Assets.versioned("images/4.jpg")" class="img-responsive">
+                                        @*<img src="@routes.Assets.versioned("images/4.jpg")" class="img-responsive">*@
                                     </div>
                                 </div>
                                 <div class="panel-body">
@@ -153,12 +155,18 @@
         <script type="text/javascript">
                 /* Table initialisation */
                 $(document).ready(function() {
-                    $('#student').dataTable({
-                        "bProcessing" : true,
-                        "bServerSide" : true,
-                        "sAjaxSource" : "/search"
+
+                    alert("Started........");
+                    var ajaxCallBack = {
+                        success : function(data) {
+                            alert("Success");
+                        },
+                        error : function(error) {
+                            alert("Error");
+                        }
+                    };
+                    jsRoutes.controllers.DashboardController.getAll().ajax(ajaxCallBack);
                     });
-                });
         </script>
 
     </body>
