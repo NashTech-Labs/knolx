@@ -9,7 +9,8 @@ class Application extends Controller {
  def javascriptRoutes: Action[AnyContent] = Action { implicit request =>
 
     Ok(JavaScriptReverseRouter("jsRoutes")(
-      routes.javascript.DashboardController.getAll
+      routes.javascript.DashboardController.getAll,
+      routes.javascript.DashboardController.renderTablePage
     )
     )
       .as("text/javascript")

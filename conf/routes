@@ -22,6 +22,8 @@ POST        /signup                  controllers.AuthenticationController.signUp
 #get all Users
 GET        /getAllUsers             controllers.DashboardController.getAll
 
+GET         /tables                     controllers.DashboardController.renderTablePage
+
 
 
 #javascript routes

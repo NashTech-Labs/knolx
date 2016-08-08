@@ -1,0 +1,67 @@
+@(webJarAssets: WebJarAssets)
+<html>
+    <body>
+        <script type="text/javascript" src='@routes.WebJarAssets.at(webJarAssets.locate("jquery.min.js"))'></script>
+        <script type="text/javascript" src="@routes.Application.javascriptRoutes"></script>
+
+        <div class="content-box-large">
+            <div class="panel-heading">
+                <div class="panel-title"> Users-Record </div>
+                <div class="panel-options">
+
+                </div>
+            </div>
+
+            <div class="panel-body" >
+                <div class="container-fluid">
+
+                    <div class="row">
+                        <table id="allUsers" class="display table table-striped table-bordered" >
+                            <tr>
+                                <th>Id</th>
+                                <th>Name</th>
+                                <th>Email</th>
+                                <th>Designation</th>
+                                <th>Category</th>
+                            </tr>
+
+                        </table>
+                        @*<img src="@routes.Assets.versioned("images/4.jpg")" class="img-responsive">*@
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+
+        <script type="text/javascript">
+                /* Table initialisation */
+                $(document).ready(function() {
+                    var ajaxCallBack = {
+                        success : function(data) {
+                            drawTable(JSON.parse(data));
+                        },
+                        error : function(error) {
+                            alert("Error");
+                        }
+                    };
+
+                    function drawTable(data) {
+                        for (var i = 0; i < data.length; i++) {
+                            drawRow(data[i]);
+                        }
+                    }
+
+                    function drawRow(rowData) {
+                        var row = $("<tr />")
+                        $("#allUsers").append(row); //this will append tr element to table... keep its reference for a while since we will add cels into it
+                        row.append($("<td>" + rowData.id + "</td>"));
+                        row.append($("<td>" + rowData.name + "</td>"));
+                        row.append($("<td>" + rowData.email + "</td>"));
+                        row.append($("<td>" + rowData.designation + "</td>"));
+                        row.append($("<td>" + rowData.category + "</td>"));
+                    }
+                    jsRoutes.controllers.DashboardController.getAll().ajax(ajaxCallBack);
+                });
+        </script>
+    </body>
+</html>

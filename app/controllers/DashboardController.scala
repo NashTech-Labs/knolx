@@ -37,9 +37,14 @@ class DashboardController @Inject()(cacheService: CacheService, webJarAssets: We
     implicit request =>
       userService.getAll.map {
         users =>
-          implicit val jsonFormat = Json.format[User]
-          Ok(Json.toJson(users))
+           implicit val jsonFormat = Json.format[User]
+         Ok(Json.stringify(Json.toJson(users)).replaceAll("\\s+",""))
       }
+  }
+
+  def renderTablePage : Action[AnyContent] = Action.async{
+    implicit request =>
+      Future.successful(Ok(views.html.tables(webJarAssets)))
   }
 
 }

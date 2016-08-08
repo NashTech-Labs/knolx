@@ -26,11 +26,18 @@ libraryDependencies ++= Seq(
   "org.scalatest" %% "scalatest" % "2.2.1" % "test",
   "org.scalatestplus" %% "play" % "1.4.0-M3" % "test",
   "org.seleniumhq.selenium" % "selenium-htmlunit-driver" % "2.52.0",
-  "com.typesafe.play" %% "play-mailer" % "5.0.0"
+  "com.typesafe.play" %% "play-mailer" % "5.0.0",
+  "javax.mail" % "mail" % "1.4"
+
+
 )
 
 // https://mvnrepository.com/artifact/org.scribe/scribe
 libraryDependencies += "org.scribe" % "scribe" % "1.3.7"
+
+// https://mvnrepository.com/artifact/javax.mail/mail
+//libraryDependencies +=
+
 
 
 javaOptions in Test += "-Dconfig.file=conf/test.conf"
