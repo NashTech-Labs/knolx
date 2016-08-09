@@ -7,7 +7,6 @@ import play.api.routing.JavaScriptReverseRouter
 class Application extends Controller {
 
  def javascriptRoutes: Action[AnyContent] = Action { implicit request =>
-
     Ok(JavaScriptReverseRouter("jsRoutes")(
       routes.javascript.DashboardController.getAllUsers,
       routes.javascript.DashboardController.getAllSessions,
@@ -15,7 +14,7 @@ class Application extends Controller {
     )
     )
       .as("text/javascript")
-  }
+ }
 
   def index: Action[AnyContent] = Action { implicit request =>
     Redirect(routes.AuthenticationController.loginPage())

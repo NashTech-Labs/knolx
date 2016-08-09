@@ -19,6 +19,7 @@ class UserService @Inject()(userRepository: UserRepository) {
     * validate user by
     * email and password
     */
+
   def validateUser(emailId: String, password: String): Future[Boolean] = {
     Logger.debug("Validating User.")
     val user: Future[Option[User]] = userRepository.getByEmailAndPassword(emailId, password)
@@ -28,6 +29,7 @@ class UserService @Inject()(userRepository: UserRepository) {
   /**
     * service for sign up user
     */
+
   def signUpUser(user: User): Future[Boolean] = {
     Logger.debug("signUp User")
     val recordInserted: Future[Long] = userRepository.insert(user)
@@ -44,12 +46,12 @@ class UserService @Inject()(userRepository: UserRepository) {
   }
 
   /**
-    * service for getting user name by email
+    * service for getting user name and category by email
     */
 
-  def getNameByEmail(email: String): Future[Option[String]] = {
-    val user: Future[Option[User]] = userRepository.getByEmail(email)
-    user.map(value => value.map(_.name))
+  def getNameAndCategoryByEmail(email: String): Future[Option[(String, Int)]]  = {
+    userRepository.getByEmail(email)
+   .map(user => user.map((user) =>(user.name,user.category)))
   }
 
   def getAll(): Future[List[User]] = {

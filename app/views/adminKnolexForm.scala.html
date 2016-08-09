@@ -1,0 +1,47 @@
+@import b3.vertical.fieldConstructor
+@(webJarAssets: WebJarAssets,adminKnolexForm:Form[(String,java.util.Date)],listOfKnols:List[User])(implicit message: Messages, flash: Flash)
+<link href="@routes.Assets.versioned("css/styles.css")" rel="stylesheet">
+<link rel="stylesheet" media="screen" href="@routes.Assets.versioned("stylesheets/main.css")">
+<link rel="shortcut icon" type="image/png" href="@routes.Assets.versioned("images/knolduslogo.png")">
+<link rel='stylesheet' src='@routes.WebJarAssets.at(webJarAssets.locate("css/bootstrap.min.css"))'>
+<script type="text/javascript" src='@routes.WebJarAssets.at(webJarAssets.locate("jquery.min.js"))'></script>
+<script type="text/javascript" src='@routes.WebJarAssets.at(webJarAssets.locate("js/bootstrap.min.js"))'></script>
+<link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css"
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+<script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+<script src="https://oss.maxcdn.com/libs/respond.js/1.3.0/respond.min.js"></script>
+<div class="container">
+<div class="row vertical-offset-100">
+    <div class="Absolute-Center is-Responsive">
+        <div class="col-md-4 col-md-offset-4">
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <h3 class="panel-title" style="text-align: center ;
+                            color: blue !important ;
+                            ">Hi Admin Schedule Knolx</h3>
+                </div>
+                <div class="panel-body">
+                    <fieldset>
+                        <div class="row vertical-offset-100">
+                            <div class="col-md-12">
+                                @b3.form(action =routes.KsessionController.renderKnolxForm) {
+
+                                @b3.select(adminKnolexForm("user"),options=listOfKnols.toSeq.flatMap(user => Seq(user.id.get.toString -> user.name)),'_label -> "Select user",'_default -> "Select an option" )
+                                @b3.date(adminKnolexForm("date"),'_label -> "Select Date")
+                                @b3.submit('class -> "btn btn-primary btn-lg ",'_label -> "", 'id -> "submit") {submit}</center>
+                                }
+                                <script src="https://code.jquery.com/jquery.js"></script>
+                                <!-- Include all compiled plugins (below), or include individual files as needed -->
+                                <link href="@routes.Assets.versioned("javascripts/bootstrap.min.js")" rel="stylesheet">
+                                <script src="@routes.Assets.versioned("javascripts/custom.js")"></script>
+                            </div>
+                        </div>
+                            </fieldset>
+                            </div>
+                    </div>
+                </div>
+            </div>
+        </div></div>
+
+
+

@@ -9,13 +9,16 @@ import play.api.i18n.Messages
 import play.api.i18n.Messages.Implicits._
 import play.api.libs.json.{Json, Writes}
 import play.api.mvc.{Result, Action, AnyContent, Controller}
+
 import play.api.routing.JavaScriptReverseRouter
 import play.api.libs.json
 import models.{KSession, User}
 import services.{KSessionService, CacheService, UserService}
 
+
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
+
 
 
 class DashboardController @Inject()(cacheService: CacheService, webJarAssets: WebJarAssets, userService: UserService,kSessionService: KSessionService)
@@ -28,8 +31,9 @@ class DashboardController @Inject()(cacheService: CacheService, webJarAssets: We
   def renderDashBoard: Action[AnyContent] = Action.async {
     implicit request =>
       cacheService.getCache.fold(Future.successful(Redirect(routes.AuthenticationController.loginPage())
-        .flashing("INVALID" -> Messages("please signin")))) { email => userService.getNameByEmail(email)
-        .map(name => Ok(views.html.dashboard(webJarAssets, Some(name.get))))
+        .flashing("INVALID" -> Messages("please sign in")))) { email => userService.getNameAndCategoryByEmail(email).
+        map(name => name.fold(Ok(views.html.dashboard(webJarAssets, None, None)))
+        { tupleOfNameAndCategory => Ok(views.html.dashboard(webJarAssets, Some(tupleOfNameAndCategory._2), Some(tupleOfNameAndCategory._1))) })
       }
   }
 

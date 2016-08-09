@@ -9,7 +9,7 @@ import play.api.Play.current
 import play.api.cache._
 import play.api.data.Form
 import play.api.data.Forms._
-import play.api.i18n.Messages
+import play.api.i18n.{I18nSupport, MessagesApi, Messages}
 import play.api.i18n.Messages.Implicits._
 import play.api.inject.Injector
 import play.api.mvc.{Action, AnyContent, Controller}
@@ -51,8 +51,13 @@ class AuthenticationController @Inject()(cacheService: CacheService, webJarAsset
     implicit request =>
       Logger.debug("Redirecting renderHomePage")
       cacheService.getCache.fold(Future.successful(Ok(views.html.home(webJarAssets, loginForm, signUpForm)))
-      ) { email => userService.getNameByEmail(email).map(name => Ok(views.html.dashboard(webJarAssets, Some(name.get)))) }
+      )
+      { email => userService.getNameAndCategoryByEmail(email).
+        map(name => name.fold(Ok(views.html.dashboard(webJarAssets, None, None)))
+        { tupleOfNameAndCategory => Ok(views.html.dashboard(webJarAssets, Some(tupleOfNameAndCategory._2), Some(tupleOfNameAndCategory._1))) })
 
+
+      }
   }
 
   /**
@@ -69,20 +74,20 @@ class AuthenticationController @Inject()(cacheService: CacheService, webJarAsset
         validData => {
 
           val encodedPassword: String = Helpers.passwordEncoder(validData._2)
-          val isValid: Future[Boolean] = userService.validateUser(validData._1, encodedPassword)
-
-          isValid.map { validatedEmail => if (validatedEmail) {
+          userService.validateUser(validData._1, encodedPassword)
+            .map { validatedEmail => if (validatedEmail) {
             cacheService.setCache("id", validData._1)
             Redirect(routes.DashboardController.renderDashBoard())
           }
           else {
             Logger.error("User Not Found")
-            Redirect(routes.AuthenticationController.loginPage).flashing("ERROR" -> Messages("wrong.login"))
+            Redirect(routes.AuthenticationController.loginPage()).flashing("ERROR" -> Messages("wrong.login"))
           }
           }
         }
       )
   }
+
 
   /**
     * Create an Action for signup option
