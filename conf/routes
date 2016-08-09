@@ -20,8 +20,11 @@ GET        /signout                 controllers.AuthenticationController.signOut
 #  signup
 POST        /signup                  controllers.AuthenticationController.signUp
 #get all Users
-GET        /getAllUsers             controllers.DashboardController.getAll
+GET        /getAllUsers             controllers.DashboardController.getAllUsers
+#get all Sessions
+GET         /getAllSessions         controllers.DashboardController.getAllSessions
 
+#render Table Page on DashBoard
 GET         /tables                     controllers.DashboardController.renderTablePage
 
 

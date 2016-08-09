@@ -1,4 +1,5 @@
 @(webJarAssets: WebJarAssets)
+
 <html>
     <body>
         <script type="text/javascript" src='@routes.WebJarAssets.at(webJarAssets.locate("jquery.min.js"))'></script>
@@ -6,61 +7,123 @@
 
         <div class="content-box-large">
             <div class="panel-heading">
-                <div class="panel-title"> Users-Record </div>
-                <div class="panel-options">
+                <div class="panel-title">  </div>
 
+                <div class="panel-options">
+                    <div class="input-group">
+                        <div class="input-group-btn">
+                            <button type="button" class="btn btn-info dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
+                                Select Record-Type
+                                <span class="caret"></span>
+                            </button>
+                            <ul class="dropdown-menu" role="menu">
+                                <li id = "user"><a href="#">Users</a></li>
+                                <li id="session"><a href="#">Knolx-Sessions</a></li>
+                                <li class="divider"></li>
+                                <li id="commitment"><a href="#">Commitments</a></li>
+                                <li id="feedback"><a href="#">Feedbacks</a></li>
+                            </ul>
+                        </div>
+                        <input type="text" class="form-control" placeholder="search record">
+                        <span class="input-group-btn">
+                            <button class="btn btn-default" type="button">Go!</button>
+                        </span>
+                    </div>
                 </div>
             </div>
 
             <div class="panel-body" >
                 <div class="container-fluid">
-
                     <div class="row">
-                        <table id="allUsers" class="display table table-striped table-bordered" >
+                        <table id="allUsers" class="display table table-striped table-bordered table-hover table-responsive" >
                             <tr>
                                 <th>Id</th>
-                                <th>Name</th>
+                                <th data-firstsort="desc">Name</th>
                                 <th>Email</th>
                                 <th>Designation</th>
                                 <th>Category</th>
                             </tr>
-
                         </table>
-                        @*<img src="@routes.Assets.versioned("images/4.jpg")" class="img-responsive">*@
+                        <table id="allSessions" class="display table table-striped table-bordered table-hover table-responsive" >
+                            <tr>
+                                <th>Id</th>
+                                <th>Title</th>
+                                <th data-firstsort="desc" data-dateformat="DD-MMM-YYYY">Date</th>
+                                <th>User-Id</th>
+                            </tr>
+                        </table>
+                        <ul class="pagination">
+                            <li><a href="#">1</a></li>
+                            <li class="active"><a href="#">2</a></li>
+                            <li><a href="#">3</a></li>
+                            <li><a href="#">4</a></li>
+                            <li><a href="#">5</a></li>
+                        </ul>
                     </div>
                 </div>
             </div>
         </div>
-        
+
 
         <script type="text/javascript">
-                /* Table initialisation */
                 $(document).ready(function() {
-                    var ajaxCallBack = {
-                        success : function(data) {
-                            drawTable(JSON.parse(data));
-                        },
-                        error : function(error) {
-                            alert("Error");
-                        }
-                    };
+                    $('#user').click(function(){
+                        var ajaxCallBack = {
+                            success : function(data) {
+                                drawTable(JSON.parse(data));
+                            },
+                            error : function(error) {
+                                alert("Error");
+                            }
+                        };
 
-                    function drawTable(data) {
-                        for (var i = 0; i < data.length; i++) {
-                            drawRow(data[i]);
+                        function drawTable(data) {
+                            for (var i = 0; i < data.length; i++) {
+                                drawRow(data[i]);
+                            }
                         }
-                    }
 
-                    function drawRow(rowData) {
-                        var row = $("<tr />")
-                        $("#allUsers").append(row); //this will append tr element to table... keep its reference for a while since we will add cels into it
-                        row.append($("<td>" + rowData.id + "</td>"));
-                        row.append($("<td>" + rowData.name + "</td>"));
-                        row.append($("<td>" + rowData.email + "</td>"));
-                        row.append($("<td>" + rowData.designation + "</td>"));
-                        row.append($("<td>" + rowData.category + "</td>"));
-                    }
-                    jsRoutes.controllers.DashboardController.getAll().ajax(ajaxCallBack);
+                        function drawRow(rowData) {
+                            var row = $("<tr />")
+                            $("#allUsers").append(row); //this will append tr element to table... keep its reference for a while since we will add cels into it
+                            row.append($("<td>" + rowData.id + "</td>"));
+                            row.append($("<td>" + rowData.name + "</td>"));
+                            row.append($("<td>" + rowData.email + "</td>"));
+                            row.append($("<td>" + rowData.designation + "</td>"));
+                            row.append($("<td>" + rowData.category + "</td>"));
+                        }
+                        jsRoutes.controllers.DashboardController.getAllUsers().ajax(ajaxCallBack);
+
+
+                    });
+                    $('#session').click(function(){
+                        var ajaxCallBack = {
+                            success : function(data) {
+                                drawTable(JSON.parse(data));
+                            },
+                            error : function(error) {
+                                alert("Error");
+                            }
+                        };
+
+                        function drawTable(data) {
+                            for (var i = 0; i < data.length; i++) {
+                                drawRow(data[i]);
+                            }
+                        }
+
+                        function drawRow(rowData) {
+                            var row = $("<tr />")
+                            $("#allSessions").append(row); //this will append tr element to table... keep its reference for a while since we will add cels into it
+                            row.append($("<td>" + rowData.id + "</td>"));
+                            row.append($("<td>" + rowData.topic + "</td>"));
+                            row.append($("<td>" + rowData.date + "</td>"));
+                            row.append($("<td>" + rowData.uid + "</td>"));
+                        }
+                        jsRoutes.controllers.DashboardController.getAllSessions().ajax(ajaxCallBack);
+                        
+                    })
+
                 });
         </script>
     </body>

@@ -11,14 +11,14 @@ import play.api.libs.json.{Json, Writes}
 import play.api.mvc.{Result, Action, AnyContent, Controller}
 import play.api.routing.JavaScriptReverseRouter
 import play.api.libs.json
-import models.User
-import services.{CacheService, UserService}
+import models.{KSession, User}
+import services.{KSessionService, CacheService, UserService}
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
 
-class DashboardController @Inject()(cacheService: CacheService, webJarAssets: WebJarAssets, userService: UserService)
+class DashboardController @Inject()(cacheService: CacheService, webJarAssets: WebJarAssets, userService: UserService,kSessionService: KSessionService)
   extends Controller {
 
   /**
@@ -33,12 +33,21 @@ class DashboardController @Inject()(cacheService: CacheService, webJarAssets: We
       }
   }
 
-  def getAll: Action[AnyContent] = Action.async {
+  def getAllUsers: Action[AnyContent] = Action.async {
     implicit request =>
       userService.getAll.map {
         users =>
            implicit val jsonFormat = Json.format[User]
          Ok(Json.stringify(Json.toJson(users)).replaceAll("\\s+",""))
+      }
+  }
+
+  def getAllSessions :Action[AnyContent] = Action.async {
+    implicit request =>
+      kSessionService.getAll.map {
+        users =>
+          implicit val jsonFormat = Json.format[KSession]
+          Ok(Json.stringify(Json.toJson(users)).replaceAll("\\s+",""))
       }
   }
 

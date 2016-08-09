@@ -132,19 +132,19 @@
 
         <script type="text/javascript">
                 $(document).ready(function() {
-                   $("#table").click(function(){
-                       var ajaxCallBack = {
-                           success : function(data) {
-                               $("#mainContent").html(data)
-                           },
-                           error : function(error) {
-                               alert("Error");
-                           }
-                       };
-                       jsRoutes.controllers.DashboardController.renderTablePage().ajax(ajaxCallBack);
-                   })
+                    $("#table").click(function(){
+                        var ajaxCallBack = {
+                            success : function(data) {
+                                $("#mainContent").html(data)
+                            },
+                            error : function(error) {
+                                alert("Error");
+                            }
+                        };
+                        jsRoutes.controllers.DashboardController.renderTablePage().ajax(ajaxCallBack);
+                    })
 
                 });
-            </script>
+        </script>
 
     </body>
