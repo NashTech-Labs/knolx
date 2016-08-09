@@ -20,17 +20,18 @@ GET        /signout                 controllers.AuthenticationController.signOut
 #  signup
 POST        /signup                 controllers.AuthenticationController.signUp
 #get all Users
-GET        /getAllUsers             controllers.DashboardController.getAllUsers
+GET        /getAllUsers             controllers.UsersController.getAllUsers
 #get all Sessions
-GET         /getAllSessions         controllers.DashboardController.getAllSessions
-
+GET         /getAllSessions         controllers.SessionsController.getAllSessions
 #get admin knolx form
-GET        /adminKnolxForm          controllers.KsessionController.renderKnolxForm
+GET        /adminKnolxForm          controllers.DashboardController.renderKnolxForm
 
 #render Table Page on DashBoard
 GET         /tables                 controllers.DashboardController.renderTablePage
 
+POST       /mailKnolxScheduler      controllers.DashboardController.mailKnolxScheduler
 
+POST   /createSession               controllers.SessionsController.createSession
 
 #javascript routes
 GET         /javascriptRoutes        controllers.Application.javascriptRoutes

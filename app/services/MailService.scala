@@ -7,7 +7,7 @@ import javax.mail.internet.{MimeMessage, InternetAddress}
 import javax.mail._
 import org.apache.commons.mail.{DefaultAuthenticator, SimpleEmail}
 
-object MailService{
+class MailService{
 
   def sendMail(to: List[String], subject: String, message: String) = {
     to.map {recipient =>

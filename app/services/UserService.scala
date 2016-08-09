@@ -20,6 +20,7 @@ class UserService @Inject()(userRepository: UserRepository) {
     * email and password
     */
 
+
   def validateUser(emailId: String, password: String): Future[Boolean] = {
     Logger.debug("Validating User.")
     val user: Future[Option[User]] = userRepository.getByEmailAndPassword(emailId, password)

@@ -18,4 +18,7 @@ class KSessionService @Inject()(kSessionRepository: KSessionRepository) {
     kSessionRepository.getAll
   }
 
+  def createSession(kSession: KSession)={
+    kSessionRepository.insert(kSession)
+  }
 }
