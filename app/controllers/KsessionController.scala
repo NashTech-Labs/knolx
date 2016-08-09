@@ -19,8 +19,7 @@ import services.{UserService, CacheService}
 
 import scala.concurrent.Future
 
-
-class KsessionController  @Inject()(webJarAssets: WebJarAssets,userRepository: UserRepository) extends Controller{
+class KsessionController @Inject()(webJarAssets: WebJarAssets, userRepository: UserRepository) extends Controller {
 
   val knolxForm = Form(
     tuple(
@@ -28,10 +27,9 @@ class KsessionController  @Inject()(webJarAssets: WebJarAssets,userRepository: U
       "date" -> date
     ))
 
-  def renderKnolxForm:Action[AnyContent] = Action.async{
+  def renderKnolxForm: Action[AnyContent] = Action.async {
     implicit request =>
-      userRepository.getAll.map((list: List[User]) => Ok(views.html.adminKnolexForm(webJarAssets,knolxForm,list)))
+      userRepository.getAll.map((list: List[User]) => Ok(views.html.adminKnolexForm(webJarAssets, knolxForm, list)))
   }
-
 
 }

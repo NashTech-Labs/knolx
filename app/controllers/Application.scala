@@ -10,7 +10,8 @@ class Application extends Controller {
     Ok(JavaScriptReverseRouter("jsRoutes")(
       routes.javascript.DashboardController.getAllUsers,
       routes.javascript.DashboardController.getAllSessions,
-      routes.javascript.DashboardController.renderTablePage
+      routes.javascript.DashboardController.renderTablePage,
+      routes.javascript.KsessionController.renderKnolxForm
     )
     )
       .as("text/javascript")
