@@ -2,7 +2,7 @@ package controllers
 
 import javax.inject.Inject
 
-import models.{ KSession}
+import models.{KSession}
 import play.api.Logger
 import play.api.data.Form
 import play.api.data.Forms._
@@ -17,7 +17,7 @@ import scala.concurrent.Future
 /**
   * Created by rahul on 9/8/16.
   */
-class SessionsController @Inject()(kSessionService: KSessionService) extends Controller{
+class SessionsController @Inject()(kSessionService: KSessionService) extends Controller {
 
   val sessionsForm = Form(
     mapping(
@@ -27,16 +27,18 @@ class SessionsController @Inject()(kSessionService: KSessionService) extends Con
       "id" -> optional(longNumber)
     )(KSession.apply)(KSession.unapply))
 
-  def getAllSessions :Action[AnyContent] = Action.async {
+
+  def getAllSessions: Action[AnyContent] = Action.async {
     implicit request =>
       kSessionService.getAll.map {
         users =>
           implicit val jsonFormat = Json.format[KSession]
-          Ok(Json.stringify(Json.toJson(users)).replaceAll("\\s+",""))
+          Ok(Json.stringify(Json.toJson(users)).replaceAll("\\s+", ""))
       }
   }
 
-  def createSession :Action[AnyContent] = Action.async {
+
+  def createSession: Action[AnyContent] = Action.async {
     implicit request =>
       sessionsForm.bindFromRequest.fold(
         formWithErrors => {
@@ -44,8 +46,8 @@ class SessionsController @Inject()(kSessionService: KSessionService) extends Con
           Future.successful(BadRequest(""))
         },
         validData => {
-          kSessionService.createSession(validData)
-          Future.successful(Redirect(routes.AuthenticationController.loginPage()))
+          Logger.info("Submitting response from user as date")
+          Future(Ok(""))
         })
   }
 

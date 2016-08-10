@@ -15,7 +15,7 @@ import play.api.mvc.{Result, Action, AnyContent, Controller}
 
 import play.api.routing.JavaScriptReverseRouter
 import play.api.libs.json
-import models.{KSession, User}
+import models.{User}
 import services.{MailService, KSessionService, CacheService, UserService}
 
 
@@ -49,7 +49,6 @@ class DashboardController @Inject()(cacheService: CacheService, webJarAssets: We
       }
   }
 
-
   def renderTablePage : Action[AnyContent] = Action.async{
     implicit request =>
       Future.successful(Ok(views.html.tables(webJarAssets)))
@@ -69,7 +68,7 @@ class DashboardController @Inject()(cacheService: CacheService, webJarAssets: We
         Future.successful(BadRequest(""))
       },
       validData => {
-       mailService.sendHtmlEmail(List(validData._1),"Schedule Knolx Form","<form method= 'POST' action = 'http://localhost:9000/createSession'><input type = 'radio' name = 'slot'/>"+validData._2 + "  <b>Slot-1</b> <br><input type = 'radio' name = 'slot'/>"+validData._2 + " <b>Slot-2</b> <br> <input type = 'radio' name = 'slot'/> " +validData._3+"<b> Slot-1</b><br> <input type = 'radio' name = 'slot'/> " +validData._3+" <b>Slot-2</b> <br> <input type = 'radio' name='slot'/> "+validData._4+"<b>Slot-1</b><br> <input type = 'radio' name='slot'/> "+validData._4+"<b>Slot-2</b><br> <input type='submit' value = 'Submit'/></form>")
+       mailService.sendHtmlEmail(List(validData._1),"Schedule Knolx","<a href = 'https://www.google.co.in'>click here</a>")//send lin which will render a form with default date and email
         Future.successful(Redirect(routes.AuthenticationController.loginPage()))
       })
   }

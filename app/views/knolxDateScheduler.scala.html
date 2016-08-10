@@ -1,0 +1,45 @@
+@import b3.vertical.fieldConstructor
+@(webJarAssets: WebJarAssets,kSession: Form[(String,RichDate,Long,Option[Long])])
+<html>
+    <body>
+        <link href="@routes.Assets.versioned("css/styles.css")" rel="stylesheet">
+        <link rel="stylesheet" media="screen" href="@routes.Assets.versioned("stylesheets/main.css")">
+        <link rel="shortcut icon" type="image/png" href="@routes.Assets.versioned("images/knolduslogo.png")">
+        <link rel='stylesheet' src='@routes.WebJarAssets.at(webJarAssets.locate("css/bootstrap.min.css"))'>
+        <script type="text/javascript" src='@routes.WebJarAssets.at(webJarAssets.locate("jquery.min.js"))'></script>
+        <script type="text/javascript" src='@routes.WebJarAssets.at(webJarAssets.locate("js/bootstrap.min.js"))'></script>
+        <link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css">
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+        <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+        <script src="https://oss.maxcdn.com/libs/respond.js/1.3.0/respond.min.js"></script>
+        <div class="container">
+            <div class="row vertical-offset-100">
+                <div class="Absolute-Center is-Responsive">
+                    <div class="col-md-4 col-md-offset-2">
+                        <div class="panel panel-default">
+                            <div class="panel-heading">
+                                Schedule Knolx
+                            </div>
+                            <div class="panel-body">
+                                <fieldset>
+                                    <div class="row vertical-offset-100">
+                                        <div class="col-md-12">
+                                            @b3.form(action = routes.DashboardController.mailKnolxScheduler) {
+                                                
+                                                @b3.submit('class -> "btn btn-primary btn-lg ", '_label -> "", 'id -> "submit") {submit}
+                                            }
+                                            <script src="https://code.jquery.com/jquery.js"></script>
+                                            <link href="@routes.Assets.versioned("javascripts/bootstrap.min.js")" rel="stylesheet">
+                                            <script src="@routes.Assets.versioned("javascripts/custom.js")"></script>
+                                        </div>
+                                    </div>
+                                </fieldset>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </body>
+</html>
