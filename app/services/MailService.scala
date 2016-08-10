@@ -1,7 +1,6 @@
 package services
 
 
-import java.util
 import java.util.{Date, Properties}
 import javax.mail.internet.{MimeMessage, InternetAddress}
 import javax.mail._
@@ -21,11 +20,13 @@ class MailService{
     email.setMsg(message)
     email.addTo(recipient)
     email.send()
-    }
+}
+
   }
 
   def sendHtmlEmail(to: List[String], subject: String, message: String) {
     to.map { recipient =>
+
       val mailFrom = "knolx.knoldus@gmail.com";
       val password = "rough@48";
       val properties = new Properties();
@@ -52,8 +53,3 @@ class MailService{
 
 }
 
-object che extends App{
-
-  (new MailService).sendMail(List("rahulforallp@gmail.com"),"testing mail","hello")
-
-}

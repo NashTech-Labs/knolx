@@ -21,8 +21,10 @@ class SessionsController @Inject()(kSessionService: KSessionService) extends Con
 
   val sessionsForm = Form(
     mapping(
-      "topic" -> text,
-      "date" -> nonEmptyText,
+      "topic" -> optional(text),
+      "date" -> sqlDate,
+      "slot" -> number,
+      "status" -> boolean,
       "uid" -> longNumber,
       "id" -> optional(longNumber)
     )(KSession.apply)(KSession.unapply))
@@ -42,12 +44,13 @@ class SessionsController @Inject()(kSessionService: KSessionService) extends Con
     implicit request =>
       sessionsForm.bindFromRequest.fold(
         formWithErrors => {
-          Logger.error("Sign-In badRequest.")
+          Logger.error("Sign-In badRequest." + formWithErrors)
           Future.successful(BadRequest(""))
         },
         validData => {
-          Logger.info("Submitting response from user as date")
-          Future(Ok(""))
+          Logger.info("Scheduling session")
+          kSessionService.createSession(validData)
+          Future(Ok("Success"))
         })
   }
 

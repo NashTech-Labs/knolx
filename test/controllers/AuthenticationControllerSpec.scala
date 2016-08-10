@@ -1,12 +1,11 @@
 package controllers
 
 import models.User
-import org.junit.runner._
+import org.junit.runner.RunWith
 import org.mockito.Mockito._
 import org.specs2.mock.Mockito
 import org.specs2.mutable.Specification
 import org.specs2.runner._
-import play.api.cache.CacheApi
 import play.api.test.Helpers._
 import play.api.test.{FakeRequest, WithApplication}
 import services.{CacheService, UserService}
@@ -23,6 +22,7 @@ class AuthenticationControllerSpec extends Specification with Mockito {
   val userService = mock[UserService]
   val webJarAssets = mock[WebJarAssets]
   val cacheService = mock[CacheService]
+
 
   val authenticationController = new AuthenticationController(cacheService, webJarAssets, userService)
 

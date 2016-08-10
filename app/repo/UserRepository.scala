@@ -27,7 +27,7 @@ class UserRepository @Inject()(protected val dbConfigProvider: DatabaseConfigPro
 
 
   /**
-    * get  user email and passowrd
+    * get  user email and password
     */
   def getByEmailAndPassword(email: String, password: String): Future[Option[User]] = {
     Logger.info("Getting user Record by Email-Id and password . ")
@@ -43,7 +43,7 @@ class UserRepository @Inject()(protected val dbConfigProvider: DatabaseConfigPro
   }
 
   /**
-    * get all users from databse
+    * get all users from database
     */
   def getAll: Future[List[User]] = {
     Logger.info("Getting all user record.")
@@ -51,7 +51,7 @@ class UserRepository @Inject()(protected val dbConfigProvider: DatabaseConfigPro
   }
 
   /**
-    * delete a user from databse
+    *delete a user from database
     */
 
   def delete(id: Long): Future[Int] = {
@@ -59,7 +59,13 @@ class UserRepository @Inject()(protected val dbConfigProvider: DatabaseConfigPro
     db.run(userTableQuery.filter(_.id === id).delete)
   }
 
-
+  /**
+    *update a user in database
+    */
+  def update(id:Long,user: User):Future[Int]={
+    Logger.info("Updating KnolX session record.")
+    db.run(userTableQuery.filter(_.id===id).update(user))
+  }
 }
 
 /**

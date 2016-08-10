@@ -1,5 +1,8 @@
 package repo
 
+
+import java.sql.Date
+
 import com.google.inject.Inject
 import play.api.Logger
 import play.api.db.slick.{DatabaseConfigProvider, HasDatabaseConfigProvider}
@@ -16,7 +19,7 @@ class KSessionRepository @Inject()(protected val dbConfigProvider: DatabaseConfi
   import driver.api._
 
   /**
-    * insert a new knolx session
+    * insert a new knolX session
     */
   def insert(kSession: KSession): Future[Long] = {
     Logger.info("Inserting KnolX session.")
@@ -24,7 +27,7 @@ class KSessionRepository @Inject()(protected val dbConfigProvider: DatabaseConfi
   }
 
   /**
-    * get all KnolX sessions from databse
+    * get all KnolX sessions from database
     */
   def getAll(): Future[List[KSession]] = {
     Logger.info("Getting all KnolX session record.")
@@ -32,7 +35,7 @@ class KSessionRepository @Inject()(protected val dbConfigProvider: DatabaseConfi
   }
 
   /**
-    * delete a knolx session from databse
+    *delete a knolX session from database
     */
 
   def delete(id: Long): Future[Int] = {
@@ -41,31 +44,40 @@ class KSessionRepository @Inject()(protected val dbConfigProvider: DatabaseConfi
   }
 
   /**
-    * update a knolx session in databse
+    *update a knolX session in database
     */
   def update(id: Long, ksession: KSession): Future[Int] = {
     Logger.info("Updating KnolX session record.")
     db.run(kSessionTableQuery.filter(_.id === id).update(ksession))
   }
-
 }
 
-trait KSessionTable extends UserTable {
-  self: HasDatabaseConfigProvider[JdbcProfile] =>
+/**
+  * KSession trait which is used for mapping
+  */
 
-  import driver.api._
+  trait KSessionTable extends UserTable{
+    self: HasDatabaseConfigProvider[JdbcProfile] =>
+
+    import driver.api._
+
+
 
   lazy val kSessionTableQuery = TableQuery[KSessionInfo]
 
 
   class KSessionInfo(tag: Tag) extends Table[KSession](tag, "sessions") {
-    def * : ProvenShape[KSession] = (topic, date, uID, id.?) <>((KSession.apply _).tupled, KSession.unapply)
+    def * : ProvenShape[KSession] = (topic.?, date, slot, status, uID, id.?) <>((KSession.apply _).tupled, KSession.unapply)
 
     def id: Rep[Long] = column[Long]("id", O.AutoInc, O.PrimaryKey)
 
     def topic: Rep[String] = column[String]("topic", O.SqlType("VARCHAR(100"))
 
-    def date: Rep[String] = column[String]("date", O.SqlType("VARCHAR(100"))
+    def date: Rep[Date] = column[Date]("date", O.SqlType("Date"))
+
+    def slot:Rep[Int] = column[Int]("slot",O.SqlType("NUMBER"))
+
+    def status:Rep[Boolean] = column[Boolean]("status", O.SqlType("BOOLEAN"))
 
     def uID: Rep[Long] = column[Long]("user_id")
 

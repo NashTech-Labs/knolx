@@ -38,4 +38,9 @@ class UserRepositorySpec extends PlaySpecification {
     val result = await(userRepository.delete(2))
     result === 1
   }
+
+  "update a user" in new WithApplication() {
+    val result = await(userRepository.update(2, User("anubhav@gmail.com","anubhav1234","anubhav","consultant",0)))
+    result === 0
+  }
 }

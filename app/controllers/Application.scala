@@ -12,7 +12,6 @@ class Application extends Controller {
       routes.javascript.SessionsController.getAllSessions,
       routes.javascript.DashboardController.renderTablePage,
       routes.javascript.DashboardController.renderKnolxForm,
-      routes.javascript.DashboardController.mailKnolxScheduler,
       routes.javascript.SessionsController.createSession
     )
     )

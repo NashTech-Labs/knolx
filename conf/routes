@@ -29,8 +29,6 @@ GET        /adminKnolxForm          controllers.DashboardController.renderKnolxF
 #render Table Page on DashBoard
 GET         /tables                 controllers.DashboardController.renderTablePage
 
-POST       /mailKnolxScheduler      controllers.DashboardController.mailKnolxScheduler
-
 POST   /createSession               controllers.SessionsController.createSession
 
 #javascript routes

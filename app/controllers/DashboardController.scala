@@ -3,13 +3,16 @@ package controllers
 
 import javax.inject.Inject
 
-
 import play.api.Logger
+
+import models.{KSession, User}
+
 import play.api.Play.current
 import play.api.data.Form
 import play.api.data.Forms._
 import play.api.i18n.Messages
 import play.api.i18n.Messages.Implicits._
+
 import play.api.libs.json.{Json, Writes}
 import play.api.mvc.{Result, Action, AnyContent, Controller}
 
@@ -32,13 +35,15 @@ class DashboardController @Inject()(cacheService: CacheService, webJarAssets: We
     * Action for rendering dashboard of user
     **/
 
-  val knolxForm = Form(
-    tuple(
-      "userId" -> text,
-      "date_1" -> date,
-      "date_2" -> date,
-      "date_3" -> date
-    ))
+  val sessionsForm = Form(
+    mapping(
+      "topic" -> optional(text),
+      "date" -> sqlDate,
+      "slot" -> number(1),
+      "status" -> boolean,
+      "uid" -> longNumber,
+      "id" -> optional(longNumber)
+    )(KSession.apply)(KSession.unapply))
 
   def renderDashBoard: Action[AnyContent] = Action.async {
     implicit request =>
@@ -56,20 +61,10 @@ class DashboardController @Inject()(cacheService: CacheService, webJarAssets: We
 
   def renderKnolxForm: Action[AnyContent] = Action.async {
     implicit request =>
-        userService.getAll.map((list: List[User]) => Ok(views.html.adminKnolexForm(webJarAssets, knolxForm, list)))
+      println("\n\n\n\n"+cacheService.getCache.get)
+        userService.getAll.map((list: List[User]) => Ok(views.html.adminKnolexForm(webJarAssets, sessionsForm, list,cacheService.getCache.get)))
   }
 
-  def mailKnolxScheduler: Action[AnyContent] = Action.async {
-    implicit request =>
-      require(knolxForm.value.isEmpty,"")
-    knolxForm.bindFromRequest.fold(
-      formWithErrors => {
-        Logger.error("Sign-In badRequest.")
-        Future.successful(BadRequest(""))
-      },
-      validData => {
-       mailService.sendHtmlEmail(List(validData._1),"Schedule Knolx","<a href = 'https://www.google.co.in'>click here</a>")//send lin which will render a form with default date and email
-        Future.successful(Redirect(routes.AuthenticationController.loginPage()))
-      })
-  }
+
+
 }

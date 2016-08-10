@@ -3,12 +3,9 @@ package controllers
 import org.mockito.Mockito._
 import org.specs2.mock.Mockito
 import org.specs2.mutable.Specification
-
-import play.api.cache.CacheApi
 import play.api.test.Helpers._
 import play.api.test.{FakeRequest, WithApplication}
-
-import services.{CacheService, UserService}
+import services.{CacheService, KSessionService, UserService}
 
 import scala.concurrent.Future
 
@@ -18,8 +15,9 @@ class DashboardControllerSpec extends Specification with Mockito {
   /*val userService = mock[UserService]
   val webJarAssets = mock[WebJarAssets]
   val cacheService = mock[CacheService]
+  val kSessionService = mock[KSessionService]
 
-  val dashBoardController = new DashboardController(cacheService, webJarAssets, userService)
+  val dashBoardController = new DashboardController(cacheService, webJarAssets, userService, kSessionService )
   "should render the dashboard in case renderDashBoard url is hit and user doesNot logout" in new WithApplication() {
     when(cacheService.getCache).thenReturn(Some("johndeo@gmail.com"))
 
