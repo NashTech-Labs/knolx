@@ -64,13 +64,17 @@ class KSessionRepository @Inject()(protected val dbConfigProvider: DatabaseConfi
 
 
   class KSessionInfo(tag: Tag) extends Table[KSession](tag, "sessions") {
-    def * : ProvenShape[KSession] = (topic, date, uID, id.?) <>((KSession.apply _).tupled, KSession.unapply)
+    def * : ProvenShape[KSession] = (topic, date, slot, status, uID, id.?) <>((KSession.apply _).tupled, KSession.unapply)
 
     def id: Rep[Long] = column[Long]("id", O.AutoInc, O.PrimaryKey)
 
     def topic: Rep[String] = column[String]("topic", O.SqlType("VARCHAR(100"))
 
     def date: Rep[String] = column[String]("date", O.SqlType("VARCHAR(100"))
+
+    def slot:Rep[Int] = column[Int]("slot",O.SqlType("NUMBER"))
+
+    def status:Rep[Boolean] = column[Boolean]("status", O.SqlType("BOOLEAN"))
 
     def uID: Rep[Long] = column[Long]("user_id")
 

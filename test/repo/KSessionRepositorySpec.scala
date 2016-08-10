@@ -12,7 +12,7 @@ class KSessionRepositorySpec extends PlaySpecification{
     sequential
 
   "insert KnolX session " in new WithApplication() {
-    val result = await(kSessionRepository.insert(KSession("Generic Programming in Scala","15-07-2016",1,Some(2))))
+    val result = await(kSessionRepository.insert(KSession("Generic Programming in Scala","15-07-2016",1,false,1,Some(2))))
     result === 2
   }
 
@@ -22,7 +22,7 @@ class KSessionRepositorySpec extends PlaySpecification{
   }
 
   "update a KnolX session " in new WithApplication() {
-    val result = await(kSessionRepository.update(2,KSession("Kafka Connect","22-07-2016",1,None)))
+    val result = await(kSessionRepository.update(2,KSession("Kafka Connect","22-07-2016",2,false,1,None)))
     result === 1
   }
 
