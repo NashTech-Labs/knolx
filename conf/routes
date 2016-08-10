@@ -2,21 +2,39 @@
 # ~~~~
 
 # Map static resources from the /public folder to the /assets URL path
-GET     /assets/*file                     controllers.Assets.versioned(path="/public", file: Asset)
+GET         /assets/*file            controllers.Assets.versioned(path="/public", file: Asset)
 
-GET     /webjars/*file                    controllers.WebJarAssets.at(file)
+GET         /webjars/*file           controllers.WebJarAssets.at(file)
 
-#  home page
 
-GET     /home                             controllers.AuthenticationController.renderHomePage
-#  login page
-POST    /signin                           controllers.AuthenticationController.signIn
-#  logout page
-POST    /signout                          controllers.AuthenticationController.signOut
-#  signup page
-POST     /signup                          controllers.AuthenticationController.signUp
+
+
 #  dashboard page
-GET     /                                 controllers.DashboardController.renderDashBoard
+GET         /                       controllers.DashboardController.renderDashBoard
+#loginpage
+GET         /home                   controllers.AuthenticationController.loginPage
+#  sign in
+POST        /signin                 controllers.AuthenticationController.signIn
+#  logout
+GET        /signout                 controllers.AuthenticationController.signOut
+#  signup
+POST        /signup                 controllers.AuthenticationController.signUp
+#get all Users
+GET        /getAllUsers             controllers.DashboardController.getAllUsers
+#get all Sessions
+GET         /getAllSessions         controllers.DashboardController.getAllSessions
+
+#get admin knolx form
+GET        /adminKnolxForm          controllers.KsessionController.renderKnolxForm
+
+#render Table Page on DashBoard
+GET         /tables                 controllers.DashboardController.renderTablePage
+
+
+
+#javascript routes
+GET         /javascriptRoutes        controllers.Application.javascriptRoutes
+
 
 
 

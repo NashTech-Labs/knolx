@@ -6,11 +6,13 @@ import models.User
 import play.api.Logger
 import play.api.db.slick.{DatabaseConfigProvider, HasDatabaseConfigProvider}
 import slick.driver.JdbcProfile
+import slick.lifted.ProvenShape
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
 
 class UserRepository @Inject()(protected val dbConfigProvider: DatabaseConfigProvider) extends UserTable
+
   with HasDatabaseConfigProvider[JdbcProfile] {
 
   import driver.api._
@@ -52,9 +54,9 @@ class UserRepository @Inject()(protected val dbConfigProvider: DatabaseConfigPro
     *delete a user from database
     */
 
-  def delete(id:Long):Future[Int] = {
+  def delete(id: Long): Future[Int] = {
     Logger.info("Deleting user record.")
-    db.run(userTableQuery.filter(_.id=== id).delete)
+    db.run(userTableQuery.filter(_.id === id).delete)
   }
 
   /**
@@ -77,7 +79,8 @@ trait UserTable {
   lazy val userTableQuery = TableQuery[UserInfo]
 
   class UserInfo(tag: Tag) extends Table[User](tag, "users") {
-    def * = (email, password, name, designation, category, id.?) <>((User.apply _).tupled, User.unapply)
+
+    def * : ProvenShape[User] = (email, password, name, designation, category, id.?) <>((User.apply _).tupled, User.unapply)
 
     def id: Rep[Long] = column[Long]("id", O.AutoInc, O.PrimaryKey)
 
