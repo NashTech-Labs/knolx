@@ -60,4 +60,8 @@ class UserService @Inject()(userRepository: UserRepository) {
     userRepository.getAll
   }
 
+  def getId(email : String)={
+    userRepository.getByEmail(email).map(user => user.get.id)
+  }
+
 }

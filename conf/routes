@@ -30,6 +30,7 @@ GET        /adminKnolxForm          controllers.DashboardController.renderKnolxF
 GET         /tables                 controllers.DashboardController.renderTablePage
 
 POST   /createSession               controllers.SessionsController.createSession
+POST   /updateSession               controllers.SessionsController.updateSession
 
 #javascript routes
 GET         /javascriptRoutes        controllers.Application.javascriptRoutes

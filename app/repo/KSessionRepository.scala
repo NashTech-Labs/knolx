@@ -14,7 +14,7 @@ import scala.concurrent.Future
 
 
 class KSessionRepository @Inject()(protected val dbConfigProvider: DatabaseConfigProvider) extends KSessionTable
-  with HasDatabaseConfigProvider[JdbcProfile] {
+  with HasDatabaseConfigProvider[JdbcProfile] with UserTable{
 
   import driver.api._
 
@@ -32,6 +32,11 @@ class KSessionRepository @Inject()(protected val dbConfigProvider: DatabaseConfi
   def getAll(): Future[List[KSession]] = {
     Logger.info("Getting all KnolX session record.")
     db.run(kSessionTableQuery.to[List].result)
+  }
+
+  def getTableView ={
+    val resultView = for{(k,u) <- kSessionTableQuery.to[List] joinRight userTableQuery.to[List] on (_.uID === _.id)}yield (k , u.email)
+    db.run(resultView.to[List].result)
   }
 
   /**

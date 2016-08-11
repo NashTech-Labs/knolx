@@ -1,5 +1,5 @@
-@(webJarAssets: WebJarAssets)
-
+@import b3.vertical.fieldConstructor
+@(webJarAssets: WebJarAssets,adminKnolexForm: Form[KSession])(implicit message: Messages)
 <html>
     <body>
         <script type="text/javascript" src='@routes.WebJarAssets.at(webJarAssets.locate("jquery.min.js"))'></script>
@@ -42,18 +42,17 @@
                         <table id="allUsers" class="display table table-striped table-bordered table-hover table-responsive" >
                             <tr>
                                 <th>Id</th>
-                                <th data-defaultsort="desc">Name</th>
+                                <th>Name</th>
                                 <th>Email</th>
                                 <th>Designation</th>
-                                <th>Category</th>
                             </tr>
                         </table>
                         <table id="allSessions" class="display table table-striped table-bordered table-hover table-responsive" >
                             <tr>
                                 <th>Id</th>
                                 <th>Title</th>
-                                <th data-firstsort="desc" >Date</th>
-                                <th>User-Id</th>
+                                <th>Date</th>
+                                <th>User-Email</th>
                             </tr>
                         </table>
                         <ul class="pagination">
@@ -63,6 +62,35 @@
                             <li><a href="#">4</a></li>
                             <li><a href="#">5</a></li>
                         </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+        <div class="container">
+            <div class="modal fade" id="knolxModal" role="dialog">
+                <div class="modal-dialog">
+
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <button type="button" class="close" data-dismiss="modal">&times;</button>
+                            <h4 style="color:darkgreen;"><span class="glyphicon glyphicon-lock"></span>Edit knolx</h4>
+                        </div>
+                        <div class="modal-body">
+                        @b3.form(action = routes.SessionsController.updateSession) {
+                            @b3.text(adminKnolexForm("id"),'_label -> "User Id", 'value -> "1")
+                            @b3.text(adminKnolexForm("topic"), '_label -> "Knolx Topic")
+                            @b3.date(adminKnolexForm("date"), '_label -> "Select Date")
+                            @b3.select(adminKnolexForm("slot"), options = List(1, 2, 3, 4, 5).toSeq.flatMap(values => Seq(values.toString -> values.toString)), '_label -> "Select Slot")
+                            @b3.text(adminKnolexForm("status"),'value -> true,'style -> "display: none")
+                            @b3.text(adminKnolexForm("uid"),'value -> 1,'style -> "display: none")
+                            @b3.submit('class -> "btn btn-primary btn-lg ", '_label -> "", 'id -> "submit") {submit}
+                        }
+                        </div>
+                        <div class="modal-footer">
+                            <button type="submit" class="btn btn-default btn-default pull-left" data-dismiss="modal"><span class="glyphicon glyphicon-remove"></span> Cancel</button>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -104,7 +132,6 @@
                             row.append($("<td>" + rowData.name + "</td>"));
                             row.append($("<td>" + rowData.email + "</td>"));
                             row.append($("<td>" + rowData.designation + "</td>"));
-                            row.append($("<td>" + rowData.category + "</td>"));
                         }
                         jsRoutes.controllers.UsersController.getAllUsers().ajax(ajaxCallBack);
 
@@ -133,9 +160,9 @@
                             var row = $("<tr />")
                             $("#allSessions").append(row); //this will append tr element to table... keep its reference for a while since we will add cels into it
                             row.append($("<td>" + rowData.id + "</td>"));
-                            row.append($("<td>" + rowData.topic + "</td>"));
-                            row.append($("<td>" + rowData.date + "</td>"));
-                            row.append($("<td>" + rowData.uid + "</td>"));
+                            row.append($("<td><button class='btn btn-link editButton' data-toggle='modal' data-target='#knolxModal' >"  + rowData.topic + " </button> </td>"));
+                            row.append($("<td>" + new Date(rowData.date).toDateString()  + "</td>"));
+                            row.append($("<td>" + rowData.email + "</td>"));
                         }
                         jsRoutes.controllers.SessionsController.getAllSessions().ajax(ajaxCallBack);
 
