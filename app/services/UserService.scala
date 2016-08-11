@@ -59,4 +59,22 @@ class UserService @Inject()(userRepository: UserRepository) {
     userRepository.getAll
   }
 
+
+ /* def getEmailByUserID(uid:List[Long]):Future[List[String]]={
+    val emailList = uid.map{
+      userId => userRepository.getByID(userId).map(_.email)
+    }
+    Future.sequence(emailList)
+  }*/
+
+
+  def getUserByID(uidList:List[Long]):Future[List[User]]={
+
+  val userList = uidList.map{
+      userID => userRepository.getByID(userID)
+    }
+    Future.sequence(userList)
+  }
+
+
 }

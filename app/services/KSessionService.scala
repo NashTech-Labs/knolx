@@ -16,13 +16,14 @@ class KSessionService @Inject()(kSessionRepository: KSessionRepository) {
   }
 
   /**
-    * service for getting user_id and topic of KnolX
+    * service for getting user_id and topic of KnolX by date
     */
 
-  def getTopicAndUserIDByDate(): Future[List[(String, Long)]] = {
+  def getUserIDByDate(date:String): Future[List[Long]] = {
 
-    Logger.debug("Getting topic and user-id by date")
-    kSessionRepository.getAll.map(value => value.map(value => (value.topic, value.uid)))
+    Logger.debug("Getting user-id by date")
+    kSessionRepository.getAllByDate(date).map(kSessions => kSessions.map(kSession => (kSession.uid)).distinct)
+
 
   }
 }

@@ -31,6 +31,15 @@ class KSessionRepository @Inject()(protected val dbConfigProvider: DatabaseConfi
     db.run(kSessionTableQuery.to[List].result)
   }
 
+
+  /**
+  get all KnolX sessions from database matching a given date
+    */
+  def getAllByDate(date:String): Future[List[KSession]] = {
+    Logger.info("Getting all KnolX session record by date")
+     db.run(kSessionTableQuery.filter(_.date === date).to[List].result)
+  }
+
   /**
     *delete a knolX session from database
     */
