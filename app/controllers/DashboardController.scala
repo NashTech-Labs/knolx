@@ -3,24 +3,14 @@ package controllers
 
 import javax.inject.Inject
 
-import play.api.Logger
-
 import models.{KSession, User}
-
 import play.api.Play.current
 import play.api.data.Form
 import play.api.data.Forms._
 import play.api.i18n.Messages
 import play.api.i18n.Messages.Implicits._
-
-import play.api.libs.json.{Json, Writes}
-import play.api.mvc.{Result, Action, AnyContent, Controller}
-
-import play.api.routing.JavaScriptReverseRouter
-import play.api.libs.json
-import models.{User}
-import services.{MailService, KSessionService, CacheService, UserService}
-
+import play.api.mvc.{Action, AnyContent, Controller}
+import services.{CacheService, KSessionService, UserService}
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
@@ -28,7 +18,7 @@ import scala.concurrent.Future
 
 
 class DashboardController @Inject()(cacheService: CacheService, webJarAssets: WebJarAssets,
-                                    userService: UserService,kSessionService: KSessionService,mailService: MailService )
+                                    userService: UserService,kSessionService: KSessionService)
   extends Controller {
 
   /**

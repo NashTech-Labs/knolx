@@ -13,14 +13,14 @@ import play.api.mvc.{Action, AnyContent, Controller}
 import services.{CacheService, KSessionService, UserService}
 import utils.Constants._
 import utils.Helpers
-
+import com.knoldus.Scheduler
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
 
 @Singleton
-class AuthenticationController @Inject()(cacheService: CacheService,
+class AuthenticationController @Inject()(cacheService: CacheService, scheduler: Scheduler,
                                          webJarAssets: WebJarAssets, userService: UserService, kSessionService: KSessionService) extends Controller {
 
   val signUpForm = Form(
@@ -46,6 +46,7 @@ class AuthenticationController @Inject()(cacheService: CacheService,
 
   def loginPage: Action[AnyContent] = Action.async {
     implicit request =>
+      scheduler.sendReminder(kSessionService,userService)
       Logger.debug("Redirecting renderHomePage")
       cacheService.getCache.fold(Future.successful(Ok(views.html.home(webJarAssets, loginForm, signUpForm)))
       ) { email => userService.getNameAndCategoryByEmail(email).

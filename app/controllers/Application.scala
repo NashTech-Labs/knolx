@@ -22,7 +22,7 @@ class Application @Inject()(scheduler: Scheduler,kSessionService: KSessionServic
 
   def index: Action[AnyContent] = Action { implicit request =>
 
-    scheduler.sendReminder(kSessionService,userService)
+
     Redirect(routes.AuthenticationController.loginPage())
   }
 
