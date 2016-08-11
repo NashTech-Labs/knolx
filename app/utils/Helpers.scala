@@ -1,7 +1,5 @@
 package utils
-import java.text.SimpleDateFormat
-import java.util.{Calendar, Date}
-import java.util.Base64
+import java.util.{Base64, Calendar, Date}
 
 
 object Helpers {
@@ -20,14 +18,11 @@ object Helpers {
 
     val today = Calendar.getInstance()
     today.setTime(new Date())
-    today.add(Calendar.DATE, 14)
+    today.add(Calendar.DATE, 15)
 
     /**
-      * converting java.util.date to string
+      * converting java.util.date to java.sql.Date
       */
-//val aa:Date = today.getTime
-     //new SimpleDateFormat("yyyy-MM-dd").format(today.getTime)
-
     new java.sql.Date(today.getTime.getTime)
 
   }

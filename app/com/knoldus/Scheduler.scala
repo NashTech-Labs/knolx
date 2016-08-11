@@ -48,8 +48,7 @@ class Scheduler{
 
   val system = ActorSystem("system")
   def sendReminder(kSessionService: KSessionService, userService: UserService):Unit = {
-    println("------>>>>>")
-  val reminder = system.actorOf(ReminderActor.props(kSessionService,userService), "reminder-actor")
+    val reminder = system.actorOf(ReminderActor.props(kSessionService,userService), "reminder-actor")
     reminder ! ReminderActor.Tick
   }
 
