@@ -2,7 +2,7 @@
 
 <html>
     <head>
-        <title>Bootstrap Admin Theme v3</title>
+        <title>Dashboard | knolx</title>
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
             <!-- Bootstrap -->
         <link href="@routes.Assets.versioned("css/bootstrap.min.css")" rel="stylesheet">
@@ -29,18 +29,13 @@
                     <div class="col-md-5">
                             <!-- Logo -->
                         <div class="logo">
-                            <h1><a href="index.html">KNOLX</a></h1>
+                            <h1><a href="#"> KNOLX</a></h1>
                         </div>
                     </div>
                     <div class="col-md-5">
                         <div class="row">
                             <div class="col-lg-12">
-                                <div class="input-group form">
-                                    <input type="text" class="form-control" placeholder="Search...">
-                                    <span class="input-group-btn">
-                                        <button class="btn btn-primary" type="button">Search</button>
-                                    </span>
-                                </div>
+
 
                             </div>
                         </div>
@@ -89,10 +84,7 @@
                                 <!-- Main menu -->
                             <li class="current" id="dashboard" ><a href="#"><i class="glyphicon glyphicon-home"></i>
                                 Dashboard</a></li>
-                            <li><a href="#" ><i class="glyphicon glyphicon-calendar"></i> Calendar</a></li>
-                            <li><a href="#"><i class="glyphicon glyphicon-stats"></i> Statistics (Charts)</a></li>
                             <li id="table" ><a href="#"><i class="glyphicon glyphicon-list"></i> Tables</a></li>
-                            <li><a href="#"><i class="glyphicon glyphicon-pencil"></i> Editors</a></li>
                             <li id="forms"><a href="#"><i class="glyphicon glyphicon-tasks"></i> Forms</a></li>
                             <li class="submenu">
                                 <a href="#">
@@ -113,15 +105,7 @@
                 </div>
             </div>
 
-            <footer>
-                <div class="container">
 
-                    <div class="copy text-center">
-                        Copyright 2014 <a href='#'>Website</a>
-                    </div>
-
-                </div>
-            </footer>
 
                 <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
             <script src="https://code.jquery.com/jquery.js"></script>
@@ -154,7 +138,7 @@
                                 alert("Error");
                             }
                         };
-                        jsRoutes.controllers.KsessionController.renderKnolxForm.ajax(ajaxCallBack);
+                        jsRoutes.controllers.DashboardController.renderKnolxForm().ajax(ajaxCallBack);
                     })
 
                 });

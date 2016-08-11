@@ -6,28 +6,29 @@ import javax.mail.internet.{MimeMessage, InternetAddress}
 import javax.mail._
 import org.apache.commons.mail.{DefaultAuthenticator, SimpleEmail}
 
-object MailService{
+class MailService{
 
   def sendMail(to: List[String], subject: String, message: String) = {
     to.map {recipient =>
     val email = new SimpleEmail()
     email.setHostName("smtp.googlemail.com")
     email.setSmtpPort(465)
-    email.setAuthenticator(new DefaultAuthenticator("rahulsocialapp@gmail.com", "rough@45"))
+    email.setAuthenticator(new DefaultAuthenticator("knolx.knoldus@gmail.com", "rough@48"))
     email.setSSLOnConnect(true)
-    email.setFrom("rahulsocialapp@gmail.com")
+    email.setFrom("knolx.knoldus@gmail.com")
     email.setSubject(subject)
     email.setMsg(message)
     email.addTo(recipient)
-      email.send()
+    email.send()
 }
+
   }
 
   def sendHtmlEmail(to: List[String], subject: String, message: String) {
     to.map { recipient =>
 
-      val mailFrom = "rahulsocialapp@gmail.com";
-      val password = "rough@45";
+      val mailFrom = "knolx.knoldus@gmail.com";
+      val password = "rough@48";
       val properties = new Properties();
       properties.put("mail.smtp.host", "smtp.gmail.com");
       properties.put("mail.smtp.port", "587");
@@ -51,3 +52,4 @@ object MailService{
   }
 
 }
+

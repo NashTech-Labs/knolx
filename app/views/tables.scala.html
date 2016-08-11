@@ -7,28 +7,32 @@
 
         <div class="content-box-large">
             <div class="panel-heading">
-                <div class="panel-title">  </div>
+                <div class="panel-title">
+                    <div class="col-md-8">
+                        <div class="input-group">
+                            <div class="input-group-btn">
+                                <button type="button" class="btn btn-info dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
+                                    Select Record-Type
+                                    <span class="caret"></span>
+                                </button>
+                                <ul class="dropdown-menu" role="menu">
+                                    <li id = "user"><a href="#">Users</a></li>
+                                    <li id="session"><a href="#">Knolx-Sessions</a></li>
+                                    <li class="divider"></li>
+                                    <li id="commitment"><a href="#">Commitments</a></li>
+                                    <li id="feedback"><a href="#">Feedbacks</a></li>
+                                </ul>
+                            </div>
+                            <input type="text" class="form-control" placeholder="search record">
+                            <span class="input-group-btn">
+                                <button class="btn btn-default" type="button">Go!</button>
+                            </span>
+                        </div>
+                    </div>
+                </div>
 
                 <div class="panel-options">
-                    <div class="input-group">
-                        <div class="input-group-btn">
-                            <button type="button" class="btn btn-info dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
-                                Select Record-Type
-                                <span class="caret"></span>
-                            </button>
-                            <ul class="dropdown-menu" role="menu">
-                                <li id = "user"><a href="#">Users</a></li>
-                                <li id="session"><a href="#">Knolx-Sessions</a></li>
-                                <li class="divider"></li>
-                                <li id="commitment"><a href="#">Commitments</a></li>
-                                <li id="feedback"><a href="#">Feedbacks</a></li>
-                            </ul>
-                        </div>
-                        <input type="text" class="form-control" placeholder="search record">
-                        <span class="input-group-btn">
-                            <button class="btn btn-default" type="button">Go!</button>
-                        </span>
-                    </div>
+
                 </div>
             </div>
 
@@ -48,13 +52,13 @@
                             <tr>
                                 <th>Id</th>
                                 <th>Title</th>
-                                <th data-firstsort="desc" data-dateformat="DD-MMM-YYYY">Date</th>
+                                <th data-firstsort="desc" >Date</th>
                                 <th>User-Id</th>
                             </tr>
                         </table>
                         <ul class="pagination">
-                            <li><a href="#">1</a></li>
-                            <li class="active"><a href="#">2</a></li>
+                            <li class="active"><a href="#">1</a></li>
+                            <li ><a href="#">2</a></li>
                             <li><a href="#">3</a></li>
                             <li><a href="#">4</a></li>
                             <li><a href="#">5</a></li>
@@ -66,8 +70,17 @@
 
 
         <script type="text/javascript">
+
+                function hideTable(){
+                    $('#allSessions').hide();
+                    $('#allUsers').hide();
+                }
+
                 $(document).ready(function() {
+                    hideTable();
                     $('#user').click(function(){
+                        hideTable();
+                        $('#allUsers').show()
                         var ajaxCallBack = {
                             success : function(data) {
                                 drawTable(JSON.parse(data));
@@ -78,6 +91,7 @@
                         };
 
                         function drawTable(data) {
+                            $("#allUsers").find("tr:not(:first)").remove();
                             for (var i = 0; i < data.length; i++) {
                                 drawRow(data[i]);
                             }
@@ -92,11 +106,13 @@
                             row.append($("<td>" + rowData.designation + "</td>"));
                             row.append($("<td>" + rowData.category + "</td>"));
                         }
-                        jsRoutes.controllers.DashboardController.getAllUsers().ajax(ajaxCallBack);
+                        jsRoutes.controllers.UsersController.getAllUsers().ajax(ajaxCallBack);
 
 
                     });
                     $('#session').click(function(){
+                        hideTable();
+                        $('#allSessions').show()
                         var ajaxCallBack = {
                             success : function(data) {
                                 drawTable(JSON.parse(data));
@@ -107,6 +123,7 @@
                         };
 
                         function drawTable(data) {
+                            $("#allSessions").find("tr:not(:first)").remove();
                             for (var i = 0; i < data.length; i++) {
                                 drawRow(data[i]);
                             }
@@ -120,7 +137,7 @@
                             row.append($("<td>" + rowData.date + "</td>"));
                             row.append($("<td>" + rowData.uid + "</td>"));
                         }
-                        jsRoutes.controllers.DashboardController.getAllSessions().ajax(ajaxCallBack);
+                        jsRoutes.controllers.SessionsController.getAllSessions().ajax(ajaxCallBack);
 
                     })
 
