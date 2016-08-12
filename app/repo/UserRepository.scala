@@ -89,7 +89,7 @@ trait UserTable {
 
   class UserInfo(tag: Tag) extends Table[User](tag, "users") {
 
-    def * : ProvenShape[User] = (email, password, name, designation, category, id.?) <>((User.apply _).tupled, User.unapply)
+    def * : ProvenShape[User] = (email, password, name, designation, category, isBanned, id.?) <>((User.apply _).tupled, User.unapply)
 
     def id: Rep[Long] = column[Long]("id", O.AutoInc, O.PrimaryKey)
 
@@ -100,6 +100,8 @@ trait UserTable {
     def designation: Rep[String] = column[String]("designation", O.SqlType("VARCHAR(100"))
 
     def category: Rep[Int] = column[Int]("category", O.Default(0))
+
+    def isBanned : Rep[Boolean] = column[Boolean]("is_banned", O.Default(false))
 
     def email: Rep[String] = column[String]("email", O.SqlType("VARCHAR(100"))
 

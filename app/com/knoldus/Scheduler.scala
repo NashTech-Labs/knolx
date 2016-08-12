@@ -37,7 +37,8 @@ import ReminderActor._
           users.map {
             user => sendMail(List(user.email), "KnolX reminder", Messages("remind", user.name, date))
           }
-        }else {
+        }
+        else {
           context.system.scheduler.scheduleOnce(interval, self, Tick)
         }
       }

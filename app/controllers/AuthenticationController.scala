@@ -30,6 +30,7 @@ class AuthenticationController @Inject()(cacheService: CacheService, scheduler: 
       "name" -> nonEmptyText(MIN_LENGTH_OF_NAME),
       "designation" -> text,
       "category" -> ignored(0),
+      "isBanned" -> ignored(false),
       "id" -> optional(longNumber)
     )(User.apply)(User.unapply))
 
@@ -46,7 +47,7 @@ class AuthenticationController @Inject()(cacheService: CacheService, scheduler: 
 
   def loginPage: Action[AnyContent] = Action.async {
     implicit request =>
-      scheduler.sendReminder(kSessionService,userService)
+      //scheduler.sendReminder(kSessionService,userService)
       Logger.debug("Redirecting renderHomePage")
       cacheService.getCache.fold(Future.successful(Ok(views.html.home(webJarAssets, loginForm, signUpForm)))
       ) { email => userService.getNameAndCategoryByEmail(email).

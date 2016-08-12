@@ -9,7 +9,7 @@ import org.specs2.runner._
 import play.api.test.Helpers._
 import play.api.test.{FakeRequest, WithApplication}
 import services.{CacheService, UserService,KSessionService}
-
+import com.knoldus.Scheduler
 import scala.concurrent.Future
 
 
@@ -23,9 +23,10 @@ class AuthenticationControllerSpec extends Specification with Mockito {
   val webJarAssets = mock[WebJarAssets]
   val cacheService = mock[CacheService]
   val kSessionService = mock[KSessionService]
+  val scheduler = mock[Scheduler]
 
 
-  val authenticationController = new AuthenticationController(cacheService, webJarAssets, userService,kSessionService:KSessionService)
+  val authenticationController = new AuthenticationController(cacheService, scheduler,webJarAssets, userService,kSessionService)
 
   "home Controller" should {
 
@@ -83,7 +84,7 @@ class AuthenticationControllerSpec extends Specification with Mockito {
       val results = call(authenticationController.signUp, FakeRequest(POST, "/signup").withFormUrlEncodedBody("emailId" -> "deep@gmail.com",
         "password" -> "q", "name" -> "deep", "designation" -> "sw"))
       when(userService.validateEmail("deep@gmail.com")).thenReturn(Future.successful(false))
-      when(userService.signUpUser(new User("deep@gmail.com", "c", "deep", "sw", 0,None))).thenReturn(Future.successful(true))
+      when(userService.signUpUser(new User("deep@gmail.com", "c", "deep", "sw", 0,false,None))).thenReturn(Future.successful(true))
       status(results) must equalTo(BAD_REQUEST)
       contentAsString(results).contains("knolx")
     }
@@ -93,14 +94,14 @@ class AuthenticationControllerSpec extends Specification with Mockito {
       val results = call(authenticationController.signUp, FakeRequest(POST, "/signup").withFormUrlEncodedBody("emailId" -> "deep@gmail.com",
         "password" -> "qwerty", "name" -> "deep", "designation" -> "sw"))
       when(userService.validateEmail("deep@gmail.com")).thenReturn(Future.successful(false))
-      when(userService.signUpUser(new User("deep@gmail.com", "cXdlcnR5", "deep", "sw",0, None))).thenReturn(Future.successful(true))
+      when(userService.signUpUser(new User("deep@gmail.com", "cXdlcnR5", "deep", "sw",0,false, None))).thenReturn(Future.successful(true))
       status(results) must equalTo(SEE_OTHER)
       contentAsString(results).contains("knolx | dashboard")
     }
     "should not renderDashBoard if signup is unsuccessfull" in new WithApplication() {
 
       val results = call(authenticationController.signUp, FakeRequest(POST, "/signup").withFormUrlEncodedBody("emailId" -> "deep@gmail.com",
-        "password" -> "qwerty", "name" -> "deep", "designation" -> "sw"))
+        "password" -> "qwerty", "name" -> "deep", "designation" -> "sw", "category" -> "0", "isBanned" -> "false"))
       when(userService.validateEmail("deep@gmail.com")).thenReturn(Future.successful(true))
       status(results) must equalTo(SEE_OTHER)
       contentAsString(results).contains("knolx")
@@ -110,7 +111,7 @@ class AuthenticationControllerSpec extends Specification with Mockito {
       val results = call(authenticationController.signUp, FakeRequest(POST, "/signup").withFormUrlEncodedBody("emailId" -> "deep@gmail.com",
         "password" -> "qwerty", "name" -> "deep", "designation" -> "sw"))
       when(userService.validateEmail("deep@gmail.com")).thenReturn(Future.successful(true))
-      when(userService.signUpUser(new User("deep@gmail.com", "cXdlcnR5", "deep", "sw",0, None))).thenReturn(Future.successful(false))
+      when(userService.signUpUser(new User("deep@gmail.com", "cXdlcnR5", "deep", "sw",0, false,None))).thenReturn(Future.successful(false))
       status(results) must equalTo(SEE_OTHER)
       contentAsString(results).contains("knolx")
     }
