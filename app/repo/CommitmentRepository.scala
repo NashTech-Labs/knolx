@@ -11,7 +11,7 @@ import scala.concurrent.Future
 
 
 class CommitmentRepository @Inject()(protected val dbConfigProvider: DatabaseConfigProvider) extends CommitmentTable
-  with HasDatabaseConfigProvider[JdbcProfile] with UserTable{
+  with HasDatabaseConfigProvider[JdbcProfile] with UserTable {
 
   import driver.api._
 
@@ -29,7 +29,15 @@ class CommitmentRepository @Inject()(protected val dbConfigProvider: DatabaseCon
   }
 
   /**
-    *delete a commitment from database
+    * get commitment from database by id
+    */
+  def getById(id: Long): Future[Commitment] = {
+    Logger.info("Getting Commitment record by id.")
+    db.run(commitmentTableQuerry.filter(_.id === id).to[List].result.head)
+  }
+
+  /**
+    * delete a commitment from database
     */
 
   def delete(id: Long): Future[Int] = {
@@ -38,7 +46,7 @@ class CommitmentRepository @Inject()(protected val dbConfigProvider: DatabaseCon
   }
 
   /**
-    *update a commitment in database
+    * update a commitment in database
     */
   def update(id: Long, commitment: Commitment): Future[Int] = {
     Logger.info("Updating commitment record.")

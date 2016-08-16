@@ -3,6 +3,7 @@ package repo
 
 import play.api.Application
 import play.api.test.{PlaySpecification, WithApplication}
+import java.sql.Date
 
 
 class KSessionRepositorySpec extends PlaySpecification{
@@ -12,7 +13,7 @@ class KSessionRepositorySpec extends PlaySpecification{
     sequential
 
   "insert KnolX session " in new WithApplication() {
-    val result = await(kSessionRepository.insert(KSession("Generic Programming in Scala","15-07-2016",1,false,1,Some(2))))
+    val result = await(kSessionRepository.insert(KSession(Some("Generic Programming in Scala"),Date("2016-07-15"),1,false,1,Some(2))))
     result === 2
   }
 

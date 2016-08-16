@@ -1,5 +1,5 @@
 @import b3.vertical.fieldConstructor
-@(webJarAssets: WebJarAssets,adminKnolexForm: Form[KSession])(implicit message: Messages)
+@(webJarAssets: WebJarAssets, adminKnolexForm: Form[KSession])(implicit message: Messages)
 <html>
     <body>
         <script type="text/javascript" src='@routes.WebJarAssets.at(webJarAssets.locate("jquery.min.js"))'></script>
@@ -75,21 +75,22 @@
                     <div class="modal-content">
                         <div class="modal-header">
                             <button type="button" class="close" data-dismiss="modal">&times;</button>
-                            <h4 style="color:darkgreen;"><span class="glyphicon glyphicon-lock"></span>Edit knolx</h4>
+                            <h4 style="color:darkgreen ;"><span class="glyphicon glyphicon-lock"></span>Edit knolx</h4>
                         </div>
                         <div class="modal-body">
                         @b3.form(action = routes.SessionsController.updateSession) {
-                            @b3.text(adminKnolexForm("id"),'_label -> "User Id", 'value -> "1")
+                            @b3.text(adminKnolexForm("id"), '_label -> "User Id", 'value -> "1")
                             @b3.text(adminKnolexForm("topic"), '_label -> "Knolx Topic")
                             @b3.date(adminKnolexForm("date"), '_label -> "Select Date")
                             @b3.select(adminKnolexForm("slot"), options = List(1, 2, 3, 4, 5).toSeq.flatMap(values => Seq(values.toString -> values.toString)), '_label -> "Select Slot")
-                            @b3.text(adminKnolexForm("status"),'value -> true,'style -> "display: none")
-                            @b3.text(adminKnolexForm("uid"),'value -> 1,'style -> "display: none")
+                            @b3.text(adminKnolexForm("status"), 'value -> true, 'style -> "display: none")
+                            @b3.text(adminKnolexForm("uid"), 'value -> 1, 'style -> "display: none")
                             @b3.submit('class -> "btn btn-primary btn-lg ", '_label -> "", 'id -> "submit") {submit}
                         }
                         </div>
                         <div class="modal-footer">
-                            <button type="submit" class="btn btn-default btn-default pull-left" data-dismiss="modal"><span class="glyphicon glyphicon-remove"></span> Cancel</button>
+                            <button type="submit" class="btn btn-default btn-default pull-left" data-dismiss="modal"><span class="glyphicon glyphicon-remove"></span>
+                                Cancel</button>
                         </div>
                     </div>
                 </div>

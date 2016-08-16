@@ -1,14 +1,16 @@
 package controllers
 
+import java.sql.Date
 import javax.inject.Inject
 
 import models.{KSessionView, User, KSession}
+import net.sf.ehcache.search.expression.And
 import play.api.Logger
 import play.api.data.Form
 import play.api.data.Forms._
 import play.api.libs.json.Json
 import play.api.mvc.{AnyContent, Action, Controller}
-import services.{CacheService, UserService, KSessionService}
+import services.{CommitmentService, CacheService, UserService, KSessionService}
 import utils.Constants._
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
@@ -16,9 +18,11 @@ import play.api.i18n.Messages.Implicits._
 import play.api.Play.current
 
 
-class SessionsController @Inject()(webJarAssets: WebJarAssets, cacheService: CacheService, kSessionService: KSessionService, userService: UserService) extends Controller {
+class SessionsController @Inject()(webJarAssets: WebJarAssets, cacheService: CacheService,
+                                   kSessionService: KSessionService, userService: UserService,
+                                   commitmentService: CommitmentService) extends Controller {
 
-  val sessionsForm = Form(
+  val sessionsForm: Form[KSession] = Form(
     mapping(
       "topic" -> optional(text),
       "date" -> sqlDate,
@@ -37,16 +41,40 @@ class SessionsController @Inject()(webJarAssets: WebJarAssets, cacheService: Cac
       }
   }
 
-  def updateSession =Action.async{
+  def doneKnolx: Action[AnyContent] = Action.async {
     implicit request =>
       sessionsForm.bindFromRequest.fold(
         formWithErrors => {
-          Logger.error("Sign-In badRequest." + formWithErrors)
-          Future.successful(BadRequest(""))
+          Logger.error("BadRequest." + formWithErrors)
+          Future.successful(BadRequest("BadRequest"))
+        },
+        validData => {
+          val res: Future[Boolean] = kSessionService.upDateSession(validData).flatMap(session => commitmentService.updateCommitment(validData.uid).map(commit => if (session > 0 && commit > 0) true else false))
+          res.map(value => if (value) Ok(views.html.tables(webJarAssets, sessionsForm)) else (BadRequest(" BadRequest")))
+
+        }
+      )
+  }
+
+  def renderKnolxByDate(date: Long): Action[AnyContent] = Action.async {
+    implicit request =>
+      kSessionService.createViewByDate(new Date(date)).map {
+        view =>
+          implicit val jsonFormat = Json.format[KSessionView]
+          Ok(Json.stringify(Json.toJson(view)).replaceAll("\\s+", ""))
+      }
+  }
+
+  def updateSession: Action[AnyContent] = Action.async {
+    implicit request =>
+      sessionsForm.bindFromRequest.fold(
+        formWithErrors => {
+          Logger.error("BadRequest." + formWithErrors)
+          Future.successful(BadRequest("BadRequest"))
         },
         validData => {
           kSessionService.upDateSession(validData)
-          Future.successful(Ok(views.html.tables(webJarAssets,sessionsForm)))
+          Future.successful(Ok(views.html.tables(webJarAssets, sessionsForm)))
         }
       )
   }
@@ -55,8 +83,8 @@ class SessionsController @Inject()(webJarAssets: WebJarAssets, cacheService: Cac
     implicit request =>
       sessionsForm.bindFromRequest.fold(
         formWithErrors => {
-          Logger.error("Sign-In badRequest." + formWithErrors)
-          Future.successful(BadRequest(""))
+          Logger.error("BadRequest." + formWithErrors)
+          Future.successful(BadRequest("BadRequest"))
         },
         validData => {
           Logger.info("Scheduling session")
@@ -70,4 +98,6 @@ class SessionsController @Inject()(webJarAssets: WebJarAssets, cacheService: Cac
         }
       )
   }
+
+
 }

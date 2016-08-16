@@ -50,12 +50,12 @@ class UserRepository @Inject()(protected val dbConfigProvider: DatabaseConfigPro
     db.run(userTableQuery.to[List].result)
   }
 
-  def getById(id : Long): Future[Option[User]] ={
-    db.run(userTableQuery.filter(_.id===id).result.headOption)
+  def getById(id: Long): Future[Option[User]] = {
+    db.run(userTableQuery.filter(_.id === id).result.headOption)
   }
 
   /**
-    *delete a user from database
+    * delete a user from database
     */
 
   def delete(id: Long): Future[Int] = {
@@ -64,12 +64,21 @@ class UserRepository @Inject()(protected val dbConfigProvider: DatabaseConfigPro
   }
 
   /**
-    *update a user in database
+    * update a user in database
     */
-  def update(id:Long,user: User):Future[Int]={
-    Logger.info("Updating KnolX session record.")
-    db.run(userTableQuery.filter(_.id===id).update(user))
+  def update(id: Long, user: User): Future[Int] = {
+    Logger.info("Updating user record.")
+    db.run(userTableQuery.filter(_.id === id).update(user))
   }
+
+  /**
+    * get a user by ID
+    */
+  def getByID(id: Long): Future[User] = {
+    Logger.info("getting user by ID")
+    db.run(userTableQuery.filter(_.id === id).to[List].result.head)
+  }
+
 }
 
 /**
