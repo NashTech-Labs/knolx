@@ -5,24 +5,18 @@ import java.sql.Date
 import com.google.inject.Inject
 import models.{KSessionView, KSession}
 import play.api.Logger
-<<<<<<< HEAD
 
 import repo.{UserRepository, KSessionRepository}
 
 import repo.KSessionRepository
 
-=======
-import repo.{UserRepository, KSessionRepository}
->>>>>>> a6852dbe3f3e770962934928b006857bca1169b5
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
 
-<<<<<<< HEAD
+
 class KSessionService @Inject()(kSessionRepository: KSessionRepository, userRepository: UserRepository) {
-=======
-class KSessionService @Inject()(kSessionRepository: KSessionRepository) {
->>>>>>> a6852dbe3f3e770962934928b006857bca1169b5
+
 
   def getAll(): Future[List[KSession]] = {
     Logger.debug("Getting All KnolX.")
@@ -48,23 +42,15 @@ class KSessionService @Inject()(kSessionRepository: KSessionRepository) {
 
   }
 
-<<<<<<< HEAD
   def upDateSession(kSession: KSession) = {
     kSessionRepository.update(kSession.id.get, kSession)
   }
-=======
->>>>>>> a6852dbe3f3e770962934928b006857bca1169b5
+
 
   def createSession(kSession: KSession): Future[Long] = {
 
     kSessionRepository.insert(kSession)
   }
-<<<<<<< HEAD
-=======
-  def upDateSession(kSession: KSession): Future[Int] ={
 
-    kSessionRepository.update(kSession.id.get,kSession)
-  }
->>>>>>> a6852dbe3f3e770962934928b006857bca1169b5
 }
 

@@ -35,13 +35,6 @@ class KSessionRepository @Inject()(protected val dbConfigProvider: DatabaseConfi
   }
 
 
-<<<<<<< HEAD
-  def getTableView = {
-    val resultView = for {(k, u) <- kSessionTableQuery.to[List] joinRight userTableQuery.to[List] on (_.uID === _.id)} yield (k, u.email)
-    db.run(resultView.to[List].result)
-  }
-=======
->>>>>>> a6852dbe3f3e770962934928b006857bca1169b5
 
 /*=======
   /**
@@ -60,14 +53,12 @@ class KSessionRepository @Inject()(protected val dbConfigProvider: DatabaseConfi
   def getAllByDate(date: Date): Future[List[(Option[KSession], String)]] = {
     Logger.info("Getting all KnolX session record by date")
     val resultView = for {(k, u) <- kSessionTableQuery.filter(_.date === date).to[List] joinRight userTableQuery.to[List] on (_.uID === _.id)} yield (k, u.email)
-=======
-    db.run(kSessionTableQuery.filter(_.date === date).to[List].result)
+    db.run(resultView.to[List].result)
 
   }
 
   def getTableView: Future[List[(Option[KSession], String)]] ={
-    val resultView = for{(k,u) <- kSessionTableQuery.to[List] joinRight userTableQuery.to[List] on (_.uID === _.id)}yield (k , u.email)
->>>>>>> a6852dbe3f3e770962934928b006857bca1169b5
+    val resultView = for{(k,u) <- kSessionTableQuery.to[List] joinRight userTableQuery.to[List] on (_.uID === _.id)} yield (k , u.email)
     db.run(resultView.to[List].result)
 
   }

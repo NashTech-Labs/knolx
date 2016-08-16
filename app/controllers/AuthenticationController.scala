@@ -81,7 +81,7 @@ class AuthenticationController @Inject()(cacheService: CacheService, scheduler: 
         }
       )
   }
-
+    
 
   /**
     * Create an Action for signup option
