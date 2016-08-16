@@ -12,36 +12,42 @@ import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.duration._
 
 
-object ReminderActor {
+
+
+object ReminderActor{
 
   def props(kSessionService: KSessionService, userService: UserService): Props =
-    Props(new ReminderActor(kSessionService, userService))
+    Props(new ReminderActor(kSessionService,userService))
 
   case object Tick
-
 }
 
 class ReminderActor(kSessionService: KSessionService, userService: UserService) extends Actor {
+
 
   import ReminderActor._
 
   val interval = 24.hour
 
+
   def receive: Receive = {
     case Tick =>
       val date = Helpers.find()
       val uidList = kSessionService.getUserIDByDate(date)
-      val userList = uidList.flatMap(uids => userService.getUserByID(uids))
+           val userList = uidList.flatMap(uids => userService.getUserByID(uids))
+
       userList.map {
         users => if (!users.isEmpty) {
           users.map {
             user => sendMail(List(user.email), "KnolX reminder", Messages("remind", user.name, date))
           }
+
         } else {
           context.system.scheduler.scheduleOnce(interval, self, Tick)
         }
       }
   }
+
 }
 
 class Scheduler {

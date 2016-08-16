@@ -45,6 +45,7 @@ class KSessionService @Inject()(kSessionRepository: KSessionRepository, userRepo
   }
 
   def createSession(kSession: KSession): Future[Long] = {
+
     kSessionRepository.insert(kSession)
   }
 }

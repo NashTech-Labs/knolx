@@ -28,6 +28,7 @@ libraryDependencies ++= Seq(
   "org.seleniumhq.selenium" % "selenium-htmlunit-driver" % "2.52.0",
   "com.typesafe.play" %% "play-mailer" % "5.0.0",
   "javax.mail" % "mail" % "1.4",
+
   "com.typesafe.akka" %% "akka-actor" % "2.4.8"
 
 

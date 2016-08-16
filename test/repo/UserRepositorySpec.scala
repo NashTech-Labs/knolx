@@ -14,17 +14,17 @@ class UserRepositorySpec extends PlaySpecification {
   def userRepository(implicit app: Application): UserRepository = Application.instanceCache[UserRepository].apply(app)
 
   "get user by email id and password" in new WithApplication() {
-    val result = await(userRepository.getByEmailAndPassword("deepti@gmail.com", "cXdlcnR5"))
-    result.get.email == "deepti@gmail.com"
+    val result = await(userRepository.getByEmailAndPassword("admin@gmail.com", "cXdlcnR5"))
+    result.get.email == "admin@gmail.com"
   }
 
   "get user by email id " in new WithApplication() {
-    val result = await(userRepository.getByEmail("deepti@gmail.com"))
-    result.get.email == "deepti@gmail.com"
+    val result = await(userRepository.getByEmail("admin@gmail.com"))
+    result.get.email == "admin@gmail.com"
   }
 
   "insert user " in new WithApplication() {
-    val result = await(userRepository.insert(User("rahul@gmail.com", "rahul1234", "rahul", "consultant",0, Some(2))))
+    val result = await(userRepository.insert(User("rahul@gmail.com", "rahul1234", "rahul", "consultant",0,false, Some(2))))
     result === 2
   }
 
@@ -40,7 +40,13 @@ class UserRepositorySpec extends PlaySpecification {
   }
 
   "update a user" in new WithApplication() {
-    val result = await(userRepository.update(2, User("anubhav@gmail.com","anubhav1234","anubhav","consultant",0)))
+    val result = await(userRepository.update(2, User("anubhav@gmail.com","anubhav1234","anubhav","consultant",0,false)))
     result === 0
+  }
+
+  "get user by ID" in new WithApplication() {
+
+    val result = await(userRepository.getByID(1))
+    result === User("admin@gmail.com","cXdlcnR5","admin","consultant",0,false,Some(1))
   }
 }

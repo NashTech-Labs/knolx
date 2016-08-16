@@ -18,8 +18,7 @@ import scala.concurrent.Future
 
 class DashboardController @Inject()(cacheService: CacheService, webJarAssets: WebJarAssets,
 
-                                    userService: UserService, kSessionService: KSessionService)
-
+                                    userService: UserService,kSessionService: KSessionService)
   extends Controller {
 
   val sessionsForm = Form(

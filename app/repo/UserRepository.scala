@@ -66,17 +66,19 @@ class UserRepository @Inject()(protected val dbConfigProvider: DatabaseConfigPro
   /**
     * update a user in database
     */
-  def update(id: Long, user: User): Future[Int] = {
+
+  def update(id:Long,user: User):Future[Int]={
     Logger.info("Updating user record.")
-    db.run(userTableQuery.filter(_.id === id).update(user))
+    db.run(userTableQuery.filter(_.id===id).update(user))
   }
 
   /**
-    * get a user by ID
+    *get a user by ID
     */
-  def getByID(id: Long): Future[User] = {
+  def  getByID(id:Long):Future[User]={
     Logger.info("getting user by ID")
-    db.run(userTableQuery.filter(_.id === id).to[List].result.head)
+  db.run(userTableQuery.filter(_.id === id).to[List].result.head)
+
   }
 
 }
@@ -93,7 +95,7 @@ trait UserTable {
 
   class UserInfo(tag: Tag) extends Table[User](tag, "users") {
 
-    def * : ProvenShape[User] = (email, password, name, designation, category, id.?) <>((User.apply _).tupled, User.unapply)
+    def * : ProvenShape[User] = (email, password, name, designation, category, isBanned, id.?) <>((User.apply _).tupled, User.unapply)
 
     def id: Rep[Long] = column[Long]("id", O.AutoInc, O.PrimaryKey)
 
@@ -104,6 +106,8 @@ trait UserTable {
     def designation: Rep[String] = column[String]("designation", O.SqlType("VARCHAR(100"))
 
     def category: Rep[Int] = column[Int]("category", O.Default(0))
+
+    def isBanned : Rep[Boolean] = column[Boolean]("is_banned", O.Default(false))
 
     def email: Rep[String] = column[String]("email", O.SqlType("VARCHAR(100"))
 

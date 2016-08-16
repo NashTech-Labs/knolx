@@ -1,9 +1,10 @@
 package controllers
 
-import java.sql.Date
 
+import java.sql.Date
 import play.api.mvc.{Action, AnyContent, Controller}
 import play.api.routing.JavaScriptReverseRouter
+
 
 class Application extends Controller {
 
@@ -23,6 +24,8 @@ class Application extends Controller {
   }
 
   def index: Action[AnyContent] = Action { implicit request =>
+
+
     Redirect(routes.AuthenticationController.loginPage())
   }
 
