@@ -14,7 +14,7 @@ import scala.concurrent.Future
 
 
 class KSessionRepository @Inject()(protected val dbConfigProvider: DatabaseConfigProvider) extends KSessionTable
-  with HasDatabaseConfigProvider[JdbcProfile] {
+  with HasDatabaseConfigProvider[JdbcProfile] with UserTable{
 
   import driver.api._
 
@@ -35,12 +35,20 @@ class KSessionRepository @Inject()(protected val dbConfigProvider: DatabaseConfi
   }
 
 
+
   /**
-  get all KnolX sessions from database matching a given date
+    * get all KnolX sessions from database matching a given date
     */
   def getAllByDate(date:Date): Future[List[KSession]] = {
     Logger.info("Getting all KnolX session record by date")
-     db.run(kSessionTableQuery.filter(_.date === date).to[List].result)
+    db.run(kSessionTableQuery.filter(_.date === date).to[List].result)
+
+  }
+
+  def getTableView: Future[List[(Option[KSession], String)]] ={
+    val resultView = for{(k,u) <- kSessionTableQuery.to[List] joinRight userTableQuery.to[List] on (_.uID === _.id)}yield (k , u.email)
+    db.run(resultView.to[List].result)
+
   }
 
   /**

@@ -50,6 +50,10 @@ class UserRepository @Inject()(protected val dbConfigProvider: DatabaseConfigPro
     db.run(userTableQuery.to[List].result)
   }
 
+  def getById(id : Long): Future[Option[User]] ={
+    db.run(userTableQuery.filter(_.id===id).result.headOption)
+  }
+
   /**
     *delete a user from database
     */

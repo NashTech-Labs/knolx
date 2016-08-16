@@ -16,14 +16,8 @@ import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
 
-
 class DashboardController @Inject()(cacheService: CacheService, webJarAssets: WebJarAssets,
-                                    userService: UserService,kSessionService: KSessionService)
-  extends Controller {
-
-  /**
-    * Action for rendering dashboard of user
-    **/
+                                    userService: UserService, kSessionService: KSessionService)  extends Controller {
 
   val sessionsForm = Form(
     mapping(
@@ -35,26 +29,31 @@ class DashboardController @Inject()(cacheService: CacheService, webJarAssets: We
       "id" -> optional(longNumber)
     )(KSession.apply)(KSession.unapply))
 
+  /**
+    * Action for rendering dashboard of user
+    **/
+
   def renderDashBoard: Action[AnyContent] = Action.async {
     implicit request =>
       cacheService.getCache.fold(Future.successful(Redirect(routes.AuthenticationController.loginPage())
         .flashing("INVALID" -> Messages("please sign in")))) { email => userService.getNameAndCategoryByEmail(email).
-        map(name => name.fold(Ok(views.html.dashboard(webJarAssets, None, None)))
-        { tupleOfNameAndCategory => Ok(views.html.dashboard(webJarAssets, Some(tupleOfNameAndCategory._2), Some(tupleOfNameAndCategory._1))) })
+        map(name => name.fold(Ok(views.html.dashboard(webJarAssets, None, None))) { tupleOfNameAndCategory => Ok(views.html.dashboard(webJarAssets, Some(tupleOfNameAndCategory._2), Some(tupleOfNameAndCategory._1))) })
       }
   }
 
-  def renderTablePage : Action[AnyContent] = Action.async{
+  def renderTablePage: Action[AnyContent] = Action.async {
     implicit request =>
-      Future.successful(Ok(views.html.tables(webJarAssets)))
+      Future.successful(Ok(views.html.tables(webJarAssets,sessionsForm)))
   }
 
   def renderKnolxForm: Action[AnyContent] = Action.async {
     implicit request =>
-      println("\n\n\n\n"+cacheService.getCache.get)
-        userService.getAll.map((list: List[User]) => Ok(views.html.adminKnolexForm(webJarAssets, sessionsForm, list,cacheService.getCache.get)))
+      userService.getAll.flatMap { (list: List[User]) => {
+        userService.getId(cacheService.getCache.get).map(value =>
+          Ok(views.html.adminKnolexForm(webJarAssets, sessionsForm, list, value.get.toString))
+        )
+      }
+      }
   }
-
-
 
 }

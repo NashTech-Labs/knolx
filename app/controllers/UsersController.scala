@@ -9,9 +9,7 @@ import services.{UserService}
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
-/**
-  * Created by rahul on 9/8/16.
-  */
+
 class UsersController  @Inject()(userService: UserService) extends Controller {
 
 

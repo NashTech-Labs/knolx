@@ -11,7 +11,8 @@ class Application extends Controller {
       routes.javascript.SessionsController.getAllSessions,
       routes.javascript.DashboardController.renderTablePage,
       routes.javascript.DashboardController.renderKnolxForm,
-      routes.javascript.SessionsController.createSession
+      routes.javascript.SessionsController.createSession,
+      routes.javascript.SessionsController.updateSession
     )
     )
       .as("text/javascript")

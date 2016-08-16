@@ -8,13 +8,19 @@ CREATE TABLE "sessions"("topic" char(100), "date" DATE , "slot" INT, "status" BO
 
 insert into "users" values('admin@gmail.com', 'cXdlcnR5', 'admin' , 'consultant',0, false,  1);
 
+CREATE TABLE "commitment"("uid" INT REFERENCES users("id"),"commit" INT , "done" INT , "id" SERIAL PRIMARY KEY );
+
 insert into "sessions" values( 'Spark' , '2016-08-25',1,false, 1, 1);
+
+INSERT INTO "commitment" VALUES (1,5,0,1)
 
 # --- !Downs
 
 DROP TABLE "sessions";
 
 DROP TABLE "users";
+
+DROP TABLE "commitment";
 
 
 

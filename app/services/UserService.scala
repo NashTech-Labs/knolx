@@ -47,34 +47,38 @@ class UserService @Inject()(userRepository: UserRepository) {
   }
 
   /**
-    * service for getting user name and category by email
+    * service for getting name and category by email
     */
-
   def getNameAndCategoryByEmail(email: String): Future[Option[(String, Int)]]  = {
     userRepository.getByEmail(email)
    .map(user => user.map((user) =>(user.name,user.category)))
   }
 
+  /**
+    * service for getting all users
+    */
   def getAll(): Future[List[User]] = {
     Logger.debug("Getting All Users.")
     userRepository.getAll
   }
 
-
- /* def getEmailByUserID(uid:List[Long]):Future[List[String]]={
-    val emailList = uid.map{
-      userId => userRepository.getByID(userId).map(_.email)
-    }
-    Future.sequence(emailList)
-  }*/
-
-
+  /**
+    * service for getting user by id
+    */
   def getUserByID(uidList:List[Long]):Future[List[User]]={
 
   val userList = uidList.map{
       userID => userRepository.getByID(userID)
     }
     Future.sequence(userList)
+  }
+
+
+  /**
+    * service for getting id by email
+    */
+  def getId(email : String): Future[Option[Long]] ={
+   userRepository.getByEmail(email).map(user => user.get.id)
   }
 
 
