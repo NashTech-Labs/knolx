@@ -9,7 +9,7 @@ scalaVersion := "2.11.7"
 libraryDependencies ++= Seq(
   cache,
   ws,
-  specs2 % Test, 
+  specs2 % Test,
   filters,
   "org.webjars" %% "webjars-play" % "2.5.0-1",
   "org.webjars" % "bootstrap" % "3.3.6",
@@ -36,8 +36,6 @@ libraryDependencies ++= Seq(
 // https://mvnrepository.com/artifact/org.scribe/scribe
 libraryDependencies += "org.scribe" % "scribe" % "1.3.7"
 
-// https://mvnrepository.com/artifact/javax.mail/mail
-//libraryDependencies +=
 
 
 

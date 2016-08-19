@@ -9,3 +9,5 @@ logout.success = You have successfully logged out!!
 please.signin = Please sign in to continue!!
 
 remind = Hi {0}. This is a reminder to you regarding your KnolX session which is scheduled on {1}. Kindly be prepared and have a great day !
+
+schedule = Hi {0}. This is a reminder to schedule your knolx as you have not given a knolx in the current month and your commitment is still pending!

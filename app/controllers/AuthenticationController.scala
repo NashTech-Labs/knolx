@@ -2,6 +2,7 @@ package controllers
 
 import javax.inject._
 
+import com.knoldus.Scheduler
 import models.User
 import play.api.Logger
 import play.api.Play.current
@@ -10,17 +11,16 @@ import play.api.data.Forms._
 import play.api.i18n.Messages
 import play.api.i18n.Messages.Implicits._
 import play.api.mvc.{Action, AnyContent, Controller}
-import services.{CacheService, KSessionService, UserService}
+import services._
 import utils.Constants._
 import utils.Helpers
-import com.knoldus.Scheduler
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
 
 @Singleton
-class AuthenticationController @Inject()(cacheService: CacheService, scheduler: Scheduler,
+class AuthenticationController @Inject()(cacheService: CacheService, scheduler: Scheduler, commitmentService: CommitmentService,
                                          webJarAssets: WebJarAssets, userService: UserService, kSessionService: KSessionService) extends Controller {
 
   val signUpForm = Form(
@@ -47,7 +47,6 @@ class AuthenticationController @Inject()(cacheService: CacheService, scheduler: 
 
   def loginPage: Action[AnyContent] = Action.async {
     implicit request =>
-      //scheduler.sendReminder(kSessionService,userService)
       Logger.debug("Redirecting renderHomePage")
       cacheService.getCache.fold(Future.successful(Ok(views.html.home(webJarAssets, loginForm, signUpForm)))
       ) { email => userService.getNameAndCategoryByEmail(email).
@@ -60,12 +59,12 @@ class AuthenticationController @Inject()(cacheService: CacheService, scheduler: 
   /**
     * Create an Action for sign in option
     */
+
   def signIn: Action[AnyContent] = Action.async {
     implicit request =>
       Logger.debug("signingIn in progress. ")
       loginForm.bindFromRequest.fold(
         formWithErrors => {
-
           Logger.error("Sign-In badRequest.")
           Future.successful(BadRequest(views.html.home(webJarAssets, formWithErrors, signUpForm)))
         },
@@ -112,9 +111,7 @@ class AuthenticationController @Inject()(cacheService: CacheService, scheduler: 
             })
           }
           else {
-
             Future.successful(Redirect(routes.AuthenticationController.loginPage).flashing("EMAIL.EXISTS" -> Messages("email.exists")))
-
           })
         }
       )

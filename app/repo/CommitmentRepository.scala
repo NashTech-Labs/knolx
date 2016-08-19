@@ -1,7 +1,9 @@
 package repo
 
+import java.sql.Date
+
 import com.google.inject.Inject
-import models.{Commitment}
+import models.{Commitment, KSession, User}
 import play.api.Logger
 import play.api.db.slick.{DatabaseConfigProvider, HasDatabaseConfigProvider}
 import slick.driver.JdbcProfile
@@ -11,13 +13,13 @@ import scala.concurrent.Future
 
 
 class CommitmentRepository @Inject()(protected val dbConfigProvider: DatabaseConfigProvider) extends CommitmentTable
-  with HasDatabaseConfigProvider[JdbcProfile] with UserTable{
+  with HasDatabaseConfigProvider[JdbcProfile] with UserTable with KSessionTable{
 
   import driver.api._
 
   def insert(commitment: Commitment): Future[Long] = {
     Logger.info("Inserting Commitment session.")
-    db.run(commitmentTableQuerry.returning(commitmentTableQuerry.map(_.id)) += commitment)
+    db.run(commitmentTableQuery.returning(commitmentTableQuery.map(_.id)) += commitment)
   }
 
   /**
@@ -25,7 +27,7 @@ class CommitmentRepository @Inject()(protected val dbConfigProvider: DatabaseCon
     */
   def getAll(): Future[List[Commitment]] = {
     Logger.info("Getting all Commitment record.")
-    db.run(commitmentTableQuerry.to[List].result)
+    db.run(commitmentTableQuery.to[List].result)
   }
 
   /**
@@ -34,7 +36,7 @@ class CommitmentRepository @Inject()(protected val dbConfigProvider: DatabaseCon
 
   def delete(id: Long): Future[Int] = {
     Logger.info("Deleting commitment record.")
-    db.run(commitmentTableQuerry.filter(_.id === id).delete)
+    db.run(commitmentTableQuery.filter(_.id === id).delete)
   }
 
   /**
@@ -42,18 +44,30 @@ class CommitmentRepository @Inject()(protected val dbConfigProvider: DatabaseCon
     */
   def update(id: Long, commitment: Commitment): Future[Int] = {
     Logger.info("Updating commitment record.")
-    db.run(commitmentTableQuerry.filter(_.id === id).update(commitment))
+    db.run(commitmentTableQuery.filter(_.id === id).update(commitment))
   }
+
+def joinWithUser(): Future[List[(Long, Long, String, String, Boolean, Date, Boolean)]] = {
+
+  val findCommit = commitmentTableQuery.filter(value => value.commit > value.done)
+  val isBanned = userTableQuery.filter(_.isBanned === false)
+  val notDone = kSessionTableQuery.filter(_.status === false)
+  val joinQuery = for {
+    ((commitment, user),kSession) <- findCommit.to[List] join isBanned.to[List] on (_.uid === _.id) join notDone on (_._1.id === _.uID)
+  } yield(commitment.uid, user.id,user.email,user.name,user.isBanned,kSession.date,kSession.status)
+
+  db.run(joinQuery.to[List].result)
+}
 
 }
 
-trait CommitmentTable extends UserTable {
+trait CommitmentTable extends UserTable{
   self: HasDatabaseConfigProvider[JdbcProfile] =>
 
   import driver.api._
 
 
-  lazy val commitmentTableQuerry = TableQuery[CommitmentInfo]
+  lazy val commitmentTableQuery = TableQuery[CommitmentInfo]
 
 
   class CommitmentInfo(tag: Tag) extends Table[Commitment](tag, "commitment") {
@@ -66,6 +80,8 @@ trait CommitmentTable extends UserTable {
     def done: Rep[Long] = column[Long]("done")
 
     def uid: Rep[Long] = column[Long]("uid")
+
+    def idxuid = index("idx_uid", uid , unique = true)
 
     def user = foreignKey("USER_FK", uid, userTableQuery)(_.id, onUpdate = ForeignKeyAction.Restrict, onDelete = ForeignKeyAction.Cascade)
 

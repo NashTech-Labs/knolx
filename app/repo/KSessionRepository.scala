@@ -67,7 +67,8 @@ class KSessionRepository @Inject()(protected val dbConfigProvider: DatabaseConfi
     Logger.info("Updating KnolX session record.")
     db.run(kSessionTableQuery.filter(_.id === id).update(ksession))
   }
-}
+
+ }
 
 /**
   * KSession trait which is used for mapping

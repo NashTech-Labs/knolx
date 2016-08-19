@@ -1,11 +1,11 @@
 package services
 
 import java.sql.Date
-
 import com.google.inject.Inject
-import models.{KSessionView, KSession}
+import models.{KSession, KSessionView}
 import play.api.Logger
-import repo.{UserRepository, KSessionRepository}
+import repo.KSessionRepository
+
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
@@ -17,8 +17,8 @@ class KSessionService @Inject()(kSessionRepository: KSessionRepository) {
     kSessionRepository.getAll
   }
 
-  def createView: Future[List[KSessionView]] ={
-    kSessionRepository.getTableView.map(views => views.map(v => KSessionView(v._1.get.topic,v._1.get.date,v._1.get.slot,v._1.get.status,v._1.get.id,v._2)))
+  def createView: Future[List[KSessionView]] = {
+    kSessionRepository.getTableView.map(views => views.map(v => KSessionView(v._1.get.topic, v._1.get.date, v._1.get.slot, v._1.get.status, v._1.get.id, v._2)))
   }
 
   /**
@@ -37,9 +37,11 @@ class KSessionService @Inject()(kSessionRepository: KSessionRepository) {
 
     kSessionRepository.insert(kSession)
   }
-  def upDateSession(kSession: KSession): Future[Int] ={
 
-    kSessionRepository.update(kSession.id.get,kSession)
+  def upDateSession(kSession: KSession): Future[Int] = {
+
+    kSessionRepository.update(kSession.id.get, kSession)
   }
+
 }
 

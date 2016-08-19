@@ -20,7 +20,6 @@ class Application extends Controller {
 
   def index: Action[AnyContent] = Action { implicit request =>
 
-
     Redirect(routes.AuthenticationController.loginPage())
   }
 

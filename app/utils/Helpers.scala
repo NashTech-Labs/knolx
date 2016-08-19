@@ -26,4 +26,10 @@ object Helpers {
     new java.sql.Date(today.getTime.getTime)
 
   }
+
+  def findCurrentMonth(): Int ={
+    val today = Calendar.getInstance()
+    today.setTime(new Date())
+    today.get(Calendar.MONTH)
+  }
 }
