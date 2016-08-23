@@ -47,18 +47,17 @@ class CommitmentRepository @Inject()(protected val dbConfigProvider: DatabaseCon
     db.run(commitmentTableQuery.filter(_.id === id).update(commitment))
   }
 
-def joinWithUser(): Future[List[(Long, Long, String, String, Boolean, Date, Boolean)]] = {
+def joinWithUserAndKSession(): Future[List[(String, String, Option[KSession])]] = {
 
   val findCommit = commitmentTableQuery.filter(value => value.commit > value.done)
   val isBanned = userTableQuery.filter(_.isBanned === false)
-  val notDone = kSessionTableQuery.filter(_.status === false)
+  val notDone = kSessionTableQuery
   val joinQuery = for {
-    ((commitment, user),kSession) <- findCommit.to[List] join isBanned.to[List] on (_.uid === _.id) join notDone on (_._1.id === _.uID)
-  } yield(commitment.uid, user.id,user.email,user.name,user.isBanned,kSession.date,kSession.status)
+    ((commitment, user),kSession) <- findCommit.to[List] join isBanned.to[List] on (_.uid === _.id) joinLeft notDone on (_._1.id === _.uID)
+  } yield(user.email,user.name,kSession)
 
   db.run(joinQuery.to[List].result)
 }
-
 }
 
 trait CommitmentTable extends UserTable{

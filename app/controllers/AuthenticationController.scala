@@ -2,7 +2,6 @@ package controllers
 
 import javax.inject._
 
-import com.knoldus.Scheduler
 import models.User
 import play.api.Logger
 import play.api.Play.current
@@ -20,8 +19,7 @@ import scala.concurrent.Future
 
 
 @Singleton
-class AuthenticationController @Inject()(cacheService: CacheService, scheduler: Scheduler, commitmentService: CommitmentService,
-                                         webJarAssets: WebJarAssets, userService: UserService, kSessionService: KSessionService) extends Controller {
+class AuthenticationController @Inject()(cacheService: CacheService, webJarAssets: WebJarAssets, userService: UserService) extends Controller {
 
   val signUpForm = Form(
     mapping(

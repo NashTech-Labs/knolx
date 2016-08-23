@@ -10,7 +10,10 @@ GET         /webjars/*file           controllers.WebJarAssets.at(file)
 
 
 #  dashboard page
-GET         /                       controllers.DashboardController.renderDashBoard
+
+GET          /                      controllers.DashboardController.homePage
+
+GET         /renderDashBoard        controllers.DashboardController.renderDashBoard
 #loginpage
 GET         /home                   controllers.AuthenticationController.loginPage
 #  sign in

@@ -9,7 +9,7 @@ import org.specs2.runner._
 import play.api.test.Helpers._
 import play.api.test.{FakeRequest, WithApplication}
 import services.{CacheService, CommitmentService, KSessionService, UserService}
-import com.knoldus.Scheduler
+import com.knoldus.Scheduler1
 
 import scala.concurrent.Future
 
@@ -23,12 +23,12 @@ class AuthenticationControllerSpec extends Specification with Mockito {
   val userService = mock[UserService]
   val webJarAssets = mock[WebJarAssets]
   val cacheService = mock[CacheService]
-  val kSessionService = mock[KSessionService]
-  val scheduler = mock[Scheduler]
-  val commitmentService = mock[CommitmentService]
 
 
-  val authenticationController = new AuthenticationController(cacheService, scheduler,commitmentService,webJarAssets, userService,kSessionService)
+
+
+
+  val authenticationController = new AuthenticationController(cacheService,webJarAssets, userService)
 
   "home Controller" should {
 

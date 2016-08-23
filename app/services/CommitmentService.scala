@@ -16,8 +16,8 @@ class CommitmentService @Inject()(commitmentRepository: CommitmentRepository) {
     commitmentRepository.getAll()
   }
 
-  def joinService(): Future[List[(Long, Long, String, String, Boolean, Date, Boolean)]] ={
-    commitmentRepository.joinWithUser()
+  def joinService(): Future[List[(String, String, Option[KSession])]] ={
+    commitmentRepository.joinWithUserAndKSession()
   }
 
     }
