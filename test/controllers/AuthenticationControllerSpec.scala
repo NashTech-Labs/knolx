@@ -8,7 +8,7 @@ import org.specs2.mutable.Specification
 import org.specs2.runner._
 import play.api.test.Helpers._
 import play.api.test.{FakeRequest, WithApplication}
-import services.{CacheService,UserService}
+import services.{CacheService, UserService,KSessionService}
 
 
 import scala.concurrent.Future
@@ -23,6 +23,9 @@ class AuthenticationControllerSpec extends Specification with Mockito {
   val userService = mock[UserService]
   val webJarAssets = mock[WebJarAssets]
   val cacheService = mock[CacheService]
+  val kSessionService = mock[KSessionService]
+
+
 
 
 

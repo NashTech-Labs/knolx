@@ -45,6 +45,7 @@ class AuthenticationController @Inject()(cacheService: CacheService, webJarAsset
 
   def loginPage: Action[AnyContent] = Action.async {
     implicit request =>
+
       Logger.debug("Redirecting renderHomePage")
       cacheService.getCache.fold(Future.successful(Ok(views.html.home(webJarAssets, loginForm, signUpForm)))
       ) { email => userService.getNameAndCategoryByEmail(email).
@@ -57,12 +58,12 @@ class AuthenticationController @Inject()(cacheService: CacheService, webJarAsset
   /**
     * Create an Action for sign in option
     */
-
   def signIn: Action[AnyContent] = Action.async {
     implicit request =>
       Logger.debug("signingIn in progress. ")
       loginForm.bindFromRequest.fold(
         formWithErrors => {
+
           Logger.error("Sign-In badRequest.")
           Future.successful(BadRequest(views.html.home(webJarAssets, formWithErrors, signUpForm)))
         },
@@ -109,7 +110,9 @@ class AuthenticationController @Inject()(cacheService: CacheService, webJarAsset
             })
           }
           else {
+
             Future.successful(Redirect(routes.AuthenticationController.loginPage).flashing("EMAIL.EXISTS" -> Messages("email.exists")))
+
           })
         }
       )

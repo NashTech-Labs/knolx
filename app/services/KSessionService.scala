@@ -1,25 +1,25 @@
 package services
 
 import java.sql.Date
+
 import com.google.inject.Inject
-import models.{KSession, KSessionView}
+import models.KSession
 import play.api.Logger
-import repo.KSessionRepository
+import repo.{KSessionRepository, UserRepository}
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
 
-class KSessionService @Inject()(kSessionRepository: KSessionRepository) {
+
+class KSessionService @Inject()(kSessionRepository: KSessionRepository, userRepository: UserRepository) {
+
 
   def getAll(): Future[List[KSession]] = {
     Logger.debug("Getting All KnolX.")
     kSessionRepository.getAll
   }
 
-  def createView: Future[List[KSessionView]] = {
-    kSessionRepository.getTableView.map(views => views.map(v => KSessionView(v._1.get.topic, v._1.get.date, v._1.get.slot, v._1.get.status, v._1.get.id, v._2)))
-  }
 
   /**
     * service for getting user_id and topic of KnolX by date
@@ -33,14 +33,31 @@ class KSessionService @Inject()(kSessionRepository: KSessionRepository) {
   }
 
 
+
+  def upDateSessionStatus(id: Long,topic:String): Future[Int] = {
+    Logger.debug("update status of user")
+    getUserKsession(id,topic).flatMap (kSession =>
+      kSessionRepository.update(id,kSession.copy
+      (topic = kSession.topic,date = kSession.date,
+        slot=kSession.slot,status = true,uid = kSession.uid)))
+  }
+
+  def delete(id:Long): Future[Int] = {
+    kSessionRepository.delete(id)
+  }
+
   def createSession(kSession: KSession): Future[Long] = {
 
     kSessionRepository.insert(kSession)
   }
 
-  def upDateSession(kSession: KSession): Future[Int] = {
+  def getUserKsession(id: Long,topic:String): Future[KSession] ={
+    Logger.debug(" searching for ksession")
+    kSessionRepository.findByIdAndTopic(id,topic)
+  }
 
-    kSessionRepository.update(kSession.id.get, kSession)
+  def getAllUserList: Future[List[(String, String, String, Boolean, String, Long)]] ={
+    kSessionRepository.getAllWithStatus
   }
 
 }

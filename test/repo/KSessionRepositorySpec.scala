@@ -23,12 +23,12 @@ class KSessionRepositorySpec extends PlaySpecification{
   }
 
   "update a KnolX session " in new WithApplication() {
-    val result = await(kSessionRepository.update(2,KSession(Some("Kafka Connect"),new Date(1472063400000L),1,false,1,Some(2))))
+    val result = await(kSessionRepository.update(2,KSession(Some("Kafka Connect"),new Date(1472063400000L),2,false,1,None)))
     result === 1
   }
 
   "delete a KnolX session" in new WithApplication() {
-    val result = await(kSessionRepository.delete(2))
+    val result = await(kSessionRepository.delete(1))
     result === 1
   }
 
@@ -36,7 +36,14 @@ class KSessionRepositorySpec extends PlaySpecification{
   "get all KnolX by date" in new WithApplication() {
 
     val result = await(kSessionRepository.getAllByDate(new Date(1472063400000L)))
-    result === List(KSession(Some("Spark"),new Date(1472063400000L),1,false,1,Some(1)))
+    result === List(KSession(Some("Kafka Connect"),new Date(1472063400000L),2,false,1,Some(3)))
   }
+
+  "get ksession by id and topic " in new WithApplication() {
+    await(kSessionRepository.findByIdAndTopic(1,"Spark")) === " "
+  }
+
+
+
 
 }

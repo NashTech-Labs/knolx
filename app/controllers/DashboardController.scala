@@ -2,7 +2,6 @@
 package controllers
 
 import javax.inject.Inject
-
 import com.knoldus.SchedulerReminder
 import models.{KSession, User}
 import play.api.Play.current
@@ -52,8 +51,10 @@ class DashboardController @Inject()(cacheService: CacheService, webJarAssets: We
 
   def renderTablePage: Action[AnyContent] = Action.async {
     implicit request =>
-      Future.successful(Ok(views.html.tables(webJarAssets, sessionsForm)))
+      kSessionService.getAllUserList.map(list => Ok(views.html.tables(webJarAssets,list)))
   }
+
+
 
   def renderKnolxForm: Action[AnyContent] = Action.async {
     implicit request =>

@@ -40,6 +40,7 @@ libraryDependencies += "org.scribe" % "scribe" % "1.3.7"
 
 
 
+
 javaOptions in Test += "-Dconfig.file=conf/test.conf"
 
 coverageExcludedPackages :="<empty>;router\\..*;"

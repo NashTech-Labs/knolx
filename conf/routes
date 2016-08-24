@@ -2,41 +2,46 @@
 # ~~~~
 
 # Map static resources from the /public folder to the /assets URL path
-GET         /assets/*file            controllers.Assets.versioned(path="/public", file: Asset)
+GET         /assets/*file                   controllers.Assets.versioned(path="/public", file: Asset)
 
-GET         /webjars/*file           controllers.WebJarAssets.at(file)
+GET         /webjars/*file                  controllers.WebJarAssets.at(file)
 
 
 
 
 #  dashboard page
-
-GET          /                      controllers.DashboardController.homePage
-
-GET         /renderDashBoard        controllers.DashboardController.renderDashBoard
+GET         /                               controllers.DashboardController.renderDashBoard
 #loginpage
-GET         /home                   controllers.AuthenticationController.loginPage
+GET         /home                           controllers.AuthenticationController.loginPage
 #  sign in
-POST        /signin                 controllers.AuthenticationController.signIn
+POST        /signin                         controllers.AuthenticationController.signIn
 #  logout
-GET        /signout                 controllers.AuthenticationController.signOut
+GET         /signout                        controllers.AuthenticationController.signOut
 #  signup
-POST        /signup                 controllers.AuthenticationController.signUp
+POST        /signup                         controllers.AuthenticationController.signUp
 #get all Users
-GET        /getAllUsers             controllers.UsersController.getAllUsers
-#get all Sessions
-GET         /getAllSessions         controllers.SessionsController.getAllSessions
+GET         /getAllUsers                    controllers.UsersController.getAllUsers
+
+GET         /changeStatus/:userId,/:topic    controllers.SessionsController.changeStatus(userId:Long,topic:String)
+
+GET         /deleteSession/:userId     controllers.SessionsController.deleteSession(userId:Long)
+
+#get all Users with status
+GET         /getAll                    controllers.SessionsController.getAllUsersWithStatusList
+
 #get admin knolx form
-GET        /adminKnolxForm          controllers.DashboardController.renderKnolxForm
+GET         /adminKnolxForm                 controllers.DashboardController.renderKnolxForm
 
 #render Table Page on DashBoard
-GET         /tables                 controllers.DashboardController.renderTablePage
+GET         /tables                         controllers.DashboardController.renderTablePage
 
-POST   /createSession               controllers.SessionsController.createSession
-POST   /updateSession               controllers.SessionsController.updateSession
+POST        /createSession                  controllers.SessionsController.createSession
+
+GET         /updateSession/:userId,/:topic     controllers.SessionsController.updateSession(userId:Long,topic:String)
+
 
 #javascript routes
-GET         /javascriptRoutes        controllers.Application.javascriptRoutes
+GET         /javascriptRoutes               controllers.Application.javascriptRoutes
 
 
 

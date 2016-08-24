@@ -1,14 +1,19 @@
 package controllers
 
+import java.sql.Date
 import javax.inject.Inject
 
+import akka.actor.FSM.Failure
+import akka.actor.Status.Success
 import models.{KSessionView, User, KSession}
+import net.sf.ehcache.search.expression.And
 import play.api.Logger
 import play.api.data.Form
 import play.api.data.Forms._
+import play.api.i18n.Messages
 import play.api.libs.json.Json
 import play.api.mvc.{AnyContent, Action, Controller}
-import services.{CacheService, UserService, KSessionService}
+import services.{CommitmentService, CacheService, UserService, KSessionService}
 import utils.Constants._
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
@@ -16,9 +21,11 @@ import play.api.i18n.Messages.Implicits._
 import play.api.Play.current
 
 
-class SessionsController @Inject()(webJarAssets: WebJarAssets, cacheService: CacheService, kSessionService: KSessionService, userService: UserService) extends Controller {
+class SessionsController @Inject()(webJarAssets: WebJarAssets, cacheService: CacheService,
+                                   kSessionService: KSessionService, userService: UserService,
+                                   commitmentService: CommitmentService) extends Controller {
 
-  val sessionsForm = Form(
+  val sessionsForm: Form[KSession] = Form(
     mapping(
       "topic" -> optional(text),
       "date" -> sqlDate,
@@ -28,46 +35,48 @@ class SessionsController @Inject()(webJarAssets: WebJarAssets, cacheService: Cac
       "id" -> optional(longNumber)
     )(KSession.apply)(KSession.unapply))
 
-  def getAllSessions: Action[AnyContent] = Action.async {
-    implicit request =>
-      kSessionService.createView.map {
-        view =>
-          implicit val jsonFormat = Json.format[KSessionView]
-          Ok(Json.stringify(Json.toJson(view)).replaceAll("\\s+", ""))
-      }
+
+
+  def getAllUsersWithStatusList:Action[AnyContent] = Action.async {
+    kSessionService.getAllUserList.map(list => Ok(views.html.tables(webJarAssets,list)))
   }
 
-  def updateSession =Action.async{
-    implicit request =>
-      sessionsForm.bindFromRequest.fold(
-        formWithErrors => {
-          Logger.error("Sign-In badRequest." + formWithErrors)
-          Future.successful(BadRequest(""))
-        },
-        validData => {
-          kSessionService.upDateSession(validData)
-          Future.successful(Ok(views.html.tables(webJarAssets,sessionsForm)))
-        }
-      )
+  def changeStatus(id:Long,topic:String):Action[AnyContent] = Action.async {
+
+    implicit request=>
+      Logger.debug("change status controller is called")
+      kSessionService.upDateSessionStatus(id,topic).flatMap(x =>
+        kSessionService.getAllUserList.map(list => Ok(views.html.tables(webJarAssets, list))))
   }
 
-  def createSession: Action[AnyContent] = Action.async {
+
+  def updateSession(id:Long,topic:String):Action[AnyContent] = Action.async {
     implicit request =>
-      sessionsForm.bindFromRequest.fold(
-        formWithErrors => {
-          Logger.error("Sign-In badRequest." + formWithErrors)
-          Future.successful(BadRequest(""))
-        },
-        validData => {
-          Logger.info("Scheduling session")
-          kSessionService.createSession(validData)
-          userService.getAll.flatMap { (list: List[User]) => {
-            userService.getId(cacheService.getCache.get).map(value =>
-              Ok(views.html.adminKnolexForm(webJarAssets, sessionsForm, list, value.get.toString))
-            )
-          }
-          }
-        }
-      )
+      Logger.debug("ksession is get" + id +"  " + topic)
+      kSessionService.getUserKsession(id,topic).
+        map(kSession => Ok(views.html.editSessionForm(kSession,sessionsForm))
+        )
   }
+
+  def deleteSession(id:Long): Action[AnyContent] = Action.async {
+    kSessionService.delete(id).flatMap { id =>
+      kSessionService.getAllUserList.map(list => Ok(views.html.tables(webJarAssets, list)))
+    }
+  }
+    def createSession: Action[AnyContent] = Action.async {
+      implicit request =>
+        sessionsForm.bindFromRequest.fold(
+          formWithErrors => {
+            Logger.error("BadRequest." + formWithErrors)
+            Future.successful(Redirect(routes.SessionsController.getAllUsersWithStatusList()))
+          },
+          validData => {
+            Logger.info("Scheduling session")
+            kSessionService.createSession(validData)
+            Future.successful(Redirect(routes.SessionsController.getAllUsersWithStatusList()))
+          }
+
+        )
+    }
+
 }

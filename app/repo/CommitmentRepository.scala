@@ -31,6 +31,14 @@ class CommitmentRepository @Inject()(protected val dbConfigProvider: DatabaseCon
   }
 
   /**
+    * get commitment from database by id
+    */
+  def getById(id: Long): Future[Commitment] = {
+    Logger.info("Getting Commitment record by id.")
+    db.run(commitmentTableQuery.filter(_.id === id).to[List].result.head)
+  }
+
+  /**
     *delete a commitment from database
     */
 

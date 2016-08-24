@@ -16,6 +16,10 @@ class CommitmentService @Inject()(commitmentRepository: CommitmentRepository) {
     commitmentRepository.getAll()
   }
 
+
+  def updateCommitment(uid: Long): Future[Int] = {
+    commitmentRepository.getById(uid).flatMap(commit => commitmentRepository.update(commit.id.get, Commitment(uid, commit.commit, commit.done + 1, commit.id)))
+  }
   def joinService(): Future[List[(String, String, Option[KSession])]] ={
     commitmentRepository.joinWithUserAndKSession()
   }

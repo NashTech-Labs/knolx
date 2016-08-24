@@ -51,7 +51,7 @@ class UserRepository @Inject()(protected val dbConfigProvider: DatabaseConfigPro
   }
 
   /**
-    *delete a user from database
+    * delete a user from database
     */
 
   def delete(id: Long): Future[Int] = {
@@ -60,8 +60,9 @@ class UserRepository @Inject()(protected val dbConfigProvider: DatabaseConfigPro
   }
 
   /**
-    *update a user in database
+    * update a user in database
     */
+
   def update(id:Long,user: User):Future[Int]={
     Logger.info("Updating user record.")
     db.run(userTableQuery.filter(_.id===id).update(user))
@@ -73,6 +74,7 @@ class UserRepository @Inject()(protected val dbConfigProvider: DatabaseConfigPro
   def  getByID(id:Long):Future[User]={
     Logger.info("getting user by ID")
   db.run(userTableQuery.filter(_.id === id).to[List].result.head)
+
   }
 
 }

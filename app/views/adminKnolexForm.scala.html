@@ -1,5 +1,5 @@
 @import b3.vertical.fieldConstructor
-@(webJarAssets: WebJarAssets, adminKnolexForm: Form[KSession], listOfKnols: List[User],id :String)(implicit message: Messages, flash: Flash)
+@(webJarAssets: WebJarAssets, adminKnolexForm: Form[KSession],listOfKnols:List[User],id:String)(implicit message: Messages, flash: Flash)
 
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -9,13 +9,7 @@
 
 <div class="container">
 
-    <ul class="nav nav-tabs">
-        <li class="active"><a href="#othersForm">Schedule Others Knolx</a></li>
-        <li><a href="#ownForm">Schedule Own Knolx</a></li>
-        <li><a href="#">Knolx Done</a></li>
-        <li><a href="#">Feedback knolx</a></li>
-        <li><a href="#">Knolx Commitment</a></li>
-    </ul>
+
 
     <div class="tab-content">
         <div class="row vertical-offset-50 tab-pane fade in active" id="othersForm">
@@ -35,7 +29,7 @@
                                             @b3.text(adminKnolexForm("topic"), '_label -> "Knolx Topic")
                                             @b3.date(adminKnolexForm("date"), '_label -> "Select Date")
                                             @b3.select(adminKnolexForm("slot"), options = List(1, 2, 3, 4, 5).toSeq.flatMap(values => Seq(values.toString -> values.toString)), '_label -> "Select Slot")
-                                            @b3.text(adminKnolexForm("status"),'value -> true,'style -> "display: none")
+                                            @b3.text(adminKnolexForm("status"), 'value -> true, 'style -> "display: none")
                                             @b3.submit('class -> "btn btn-primary btn-lg ", '_label -> "", 'id -> "submit") {submit}
                                         }
                                     <script src="https://code.jquery.com/jquery.js"></script>
@@ -50,48 +44,7 @@
             </div>
         </div>
 
-        <div class="row vertical-offset-100 tab-pane fade in active" id="ownForm">
-            <div class="Absolute-Center is-Responsive">
-                <div class="col-md-4 col-md-offset-2">
-                    <div class="panel panel-default">
-                        <div class="panel-heading">
-                            Schedule Knolx
-                        </div>
-                        <div class="panel-body">
-                            <fieldset>
-                                <div class="row vertical-offset-100">
-                                    <div class="col-md-12">
-                                        @b3.form(action = routes.SessionsController.createSession) {
-                                            @b3.text(adminKnolexForm("uid"),'_label -> "User Id", 'value -> id,'readonly -> true)
-                                            @b3.text(adminKnolexForm("topic"), '_label -> "Knolx Topic")
-                                            @b3.date(adminKnolexForm("date"), '_label -> "Select Date")
-                                            @b3.select(adminKnolexForm("slot"), options = List(1, 2, 3, 4, 5).toSeq.flatMap(values => Seq(values.toString -> values.toString)), '_label -> "Select Slot")
-                                            @b3.text(adminKnolexForm("status"),'value -> true,'style -> "display: none")
-                                            @b3.submit('class -> "btn btn-primary btn-lg ", '_label -> "", 'id -> "submit") {submit}
-                                        }
-                                        <script src="https://code.jquery.com/jquery.js"></script>
-                                        <link href="@routes.Assets.versioned("javascripts/bootstrap.min.js")" rel="stylesheet">
-                                        <script src="@routes.Assets.versioned("javascripts/custom.js")"></script>
-                                    </div>
-                                </div>
-                            </fieldset>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
-<script>
-        $(document).ready(function(){
-            $(".nav-tabs a").click(function(){
-                $(this).tab('show');
-            });
-            $('.nav-tabs a').on('shown.bs.tab', function(event){
-                var x = $(event.target).text();         // active tab
-                var y = $(event.relatedTarget).text();  // previous tab
-            });
-        });
+
 </script>
 
 

@@ -1,4 +1,4 @@
-@(webJarAssets: WebJarAssets,category : Option[Int], name: Option[String])(implicit message: Messages, flash: Flash)
+@(webJarAssets: WebJarAssets, category: Option[Int], name: Option[String])(implicit message: Messages, flash: Flash)
 
 <html>
     <head>
@@ -15,12 +15,13 @@
         <script type="text/javascript" src='@routes.WebJarAssets.at(webJarAssets.locate("js/bootstrap.min.js"))'></script>
         <link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css">
         <script type="text/javascript" src="@routes.Application.javascriptRoutes"></script>
-        <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+        <script src="http://code.jquery.com/jquery-1.11.3.min.js"></script>
+
+        <link href="https://nightly.datatables.net/css/jquery.dataTables.css" rel="stylesheet" type="text/css" />
+        <script src="https://nightly.datatables.net/js/jquery.dataTables.js"></script>
+
         <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
         <script src="https://oss.maxcdn.com/libs/respond.js/1.3.0/respond.min.js"></script>
-
-
-        <![endif]-->
     </head>
     <body>
         <div class="header">
@@ -82,20 +83,20 @@
                     <div class="sidebar content-box" style="display: block ;">
                         <ul class="nav">
                                 <!-- Main menu -->
-                            <li class="current" id="dashboard" ><a href="#"><i class="glyphicon glyphicon-home"></i>
+                            <li class="current" id="dashboard" ><a href="@routes.DashboardController.renderDashBoard"><i class="glyphicon glyphicon-home"></i>
                                 Dashboard</a></li>
                             <li id="table" ><a href="#"><i class="glyphicon glyphicon-list"></i> Tables</a></li>
                             <li id="forms"><a href="#"><i class="glyphicon glyphicon-tasks"></i> Forms</a></li>
-                            <li class="submenu">
-                                <a href="#">
-                                    <i class="glyphicon glyphicon-list"></i> Pages
-                                    <span class="caret pull-right"></span>
-                                </a>
-                            </li>
+
+                            <li><a href="@routes.AuthenticationController.signOut"><i class="glyphicon glyphicon-log-out"></i>SignOut</a></li>
+
+
                         </ul>
                     </div>
                 </div>
-
+                <p style="text-align: center ;
+                                            color: green !important ;
+                                            ">@flash.get("SUCCESS")</p>
                 <div class="col-md-16">
                     <div class="row">
                         <div class="col-md-9" id = "mainContent">
@@ -104,7 +105,6 @@
                     </div>
                 </div>
             </div>
-
 
 
                 <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
@@ -118,15 +118,18 @@
         <script type="text/javascript">
                 $(document).ready(function() {
                     $("#table").click(function(){
+
+                    alert("table is clicked");
                         var ajaxCallBack = {
                             success : function(data) {
+
                                 $("#mainContent").html(data)
                             },
                             error : function(error) {
                                 alert("Error");
                             }
                         };
-                        jsRoutes.controllers.DashboardController.renderTablePage().ajax(ajaxCallBack);
+                        jsRoutes.controllers.SessionsController.getAllUsersWithStatusList().ajax(ajaxCallBack);
                     })
 
                     $("#forms").click(function(){
