@@ -3,9 +3,12 @@ package services
 import java.sql.Date
 
 import com.google.inject.Inject
-import models.KSession
+import models.{KSessionView, KSession}
 import play.api.Logger
-import repo.{KSessionRepository, UserRepository}
+
+import repo.{UserRepository, KSessionRepository}
+
+import repo.KSessionRepository
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
