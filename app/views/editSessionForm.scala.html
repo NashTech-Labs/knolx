@@ -1,0 +1,47 @@
+@(session:KSession,updateSessionForm:Form[KSession])(implicit message:Messages)
+@import b3.vertical.fieldConstructor
+<div class="container">
+    <div class="row vertical-offset-100">
+        <div class="Absolute-Center is-Responsive">
+            <div class="col-md-4 col-md-offset-4">
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        <h3 class="panel-title" style="text-align: center ;
+                                color: blue !important ;
+                                ">Update Knolx</h3>
+                    </div>
+                    <div class="panel-body">
+                        <fieldset>
+                            <div class="row vertical-offset-100">
+                                <div class="col-md-12">
+                    @b3.text(updateSessionForm(" topic"),'value->session.topic.get,'_label->"topic",'_showConstraints->false)
+                    @b3.date(updateSessionForm("date"),'value->session.date,'_label->"Date",'_showConstraints->false)
+                    @b3.select(updateSessionForm("slot"), options = List(1, 2, 3, 4, 5).toSeq.flatMap(values => Seq(values.toString -> values.toString)), '_label -> "Select Slot")
+                    @b3.submit('class -> "btn btn-primary btn-lg ",'id -> "update session",'_label -> "", 'id -> "submit") {submit}
+
+                                    $(document).ready(function() {
+                                    $("#update session").click(function(){
+                                    alert(" i am clicked for done");
+                                    var ajaxCallBack = {
+                                    success : function(data) {
+                                    $("#mainContent").html(data)
+                                    $(this).closest ('tr').remove ()
+                                    },
+                                    error : function(error) {
+                                    alert("Error");
+                                    }
+                                    };
+                                    jsRoutes.controllers.SessionsController.createSession.ajax(ajaxCallBack);
+
+                                    })
+
+                                </div>
+
+
+
+
+                            </div>
+        </div>
+    </div>
+
+</div>

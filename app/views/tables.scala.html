@@ -1,175 +1,103 @@
 @import b3.vertical.fieldConstructor
-@(webJarAssets: WebJarAssets, adminKnolexForm: Form[KSession])(implicit message: Messages)
+@(webJarAssets: WebJarAssets, knols:List[(String, String, String, Boolean, String,Long)])(implicit message: Messages)
 <html>
-    <body>
-        <script type="text/javascript" src='@routes.WebJarAssets.at(webJarAssets.locate("jquery.min.js"))'></script>
-        <script type="text/javascript" src="@routes.Application.javascriptRoutes"></script>
+<head>
+    <script type="text/javascript" src='@routes.WebJarAssets.at(webJarAssets.locate("jquery.min.js"))'></script>
+    <script type="text/javascript" src='@routes.WebJarAssets.at(webJarAssets.locate("js/bootstrap.min.js"))'></script>
+    <link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+    <script src="https://cdn.datatables.net/1.10.12/js/jquery.dataTables.min.js"></script>
 
-        <div class="content-box-large">
-            <div class="panel-heading">
-                <div class="panel-title">
-                    <div class="col-md-8">
-                        <div class="input-group">
-                            <div class="input-group-btn">
-                                <button type="button" class="btn btn-info dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
-                                    Select Record-Type
-                                    <span class="caret"></span>
-                                </button>
-                                <ul class="dropdown-menu" role="menu">
-                                    <li id = "user"><a href="#">Users</a></li>
-                                    <li id="session"><a href="#">Knolx-Sessions</a></li>
-                                    <li class="divider"></li>
-                                    <li id="commitment"><a href="#">Commitments</a></li>
-                                    <li id="feedback"><a href="#">Feedbacks</a></li>
-                                </ul>
-                            </div>
-                            <input type="text" class="form-control" placeholder="search record">
-                            <span class="input-group-btn">
-                                <button class="btn btn-default" type="button">Go!</button>
-                            </span>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="panel-options">
-
-                </div>
-            </div>
-
-            <div class="panel-body" >
-                <div class="container-fluid">
-                    <div class="row">
-                        <table id="allUsers" class="display table table-striped table-bordered table-hover table-responsive" >
-                            <tr>
-                                <th>Id</th>
-                                <th>Name</th>
-                                <th>Email</th>
-                                <th>Designation</th>
-                            </tr>
-                        </table>
-                        <table id="allSessions" class="display table table-striped table-bordered table-hover table-responsive" >
-                            <tr>
-                                <th>Id</th>
-                                <th>Title</th>
-                                <th>Date</th>
-                                <th>User-Email</th>
-                            </tr>
-                        </table>
-                        <ul class="pagination">
-                            <li class="active"><a href="#">1</a></li>
-                            <li ><a href="#">2</a></li>
-                            <li><a href="#">3</a></li>
-                            <li><a href="#">4</a></li>
-                            <li><a href="#">5</a></li>
-                        </ul>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-
-        <div class="container">
-            <div class="modal fade" id="knolxModal" role="dialog">
-                <div class="modal-dialog">
-
-                    <div class="modal-content">
-                        <div class="modal-header">
-                            <button type="button" class="close" data-dismiss="modal">&times;</button>
-                            <h4 style="color:darkgreen ;"><span class="glyphicon glyphicon-lock"></span>Edit knolx</h4>
-                        </div>
-                        <div class="modal-body">
-                        @b3.form(action = routes.SessionsController.updateSession) {
-                            @b3.text(adminKnolexForm("id"), '_label -> "User Id", 'value -> "1")
-                            @b3.text(adminKnolexForm("topic"), '_label -> "Knolx Topic")
-                            @b3.date(adminKnolexForm("date"), '_label -> "Select Date")
-                            @b3.select(adminKnolexForm("slot"), options = List(1, 2, 3, 4, 5).toSeq.flatMap(values => Seq(values.toString -> values.toString)), '_label -> "Select Slot")
-                            @b3.text(adminKnolexForm("status"), 'value -> true, 'style -> "display: none")
-                            @b3.text(adminKnolexForm("uid"), 'value -> 1, 'style -> "display: none")
-                            @b3.submit('class -> "btn btn-primary btn-lg ", '_label -> "", 'id -> "submit") {submit}
-                        }
-                        </div>
-                        <div class="modal-footer">
-                            <button type="submit" class="btn btn-default btn-default pull-left" data-dismiss="modal"><span class="glyphicon glyphicon-remove"></span>
-                                Cancel</button>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-
+</head>
+<div class="form-group pull-right">
+    <input type="text" class="search form-control" placeholder="What you looking for?">
+</div>
+<span class="counter pull-right"></span>
+<table class="table table-hover table-bordered results"id="userTable">
+    <thead>
+    <tr>
+        <th class="col-md-5 col-xs-3">Id</th>
+        <th class="col-md-5 col-xs-3">Email</th>
+        <th class="col-md-4 col-xs-3">Position</th>
+        <th class="col-md-3 col-xs-3">Name</th>
+        <th class="col-md-2 col-xs-3">Topic</th>
+        <th class="col-md-2 col-xs-3">Status</th>
+        <th class="col-md-2 col-xs-3">Change Status</th>
+        <th class="col-md-2 col-xs-3">update</th>
+        <th class="col-md-2 col-xs-3">delete</th>
+    </tr>
+    </thead>
+    <tbody>
+    @for(asg<-knols){
+    <tr>
+        <td>@asg._6</td>
+        <td>@asg._1</td>
+        <td>@asg._2</td>
+        <td>@asg._3</td>
+        <td>@asg._5</td>
+        <td>@asg._4</td>
+        <td><a href="#" id="done_@asg._6">Done</a>
+        <td><a href="#" id="update_@asg._6">update</a>
+        <td><a href="#" id="delete_@asg._6">delete</a>
         <script type="text/javascript">
-
-                function hideTable(){
-                    $('#allSessions').hide();
-                    $('#allUsers').hide();
-                }
-
                 $(document).ready(function() {
-                    hideTable();
-                    $('#user').click(function(){
-                        hideTable();
-                        $('#allUsers').show()
+                $("#done_@asg._6").click(function(){
+alert(" i am clicked for done");
                         var ajaxCallBack = {
                             success : function(data) {
-                                drawTable(JSON.parse(data));
+                                $("#mainContent").html(data)
+                                 $(this).closest ('tr').remove ()
                             },
                             error : function(error) {
                                 alert("Error");
                             }
                         };
+                        jsRoutes.controllers.SessionsController.changeStatus(@asg._6,"@asg._5").ajax(ajaxCallBack);
 
-                        function drawTable(data) {
-                            $("#allUsers").find("tr:not(:first)").remove();
-                            for (var i = 0; i < data.length; i++) {
-                                drawRow(data[i]);
-                            }
-                        }
+                    })
 
-                        function drawRow(rowData) {
-                            var row = $("<tr />")
-                            $("#allUsers").append(row); //this will append tr element to table... keep its reference for a while since we will add cels into it
-                            row.append($("<td>" + rowData.id + "</td>"));
-                            row.append($("<td>" + rowData.name + "</td>"));
-                            row.append($("<td>" + rowData.email + "</td>"));
-                            row.append($("<td>" + rowData.designation + "</td>"));
-                        }
-                        jsRoutes.controllers.UsersController.getAllUsers().ajax(ajaxCallBack);
-
-
-                    });
-                    $('#session').click(function(){
-                        hideTable();
-                        $('#allSessions').show()
+                   $("#update_@asg._6").click(function(){
+                   alert(" i am clicked for update");
                         var ajaxCallBack = {
                             success : function(data) {
-                                drawTable(JSON.parse(data));
+                    $("#mainContent").html(data)
                             },
                             error : function(error) {
                                 alert("Error");
                             }
                         };
+                          jsRoutes.controllers.SessionsController.updateSession(@asg._6,"@asg._5").ajax(ajaxCallBack);
+                    })
 
-                        function drawTable(data) {
-                            $("#allSessions").find("tr:not(:first)").remove();
-                            for (var i = 0; i < data.length; i++) {
-                                drawRow(data[i]);
+                    $("#delete_@asg._6").click(function(){
+$(this).parents('tr').first().remove();
+alert(" i am clicked for delete");
+                        var ajaxCallBack = {
+                            success : function(data) {
+                                $("#mainContent").html(data);
+                                 },
+                            error : function(error) {
+                                alert("Error");
                             }
-                        }
-
-                        function drawRow(rowData) {
-                            var row = $("<tr />")
-                            $("#allSessions").append(row); //this will append tr element to table... keep its reference for a while since we will add cels into it
-                            row.append($("<td>" + rowData.id + "</td>"));
-                            row.append($("<td><button class='btn btn-link editButton' data-toggle='modal' data-target='#knolxModal' >"  + rowData.topic + " </button> </td>"));
-                            row.append($("<td>" + new Date(rowData.date).toDateString()  + "</td>"));
-                            row.append($("<td>" + rowData.email + "</td>"));
-                        }
-                        jsRoutes.controllers.SessionsController.getAllSessions().ajax(ajaxCallBack);
-
+                        };
+                          jsRoutes.controllers.SessionsController.deleteSession(@asg._6).ajax(ajaxCallBack);
                     })
 
                 });
         </script>
-    </body>
+    </tr>
+    }
+    </tbody>
+</table>
+    <div class="col-md-16">
+        <div class="row">
+            <div class="col-md-9" id = "mainContent2">
+
+            </div>
+        </div>
+    </div>
+    </div>
+
+
 </html>
+

@@ -4,6 +4,7 @@ package controllers
 import javax.inject.Inject
 
 import com.google.common.util.concurrent.AbstractScheduledService.Scheduler
+import com.knoldus.SchedulerReminder
 import models.{KSession, User}
 import play.api.Play.current
 import play.api.data.Form
@@ -52,8 +53,10 @@ class DashboardController @Inject()(cacheService: CacheService, webJarAssets: We
 
   def renderTablePage: Action[AnyContent] = Action.async {
     implicit request =>
-      Future.successful(Ok(views.html.tables(webJarAssets, sessionsForm)))
+      kSessionService.getAllUserList.map(list => Ok(views.html.tables(webJarAssets,list)))
   }
+
+
 
   def renderKnolxForm: Action[AnyContent] = Action.async {
     implicit request =>

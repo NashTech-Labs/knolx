@@ -66,7 +66,7 @@ class UserService @Inject()(userRepository: UserRepository) {
 
 
 
-  def getId(email: String) = {
+  def getId(email: String): Future[Option[Long]] = {
     userRepository.getByEmail(email).map(user => user.get.id)
   }
 

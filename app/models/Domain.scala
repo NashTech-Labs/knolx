@@ -16,3 +16,6 @@ case class KSession(topic: Option[String], date: Date, slot: Int, status: Boolea
 case class KSessionView(topic: Option[String], date: Date, slot: Int, status: Boolean, id: Option[Long], email: String)
 
 case class Commitment(uid: Long, commit: Long, done: Long, id: Option[Long])
+
+
+

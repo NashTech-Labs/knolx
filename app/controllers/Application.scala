@@ -11,7 +11,9 @@ class Application extends Controller {
   def javascriptRoutes: Action[AnyContent] = Action { implicit request =>
     Ok(JavaScriptReverseRouter("jsRoutes")(
       routes.javascript.UsersController.getAllUsers,
-      routes.javascript.SessionsController.getAllSessions,
+      routes.javascript.SessionsController.changeStatus,
+      routes.javascript.SessionsController.deleteSession,
+        routes.javascript.SessionsController.getAllUsersWithStatusList,
       routes.javascript.DashboardController.renderKnolxForm,
       routes.javascript.SessionsController.createSession,
       routes.javascript.SessionsController.updateSession

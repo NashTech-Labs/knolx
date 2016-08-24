@@ -10,10 +10,7 @@ GET         /webjars/*file                  controllers.WebJarAssets.at(file)
 
 
 #  dashboard page
-
-GET          /                      controllers.DashboardController.homePage
-
-GET         /renderDashBoard        controllers.DashboardController.renderDashBoard
+GET         /                               controllers.DashboardController.renderDashBoard
 #loginpage
 GET         /home                           controllers.AuthenticationController.loginPage
 #  sign in
@@ -24,8 +21,14 @@ GET         /signout                        controllers.AuthenticationController
 POST        /signup                         controllers.AuthenticationController.signUp
 #get all Users
 GET         /getAllUsers                    controllers.UsersController.getAllUsers
-#get all Sessions
-GET         /getAllSessions                 controllers.SessionsController.getAllSessions
+
+GET         /changeStatus/:userId,/:topic    controllers.SessionsController.changeStatus(userId:Long,topic:String)
+
+GET         /deleteSession/:userId     controllers.SessionsController.deleteSession(userId:Long)
+
+#get all Users with status
+GET         /getAll                    controllers.SessionsController.getAllUsersWithStatusList
+
 #get admin knolx form
 GET         /adminKnolxForm                 controllers.DashboardController.renderKnolxForm
 
@@ -33,7 +36,9 @@ GET         /adminKnolxForm                 controllers.DashboardController.rend
 GET         /tables                         controllers.DashboardController.renderTablePage
 
 POST        /createSession                  controllers.SessionsController.createSession
-POST        /updateSession                  controllers.SessionsController.updateSession
+
+GET         /updateSession/:userId,/:topic     controllers.SessionsController.updateSession(userId:Long,topic:String)
+
 
 #javascript routes
 GET         /javascriptRoutes               controllers.Application.javascriptRoutes

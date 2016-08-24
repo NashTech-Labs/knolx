@@ -69,6 +69,20 @@ class KSessionRepository @Inject()(protected val dbConfigProvider: DatabaseConfi
     db.run(kSessionTableQuery.filter(_.id === id).update(ksession))
   }
 
+  def findByIdAndTopic(id: Long,topic:String): Future[KSession] ={
+    Logger.debug("find session by id and topic")
+    db.run(kSessionTableQuery.filter(user=> user.id === id && user.topic=== topic ).result.head)
+  }
+
+  def getAllWithStatus: Future[List[(String, String, String, Boolean, String, Long)]] = {
+    Logger.info("Getting all KnolX session with status")
+
+    val resultView: Query[(Rep[String], Rep[String], Rep[String], Rep[Boolean], Rep[String], Rep[Long]), (String, String, String, Boolean, String, Long), List] = for {(k, u) <- kSessionTableQuery.to[List] join userTableQuery.to[List] on (_.uID === _.id)}
+      yield (u.email, u.designation, u.name, k.status, k.topic,k.id)
+    db.run(resultView.to[List].result)
+
+  }
+
 }
 
 /**

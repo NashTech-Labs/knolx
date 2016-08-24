@@ -19,7 +19,7 @@ class KSessionServiceSpec extends PlaySpecification with Mockito{
   val userRepository = mock[UserRepository]
   val kSessionService = new KSessionService(kSessionRepository,userRepository )
 
-  val kSession1 = KSession(Some("Kafka Connect"),new Date(1472063400000L),2,false,1,None)
+  val kSession1: KSession = KSession(Some("Kafka Connect"),new Date(1472063400000L),2,false,1,None)
   val kSession2 = KSession(Some("Generic Programming"),new Date(1472063400000L),1,false,1,Some(2))
 
   "get all Knolx sessions" in new WithApplication() {
@@ -30,10 +30,10 @@ class KSessionServiceSpec extends PlaySpecification with Mockito{
   }
 
   "get user-id by Date" in new WithApplication() {
-
-    when(kSessionRepository.getAllByDate(new Date(1472063400000L))).thenReturn(Future(List(kSession1,kSession2)))
+when(kSessionRepository.getAllByDate(new Date(1472063400000L))).thenReturn(Future.successful(List(KSession(Some("Spark"),new Date(1472063400000L),1,false,1,Some(1)))))
     val result = await(kSessionService.getUserIDByDate(new Date(1472063400000L)))
     result === List(1)
+
   }
 
 }
