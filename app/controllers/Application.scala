@@ -12,19 +12,16 @@ class Application extends Controller {
     Ok(JavaScriptReverseRouter("jsRoutes")(
       routes.javascript.UsersController.getAllUsers,
       routes.javascript.SessionsController.getAllSessions,
-      routes.javascript.DashboardController.renderTablePage,
       routes.javascript.DashboardController.renderKnolxForm,
       routes.javascript.SessionsController.createSession,
-      routes.javascript.SessionsController.renderKnolxByDate,
-      routes.javascript.SessionsController.updateSession,
-      routes.javascript.SessionsController.doneKnolx
+      routes.javascript.SessionsController.updateSession
+
     )
     )
       .as("text/javascript")
   }
 
   def index: Action[AnyContent] = Action { implicit request =>
-
 
     Redirect(routes.AuthenticationController.loginPage())
   }

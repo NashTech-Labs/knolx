@@ -3,6 +3,7 @@ package controllers
 
 import javax.inject.Inject
 
+import com.google.common.util.concurrent.AbstractScheduledService.Scheduler
 import models.{KSession, User}
 import play.api.Play.current
 import play.api.data.Form
@@ -10,15 +11,15 @@ import play.api.data.Forms._
 import play.api.i18n.Messages
 import play.api.i18n.Messages.Implicits._
 import play.api.mvc.{Action, AnyContent, Controller}
-import services.{CacheService, KSessionService, UserService}
+import services.{CacheService, CommitmentService, KSessionService, UserService}
+import com.knoldus.SchedulerReminder
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
 
-class DashboardController @Inject()(cacheService: CacheService, webJarAssets: WebJarAssets,
-                                    userService: UserService,kSessionService: KSessionService)
-  extends Controller {
+class DashboardController @Inject()(cacheService: CacheService, webJarAssets: WebJarAssets, commitmentService: CommitmentService,
+                                    userService: UserService, kSessionService: KSessionService, scheduler: SchedulerReminder) extends Controller {
 
   val sessionsForm = Form(
     mapping(
@@ -34,6 +35,13 @@ class DashboardController @Inject()(cacheService: CacheService, webJarAssets: We
     * Action for rendering dashboard of user
     **/
 
+
+  def homePage: Action[AnyContent] = Action.async {
+    scheduler.sendReminder(kSessionService, commitmentService, userService)
+    Future(Redirect(routes.DashboardController.renderDashBoard()))
+
+  }
+
   def renderDashBoard: Action[AnyContent] = Action.async {
     implicit request =>
       cacheService.getCache.fold(Future.successful(Redirect(routes.AuthenticationController.loginPage())
@@ -41,7 +49,6 @@ class DashboardController @Inject()(cacheService: CacheService, webJarAssets: We
         map(name => name.fold(Ok(views.html.dashboard(webJarAssets, None, None))) { tupleOfNameAndCategory => Ok(views.html.dashboard(webJarAssets, Some(tupleOfNameAndCategory._2), Some(tupleOfNameAndCategory._1))) })
       }
   }
-
 
   def renderTablePage: Action[AnyContent] = Action.async {
     implicit request =>

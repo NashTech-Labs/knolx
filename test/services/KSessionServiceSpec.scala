@@ -7,7 +7,7 @@ import models.KSession
 import org.mockito.Mockito._
 import org.specs2.mock.Mockito
 import play.api.test.{PlaySpecification, WithApplication}
-import repo.KSessionRepository
+import repo.{UserRepository, KSessionRepository}
 
 import scala.concurrent.Future
 import scala.concurrent.ExecutionContext.Implicits.global
@@ -16,7 +16,8 @@ import scala.concurrent.ExecutionContext.Implicits.global
 class KSessionServiceSpec extends PlaySpecification with Mockito{
 
   val kSessionRepository = mock[KSessionRepository]
-  val kSessionService = new KSessionService(kSessionRepository)
+  val userRepository = mock[UserRepository]
+  val kSessionService = new KSessionService(kSessionRepository,userRepository )
 
   val kSession1 = KSession(Some("Kafka Connect"),new Date(1472063400000L),2,false,1,None)
   val kSession2 = KSession(Some("Generic Programming"),new Date(1472063400000L),1,false,1,Some(2))

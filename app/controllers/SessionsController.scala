@@ -41,29 +41,6 @@ class SessionsController @Inject()(webJarAssets: WebJarAssets, cacheService: Cac
       }
   }
 
-  def doneKnolx: Action[AnyContent] = Action.async {
-    implicit request =>
-      sessionsForm.bindFromRequest.fold(
-        formWithErrors => {
-          Logger.error("BadRequest." + formWithErrors)
-          Future.successful(BadRequest("BadRequest"))
-        },
-        validData => {
-          val res: Future[Boolean] = kSessionService.upDateSession(validData).flatMap(session => commitmentService.updateCommitment(validData.uid).map(commit => if (session > 0 && commit > 0) true else false))
-          res.map(value => if (value) Ok(views.html.tables(webJarAssets, sessionsForm)) else (BadRequest(" BadRequest")))
-
-        }
-      )
-  }
-
-  def renderKnolxByDate(date: Long): Action[AnyContent] = Action.async {
-    implicit request =>
-      kSessionService.createViewByDate(new Date(date)).map {
-        view =>
-          implicit val jsonFormat = Json.format[KSessionView]
-          Ok(Json.stringify(Json.toJson(view)).replaceAll("\\s+", ""))
-      }
-  }
 
   def updateSession: Action[AnyContent] = Action.async {
     implicit request =>
@@ -89,15 +66,11 @@ class SessionsController @Inject()(webJarAssets: WebJarAssets, cacheService: Cac
         validData => {
           Logger.info("Scheduling session")
           kSessionService.createSession(validData)
-          userService.getAll.flatMap { (list: List[User]) => {
-            userService.getId(cacheService.getCache.get).map(value =>
-              Ok(views.html.adminKnolexForm(webJarAssets, sessionsForm, list, value.get.toString))
-            )
-          }
-          }
+          userService.getId(cacheService.getCache.get).flatMap(id => userService.getAll().map(list => Ok(views.html.adminKnolexForm(webJarAssets, sessionsForm, list, id.get.toString))))
+
         }
       )
-  }
 
+  }
 
 }

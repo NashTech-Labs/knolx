@@ -9,7 +9,7 @@ scalaVersion := "2.11.7"
 libraryDependencies ++= Seq(
   cache,
   ws,
-  specs2 % Test, 
+  specs2 % Test,
   filters,
   "org.webjars" %% "webjars-play" % "2.5.0-1",
   "org.webjars" % "bootstrap" % "3.3.6",
@@ -28,7 +28,6 @@ libraryDependencies ++= Seq(
   "org.seleniumhq.selenium" % "selenium-htmlunit-driver" % "2.52.0",
   "com.typesafe.play" %% "play-mailer" % "5.0.0",
   "javax.mail" % "mail" % "1.4",
-
   "com.typesafe.akka" %% "akka-actor" % "2.4.8"
 
 

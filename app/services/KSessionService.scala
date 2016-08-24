@@ -1,9 +1,8 @@
 package services
 
 import java.sql.Date
-
 import com.google.inject.Inject
-import models.{KSessionView, KSession}
+import models.{KSession, KSessionView}
 import play.api.Logger
 
 import repo.{UserRepository, KSessionRepository}
@@ -23,9 +22,7 @@ class KSessionService @Inject()(kSessionRepository: KSessionRepository, userRepo
     kSessionRepository.getAll
   }
 
-  def createViewByDate(date: Date): Future[List[KSessionView]] = {
-    kSessionRepository.getAllByDate(date).map(views => views.map(v => KSessionView(v._1.get.topic, v._1.get.date, v._1.get.slot, v._1.get.status, v._1.get.id, v._2)))
-  }
+
 
   def createView: Future[List[KSessionView]] = {
     kSessionRepository.getTableView.map(views => views.map(v => KSessionView(v._1.get.topic, v._1.get.date, v._1.get.slot, v._1.get.status, v._1.get.id, v._2)))
@@ -38,7 +35,7 @@ class KSessionService @Inject()(kSessionRepository: KSessionRepository, userRepo
   def getUserIDByDate(date: Date): Future[List[Long]] = {
 
     Logger.debug("Getting user-id by date")
-    kSessionRepository.getAllByDate(date).map(kSessions => kSessions.map(kSession => (kSession._1.get.uid)).distinct)
+    kSessionRepository.getAllByDate(date).map(kSessions => kSessions.map(kSession => (kSession.uid)).distinct)
 
   }
 

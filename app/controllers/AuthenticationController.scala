@@ -10,18 +10,16 @@ import play.api.data.Forms._
 import play.api.i18n.Messages
 import play.api.i18n.Messages.Implicits._
 import play.api.mvc.{Action, AnyContent, Controller}
-import services.{CacheService, KSessionService, UserService}
+import services._
 import utils.Constants._
 import utils.Helpers
-import com.knoldus.Scheduler
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
 
 @Singleton
-class AuthenticationController @Inject()(cacheService: CacheService, scheduler: Scheduler,
-                                         webJarAssets: WebJarAssets, userService: UserService, kSessionService: KSessionService) extends Controller {
+class AuthenticationController @Inject()(cacheService: CacheService, webJarAssets: WebJarAssets, userService: UserService) extends Controller {
 
   val signUpForm = Form(
     mapping(
@@ -40,6 +38,7 @@ class AuthenticationController @Inject()(cacheService: CacheService, scheduler: 
       "password" -> nonEmptyText(MIN_LENGTH_OF_PASSWORD)
     ))
 
+
   /**
     * Create an Action to render an Home page with login and signup option
     */
@@ -51,6 +50,8 @@ class AuthenticationController @Inject()(cacheService: CacheService, scheduler: 
       cacheService.getCache.fold(Future.successful(Ok(views.html.home(webJarAssets, loginForm, signUpForm)))
       ) { email => userService.getNameAndCategoryByEmail(email).
         map(name => name.fold(Ok(views.html.dashboard(webJarAssets, None, None))) { tupleOfNameAndCategory => Ok(views.html.dashboard(webJarAssets, Some(tupleOfNameAndCategory._2), Some(tupleOfNameAndCategory._1))) })
+
+
       }
   }
 
@@ -67,6 +68,7 @@ class AuthenticationController @Inject()(cacheService: CacheService, scheduler: 
           Future.successful(BadRequest(views.html.home(webJarAssets, formWithErrors, signUpForm)))
         },
         validData => {
+
           val encodedPassword: String = Helpers.passwordEncoder(validData._2)
           userService.validateUser(validData._1, encodedPassword)
             .map { validatedEmail => if (validatedEmail) {
@@ -81,12 +83,11 @@ class AuthenticationController @Inject()(cacheService: CacheService, scheduler: 
         }
       )
   }
-    
+
 
   /**
     * Create an Action for signup option
     */
-
   def signUp: Action[AnyContent] = Action.async {
     implicit request =>
       Logger.debug("signingUp in progress. ")
@@ -109,6 +110,7 @@ class AuthenticationController @Inject()(cacheService: CacheService, scheduler: 
             })
           }
           else {
+
             Future.successful(Redirect(routes.AuthenticationController.loginPage).flashing("EMAIL.EXISTS" -> Messages("email.exists")))
 
           })
@@ -119,12 +121,13 @@ class AuthenticationController @Inject()(cacheService: CacheService, scheduler: 
   /**
     * Create an Action for signout option
     */
-
   def signOut: Action[AnyContent] = Action.async {
     cacheService.remove("id")
     Future.successful {
       Redirect(routes.AuthenticationController.loginPage).flashing("SUCCESS" -> Messages("logout.success"))
+
     }
+
   }
 }
 

@@ -14,7 +14,7 @@ import scala.concurrent.Future
 
 
 class KSessionRepository @Inject()(protected val dbConfigProvider: DatabaseConfigProvider) extends KSessionTable
-  with HasDatabaseConfigProvider[JdbcProfile] with UserTable {
+  with HasDatabaseConfigProvider[JdbcProfile] with UserTable{
 
   import driver.api._
 
@@ -36,35 +36,24 @@ class KSessionRepository @Inject()(protected val dbConfigProvider: DatabaseConfi
 
 
 
-/*=======
   /**
     * get all KnolX sessions from database matching a given date
     */
   def getAllByDate(date:Date): Future[List[KSession]] = {
     Logger.info("Getting all KnolX session record by date")
-<<<<<<< HEAD
-     db.run(kSessionTableQuery.filter(_.date === date).to[List].result)
-
-  }*/
-
-  /**
-    * get all KnolX sessions from database matching a given date
-    */
-  def getAllByDate(date: Date): Future[List[(Option[KSession], String)]] = {
-    Logger.info("Getting all KnolX session record by date")
-    val resultView = for {(k, u) <- kSessionTableQuery.filter(_.date === date).to[List] joinRight userTableQuery.to[List] on (_.uID === _.id)} yield (k, u.email)
-    db.run(resultView.to[List].result)
+    db.run(kSessionTableQuery.filter(_.date === date).to[List].result)
 
   }
+
 
   def getTableView: Future[List[(Option[KSession], String)]] ={
-    val resultView = for{(k,u) <- kSessionTableQuery.to[List] joinRight userTableQuery.to[List] on (_.uID === _.id)} yield (k , u.email)
+    val resultView = for{(k,u) <- kSessionTableQuery.to[List] joinRight userTableQuery.to[List] on (_.uID === _.id)}yield (k , u.email)
     db.run(resultView.to[List].result)
 
   }
 
   /**
-    * delete a knolX session from database
+    *delete a knolX session from database
     */
 
   def delete(id: Long): Future[Int] = {
@@ -73,22 +62,24 @@ class KSessionRepository @Inject()(protected val dbConfigProvider: DatabaseConfi
   }
 
   /**
-    * update a knolX session in database
+    *update a knolX session in database
     */
   def update(id: Long, ksession: KSession): Future[Int] = {
     Logger.info("Updating KnolX session record.")
     db.run(kSessionTableQuery.filter(_.id === id).update(ksession))
   }
+
 }
 
 /**
   * KSession trait which is used for mapping
   */
 
-trait KSessionTable extends UserTable {
+trait KSessionTable extends UserTable{
   self: HasDatabaseConfigProvider[JdbcProfile] =>
 
   import driver.api._
+
 
 
   lazy val kSessionTableQuery = TableQuery[KSessionInfo]
@@ -103,9 +94,9 @@ trait KSessionTable extends UserTable {
 
     def date: Rep[Date] = column[Date]("date", O.SqlType("Date"))
 
-    def slot: Rep[Int] = column[Int]("slot", O.SqlType("NUMBER"))
+    def slot:Rep[Int] = column[Int]("slot",O.SqlType("NUMBER"))
 
-    def status: Rep[Boolean] = column[Boolean]("status", O.SqlType("BOOLEAN"))
+    def status:Rep[Boolean] = column[Boolean]("status", O.SqlType("BOOLEAN"))
 
     def uID: Rep[Long] = column[Long]("user_id")
 
@@ -115,4 +106,5 @@ trait KSessionTable extends UserTable {
   }
 
 }
+
 
