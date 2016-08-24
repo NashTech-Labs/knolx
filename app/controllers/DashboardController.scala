@@ -3,7 +3,7 @@ package controllers
 
 import javax.inject.Inject
 
-import com.google.common.util.concurrent.AbstractScheduledService.Scheduler
+import com.knoldus.SchedulerReminder
 import models.{KSession, User}
 import play.api.Play.current
 import play.api.data.Form
@@ -12,14 +12,13 @@ import play.api.i18n.Messages
 import play.api.i18n.Messages.Implicits._
 import play.api.mvc.{Action, AnyContent, Controller}
 import services.{CacheService, CommitmentService, KSessionService, UserService}
-import com.knoldus.SchedulerReminder
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
 
 class DashboardController @Inject()(cacheService: CacheService, webJarAssets: WebJarAssets, commitmentService: CommitmentService,
-                                    userService: UserService, kSessionService: KSessionService, scheduler: SchedulerReminder) extends Controller {
+                                    userService: UserService, kSessionService: KSessionService) extends Controller {
 
   val sessionsForm = Form(
     mapping(
@@ -37,7 +36,8 @@ class DashboardController @Inject()(cacheService: CacheService, webJarAssets: We
 
 
   def homePage: Action[AnyContent] = Action.async {
-    scheduler.sendReminder(kSessionService, commitmentService, userService)
+    val schedulerReminder = new SchedulerReminder(kSessionService, commitmentService, userService)
+    schedulerReminder.sendReminder()
     Future(Redirect(routes.DashboardController.renderDashBoard()))
 
   }

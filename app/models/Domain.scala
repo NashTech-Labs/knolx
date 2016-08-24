@@ -2,9 +2,6 @@ package models
 
 import java.sql.Date
 
-import play.api.libs.mailer.Email
-
-
 /**
   * model case classes for user, KnolX session, KSessionView and Commitment
   */

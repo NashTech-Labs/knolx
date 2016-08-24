@@ -10,7 +10,7 @@ insert into "users" values('admin@gmail.com', 'cXdlcnR5', 'admin' , 'consultant'
 
 insert into "users" values('deepti@gmail.com', 'cXdlcnR5', 'deepti' , 'consultant',0, false,  2);
 
-CREATE TABLE "commitment"("uid"  INT UNIQUE REFERENCES users("id"),"commit" INT , "done" INT , "id" SERIAL PRIMARY KEY );
+CREATE TABLE "commitment"("uid"  INT UNIQUE REFERENCES users("id"), "commit" INT , "done" INT , "id" SERIAL PRIMARY KEY );
 
 insert into "sessions" values( 'Spark' , '2016-08-25', 1, false, 1, 1);
 
@@ -20,9 +20,11 @@ INSERT INTO "commitment" VALUES (1, 5, 0, 1)
 
 DROP TABLE "sessions";
 
+DROP TABLE "commitment";
+
 DROP TABLE "users";
 
-DROP TABLE "commitment";
+
 
 
 

@@ -8,8 +8,8 @@ import org.specs2.mutable.Specification
 import org.specs2.runner._
 import play.api.test.Helpers._
 import play.api.test.{FakeRequest, WithApplication}
-import services.{CacheService, CommitmentService, KSessionService, UserService}
-import com.knoldus.Scheduler1
+import services.{CacheService,UserService}
+
 
 import scala.concurrent.Future
 

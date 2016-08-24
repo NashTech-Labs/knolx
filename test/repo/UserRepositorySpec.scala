@@ -50,4 +50,5 @@ class UserRepositorySpec extends PlaySpecification {
     val result = await(userRepository.getByID(1))
     result === User("admin@gmail.com","cXdlcnR5","admin","consultant",0,false,Some(1))
   }
+
 }
